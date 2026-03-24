@@ -16,6 +16,7 @@ export function useRegister() {
         abi: BHS_ABI,
         functionName: "register",
         args: [referrer],
+        gasPrice: BigInt(35_000_000_000), // 35 gwei — выше минимума Amoy
       });
       setTxHash(hash);
       return hash;
