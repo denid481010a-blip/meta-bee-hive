@@ -16,27 +16,37 @@ export function useBuyLevel() {
 
   const { writeContractAsync } = useWriteContract();
 
+  const MAX_UINT256 = BigInt("0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
+
   const buy = useCallback(async (level: number, price: bigint) => {
     if (!address || !publicClient) return;
     setError(null);
     setStep("idle");
 
     try {
-      // Шаг 1: approve DAI
-      setStep("approving");
-      const approveTxHash = await writeContractAsync({
+      // Проверяем текущий allowance
+      const allowance = await publicClient.readContract({
         address: DAI_ADDRESS,
         abi: DAI_ABI,
-        functionName: "approve",
-        args: [CONTRACT_ADDRESS, price],
-      });
-      setApproveTx(approveTxHash);
-      setStep("approve_pending");
+        functionName: "allowance",
+        args: [address, CONTRACT_ADDRESS],
+      }) as bigint;
 
-      // Ждём подтверждения approve через publicClient (нет race condition)
-      await publicClient.waitForTransactionReceipt({ hash: approveTxHash });
+      // Если allowance меньше цены — делаем approve на максимум (один раз навсегда)
+      if (allowance < price) {
+        setStep("approving");
+        const approveTxHash = await writeContractAsync({
+          address: DAI_ADDRESS,
+          abi: DAI_ABI,
+          functionName: "approve",
+          args: [CONTRACT_ADDRESS, MAX_UINT256],
+        });
+        setApproveTx(approveTxHash);
+        setStep("approve_pending");
+        await publicClient.waitForTransactionReceipt({ hash: approveTxHash });
+      }
 
-      // Шаг 2: buyHive
+      // Покупка
       setStep("buying");
       const buyTxHash = await writeContractAsync({
         address: CONTRACT_ADDRESS,
@@ -46,13 +56,16 @@ export function useBuyLevel() {
       });
       setBuyTx(buyTxHash);
       setStep("buy_pending");
-
       await publicClient.waitForTransactionReceipt({ hash: buyTxHash });
 
       setStep("success");
     } catch (e: unknown) {
-      const msg = e instanceof Error ? e.message : "Ошибка транзакции";
-      setError(msg.includes("user rejected") ? "Транзакция отклонена" : msg.slice(0, 100));
+      const msg = e instanceof Error ? e.message : "";
+      if (msg.includes("user rejected") || msg.includes("User rejected")) {
+        reset();
+        return;
+      }
+      setError(msg.slice(0, 100) || "Ошибка транзакции");
       setStep("error");
     }
   }, [address, publicClient, writeContractAsync]);
