@@ -17,6 +17,7 @@ import { clearLogsCache } from "@/lib/getLogs";
 import { useT } from "@/lib/i18n/LanguageContext";
 import { LanguageSwitcher } from "@/components/dashboard/LanguageSwitcher";
 
+
 function RegisterBlock({ onSuccess }: { onSuccess: () => void }) {
   const { register, isPending, isSuccess } = useRegister();
   const { t } = useT();
@@ -27,7 +28,7 @@ function RegisterBlock({ onSuccess }: { onSuccess: () => void }) {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center h-64 text-center space-y-6">
+    <div className="flex flex-col items-center justify-center text-center space-y-6 py-10">
       <div className="text-5xl">🐣</div>
       <div className="space-y-2">
         <h2 className="text-xl font-bold text-white">{t.dashboard.notInSwarm}</h2>
@@ -47,6 +48,10 @@ function RegisterBlock({ onSuccess }: { onSuccess: () => void }) {
             </span>
         }
       </button>
+      <div className="space-y-2">
+        <p className="text-white/30 text-xs">{t.language.subtitle}</p>
+        <LanguageSwitcher />
+      </div>
     </div>
   );
 }
