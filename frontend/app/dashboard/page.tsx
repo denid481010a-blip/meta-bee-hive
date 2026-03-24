@@ -35,7 +35,7 @@ function RegisterBlock({ onSuccess }: { onSuccess: () => void }) {
         onClick={() => register(CONTRACT_ADDRESS)}
         disabled={isPending}
         className="px-8 py-3 rounded-2xl font-bold text-sm flex items-center gap-2"
-        style={{ background: "rgba(245,166,35,0.15)", border: "1px solid rgba(245,166,35,0.3)", color: "#F5A623" }}
+        style={{ background: "rgba(245,166,35,0.15)", border: "1px solid rgba(245,166,35,0.3)", color: "#ffffff" }}
       >
         {isPending ? <><Loader2 className="w-4 h-4 animate-spin" /> Регистрация...</> : "🐝 Вступить в рой"}
       </button>
