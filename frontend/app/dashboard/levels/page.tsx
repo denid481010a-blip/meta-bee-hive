@@ -29,7 +29,7 @@ function LevelRow({
     >
       <span className="font-black text-sm" style={{ color }}>Hive {level}</span>
       <span className="text-white/70 text-xs font-medium">{price} DAI</span>
-      <span className="text-xs font-medium" style={{ color: "#27AE60" }}>+{cycleIncome} DAI</span>
+      <span className="text-xs font-medium whitespace-nowrap" style={{ color: "#27AE60" }}>+{cycleIncome} DAI</span>
       <span>
         {active && cycles > 0 ? (
           <span className="flex items-center gap-1 text-xs font-medium" style={{ color: "#27AE60" }}>
@@ -114,15 +114,21 @@ export default function LevelsPage() {
       <div>
         <h2 className="text-base font-bold text-white/60 mb-4">Детали</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {Array.from({ length: 10 }, (_, i) => i + 1).map((level) => (
-            <HiveCard
-              key={level}
-              level={level}
-              active={activeLevels.includes(level)}
-              address={address}
-              onClick={() => setBuyLevel(level)}
-            />
-          ))}
+          {Array.from({ length: 10 }, (_, i) => i + 1).map((level) => {
+            const isActive = activeLevels.includes(level);
+            const nextLevel = (stats?.activeLevels ?? 0) + 1;
+            const isNext = level === nextLevel;
+            return (
+              <HiveCard
+                key={level}
+                level={level}
+                active={isActive}
+                isNext={isNext}
+                address={address}
+                onClick={isNext ? () => setBuyLevel(level) : undefined}
+              />
+            );
+          })}
         </div>
       </div>
 
