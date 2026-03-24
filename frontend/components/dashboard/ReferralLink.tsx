@@ -45,7 +45,7 @@ export function ReferralLink({ address }: ReferralLinkProps) {
       </div>
 
       <div className="flex gap-3">
-        <Button variant="gold" size="sm" onClick={copy} className="flex-1">
+        <Button variant="gold" size="sm" onClick={copy} className="flex-1 !text-white">
           {copied ? <><Check className="w-4 h-4" /> Скопировано!</> : <><Copy className="w-4 h-4" /> Скопировать</>}
         </Button>
         <Button variant="navy" size="sm" onClick={share}>
