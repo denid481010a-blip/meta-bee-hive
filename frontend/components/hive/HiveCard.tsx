@@ -163,7 +163,8 @@ export function HiveCard({ level, active, isNext = false, address, onClick, comp
       transition={{ type: "spring", stiffness: 300 }}
       onClick={onClick}
       className={clsx(
-        "relative rounded-3xl border cursor-pointer overflow-hidden transition-all duration-300",
+        "relative rounded-3xl border overflow-hidden transition-all duration-300",
+        onClick ? "cursor-pointer" : "cursor-default",
         active
           ? "border-white/10 bg-card"
           : "border-white/5 bg-white/[0.02]"

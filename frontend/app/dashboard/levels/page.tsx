@@ -1,9 +1,7 @@
 "use client";
-import { useState } from "react";
 import { useAccount } from "wagmi";
 import { motion } from "framer-motion";
 import { HiveCard } from "@/components/hive/HiveCard";
-import { BuyLevelModal } from "@/components/levels/BuyLevelModal";
 import { useStats } from "@/hooks/useStats";
 import { useMatrix } from "@/hooks/useMatrix";
 import { HIVE_PRICES_DAI, LEVEL_COLORS } from "@/lib/constants";
@@ -58,8 +56,7 @@ function LevelRow({
 
 export default function LevelsPage() {
   const { address } = useAccount();
-  const { stats, refetch } = useStats(address);
-  const [buyLevel, setBuyLevel] = useState<number | null>(null);
+  const { stats } = useStats(address);
 
   const activeLevels: number[] = stats?.activeLevelsList ?? [];
 
@@ -104,7 +101,7 @@ export default function LevelsPage() {
             price={price}
             active={activeLevels.includes(i + 1)}
             address={address}
-            onBuy={() => setBuyLevel(i + 1)}
+            onBuy={() => {}}
             delay={i * 0.03}
           />
         ))}
@@ -114,30 +111,17 @@ export default function LevelsPage() {
       <div>
         <h2 className="text-base font-bold text-white/60 mb-4">Детали</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {Array.from({ length: 10 }, (_, i) => i + 1).map((level) => {
-            const isActive = activeLevels.includes(level);
-            const nextLevel = (stats?.activeLevels ?? 0) + 1;
-            const isNext = level === nextLevel;
-            return (
-              <HiveCard
-                key={level}
-                level={level}
-                active={isActive}
-                isNext={isNext}
-                address={address}
-                onClick={isNext ? () => setBuyLevel(level) : undefined}
-              />
-            );
-          })}
+          {Array.from({ length: 10 }, (_, i) => i + 1).map((level) => (
+            <HiveCard
+              key={level}
+              level={level}
+              active={activeLevels.includes(level)}
+              address={address}
+            />
+          ))}
         </div>
       </div>
 
-      <BuyLevelModal
-        level={buyLevel}
-        address={address}
-        onClose={() => setBuyLevel(null)}
-        onSuccess={() => { setBuyLevel(null); refetch(); }}
-      />
     </div>
   );
 }
