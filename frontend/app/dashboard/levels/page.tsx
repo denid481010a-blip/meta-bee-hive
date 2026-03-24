@@ -25,32 +25,30 @@ function LevelRow({
       initial={{ opacity: 0, x: -10 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ delay }}
-      className="grid grid-cols-5 px-5 py-3.5 border-b border-white/[0.04] hover:bg-white/[0.03] transition-colors cursor-pointer items-center text-sm"
-      onClick={() => !active && onBuy()}
+        className="grid grid-cols-5 px-4 py-3 border-b border-white/[0.04] items-center text-sm"
     >
-      <span className="font-black" style={{ color }}>Hive {level}</span>
-      <span className="text-white/60">{price} DAI</span>
-      <span style={{ color: "#27AE60" }}>+{cycleIncome} DAI</span>
+      <span className="font-black text-sm" style={{ color }}>Hive {level}</span>
+      <span className="text-white/70 text-xs font-medium">{price} DAI</span>
+      <span className="text-xs font-medium" style={{ color: "#27AE60" }}>+{cycleIncome} DAI</span>
       <span>
         {active && cycles > 0 ? (
-          <span className="flex items-center gap-1 text-[11px] font-medium" style={{ color: "#27AE60" }}>
-            <RefreshCw className="w-3 h-3" />
-            {cycles}
+          <span className="flex items-center gap-1 text-xs font-medium" style={{ color: "#27AE60" }}>
+            <RefreshCw className="w-3 h-3" />{cycles}
           </span>
         ) : (
-          <span className="text-white/20 text-[11px]">—</span>
+          <span className="text-white/20 text-xs">—</span>
         )}
       </span>
       <span>
         {active ? (
-          <span className="text-[11px] px-2.5 py-1 rounded-full font-medium"
+          <span className="text-[11px] px-2 py-0.5 rounded-full font-bold whitespace-nowrap"
             style={{ background: "rgba(39,174,96,0.12)", color: "#27AE60" }}>
-            ✓ Активен
+            ✓ Куплен
           </span>
         ) : (
-          <span className="text-[11px] px-2.5 py-1 rounded-full font-medium"
-            style={{ background: "rgba(255,255,255,0.06)", color: "rgba(255,255,255,0.3)" }}>
-            Купить
+          <span className="text-[11px] px-2 py-0.5 rounded-full font-medium whitespace-nowrap"
+            style={{ background: "rgba(255,255,255,0.05)", color: "rgba(255,255,255,0.25)" }}>
+            Не активен
           </span>
         )}
       </span>
