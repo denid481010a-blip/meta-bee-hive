@@ -40,6 +40,8 @@ export function useBuyLevel() {
           abi: DAI_ABI,
           functionName: "approve",
           args: [CONTRACT_ADDRESS, MAX_UINT256],
+          maxFeePerGas: BigInt(50_000_000_000),
+          maxPriorityFeePerGas: BigInt(30_000_000_000),
         });
         setApproveTx(approveTxHash);
         setStep("approve_pending");
@@ -53,6 +55,8 @@ export function useBuyLevel() {
         abi: BHS_ABI,
         functionName: "buyHive",
         args: [level],
+        maxFeePerGas: BigInt(50_000_000_000),
+        maxPriorityFeePerGas: BigInt(30_000_000_000),
       });
       setBuyTx(buyTxHash);
       setStep("buy_pending");

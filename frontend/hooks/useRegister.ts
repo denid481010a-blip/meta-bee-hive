@@ -16,6 +16,8 @@ export function useRegister() {
         abi: BHS_ABI,
         functionName: "register",
         args: [referrer],
+        maxFeePerGas: BigInt(50_000_000_000),
+        maxPriorityFeePerGas: BigInt(30_000_000_000),
       });
       setTxHash(hash);
       return hash;
