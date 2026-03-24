@@ -1,0 +1,20 @@
+node_modules/
+node_modules — копия/
+.env
+.env.local
+*.pptx
+*.docx
+generate_*.js
+*— копия*
+package — копия.json
+package-lock — копия.json
+frontend/.next/
+frontend/node_modules/
+backend/node_modules/
+smart-contract/node_modules/
+smart-contract/artifacts/
+smart-contract/cache/
+smart-contract/.openzeppelin/
+node_modules
+.DS_Store
+backend/data/*.db
