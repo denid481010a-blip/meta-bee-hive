@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useReadContract, usePublicClient } from "wagmi";
 import { BHS_ABI } from "@/lib/contract";
 import { CONTRACT_ADDRESS, DEPLOY_BLOCK } from "@/lib/constants";
+import { getLogsAll } from "@/lib/getLogs";
 
 export function useStats(address?: `0x${string}`) {
   const publicClient = usePublicClient();
@@ -20,12 +21,11 @@ export function useStats(address?: `0x${string}`) {
   // teamSize: count UserRegistered events where referrer == address
   useEffect(() => {
     if (!address || !publicClient) return;
-    publicClient.getLogs({
+    getLogsAll(publicClient as any, {
       address: CONTRACT_ADDRESS,
       event: BHS_ABI.find((e) => e.name === "UserRegistered") as any,
       args: { referrer: address },
       fromBlock: DEPLOY_BLOCK,
-      toBlock: "latest",
     }).then((logs) => setTeamSize(logs.length))
       .catch(() => setTeamSize(0));
   }, [address, publicClient]);

@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { useAccount, usePublicClient } from "wagmi";
 import { LEVEL_COLORS, CONTRACT_ADDRESS, DEPLOY_BLOCK } from "@/lib/constants";
+import { getLogsAll } from "@/lib/getLogs";
 import { BHS_ABI } from "@/lib/contract";
 import { Loader2 } from "lucide-react";
 import { AddressDisplay } from "@/components/ui/AddressDisplay";
@@ -22,12 +23,11 @@ export default function TeamPage() {
     if (!address || !publicClient) return;
     setIsLoading(true);
 
-    publicClient.getLogs({
+    getLogsAll(publicClient as any, {
       address: CONTRACT_ADDRESS,
       event: BHS_ABI.find((e) => e.name === "UserRegistered") as any,
       args: { referrer: address },
       fromBlock: DEPLOY_BLOCK,
-      toBlock: "latest",
     }).then(async (logs) => {
       const members: TeamMember[] = await Promise.all(
         logs.map(async (log: any) => {

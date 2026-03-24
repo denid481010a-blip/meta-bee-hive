@@ -4,6 +4,7 @@ import { useAccount, usePublicClient } from "wagmi";
 import { formatDAI, shortAddress, formatDate } from "@/lib/formatters";
 import { LEVEL_COLORS, CONTRACT_ADDRESS, DEPLOY_BLOCK } from "@/lib/constants";
 import { BHS_ABI } from "@/lib/contract";
+import { getLogsAll } from "@/lib/getLogs";
 import { Loader2, ArrowDownLeft, ArrowUpRight } from "lucide-react";
 import { clsx } from "clsx";
 import { formatUnits } from "viem";
@@ -31,20 +32,18 @@ export default function PaymentsPage() {
 
     Promise.all([
       // Входящие: PaymentSent where to = address
-      publicClient.getLogs({
+      getLogsAll(publicClient as any, {
         address: CONTRACT_ADDRESS,
         event: BHS_ABI.find((e) => e.name === "PaymentSent") as any,
         args: { to: address },
         fromBlock: DEPLOY_BLOCK,
-        toBlock: "latest",
       }),
       // Расходы: HiveBought where user = address
-      publicClient.getLogs({
+      getLogsAll(publicClient as any, {
         address: CONTRACT_ADDRESS,
         event: BHS_ABI.find((e) => e.name === "HiveBought") as any,
         args: { user: address },
         fromBlock: DEPLOY_BLOCK,
-        toBlock: "latest",
       }),
     ]).then(([incomeLogs, expenseLogs]) => {
       const income: Payment[] = incomeLogs.map((log: any) => ({
