@@ -98,16 +98,22 @@ export default function DashboardPage() {
       <div>
         <h2 className="text-lg font-bold text-white mb-4">Мои ульи</h2>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
-          {Array.from({ length: 10 }, (_, i) => i + 1).map((level) => (
-            <HiveCard
-              key={level}
-              level={level}
-              active={(stats?.activeLevelsList ?? []).includes(level)}
-              address={address}
-              onClick={() => setBuyLevel(level)}
-              compact
-            />
-          ))}
+          {Array.from({ length: 10 }, (_, i) => i + 1).map((level) => {
+            const isActive = (stats?.activeLevelsList ?? []).includes(level);
+            const nextLevel = (stats?.activeLevels ?? 0) + 1;
+            const isNext = level === nextLevel;
+            return (
+              <HiveCard
+                key={level}
+                level={level}
+                active={isActive}
+                isNext={isNext}
+                address={address}
+                onClick={isNext ? () => setBuyLevel(level) : undefined}
+                compact
+              />
+            );
+          })}
         </div>
       </div>
 

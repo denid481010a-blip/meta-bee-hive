@@ -7,6 +7,7 @@ import { useMatrix } from "@/hooks/useMatrix";
 interface HiveCardProps {
   level:    number;
   active:   boolean;
+  isNext?:  boolean;
   address?: `0x${string}`;
   onClick?: () => void;
   compact?: boolean;
@@ -116,7 +117,7 @@ function HiveMini({
   );
 }
 
-export function HiveCard({ level, active, address, onClick, compact = false }: HiveCardProps) {
+export function HiveCard({ level, active, isNext = false, address, onClick, compact = false }: HiveCardProps) {
   const color = LEVEL_COLORS[level] ?? "#F5A623";
   const price = HIVE_PRICES_DAI[level - 1];
   const { matrix } = useMatrix(address, active ? level : undefined);
@@ -128,30 +129,30 @@ export function HiveCard({ level, active, address, onClick, compact = false }: H
   if (compact) {
     return (
       <motion.button
-        onClick={onClick}
-        whileHover={{ scale: 1.04, y: -2 }}
-        whileTap={{ scale: 0.97 }}
+        onClick={active ? undefined : (isNext ? onClick : undefined)}
+        whileHover={isNext || active ? { scale: 1.04, y: -2 } : {}}
+        whileTap={isNext ? { scale: 0.97 } : {}}
         className={clsx(
           "relative flex flex-col items-center gap-1.5 rounded-2xl p-3 border transition-all duration-300",
-          active
-            ? "border-white/10 bg-card"
-            : "border-white/5 bg-white/[0.02] opacity-50"
+          active   ? "border-white/10 bg-card cursor-default" :
+          isNext   ? "border-gold/40 bg-card cursor-pointer" :
+          "border-white/5 bg-white/[0.02] opacity-30 cursor-not-allowed"
         )}
-        style={active ? { boxShadow: `0 0 16px ${color}18` } : undefined}
+        style={active ? { boxShadow: `0 0 16px ${color}18` } :
+               isNext ? { boxShadow: `0 0 20px ${color}30`, animation: "pulse 2s infinite" } : undefined}
       >
-        {active && (
+        {(active || isNext) && (
           <div
             className="absolute inset-0 rounded-2xl opacity-10 pointer-events-none"
             style={{ background: `radial-gradient(circle at 50% 50%, ${color}, transparent 70%)` }}
           />
         )}
         <HiveMini level={level} slotCount={slotCount} color={color} active={active} size={72} />
-        <span className="text-xs font-bold" style={{ color: active ? color : "#555" }}>
+        <span className="text-xs font-bold" style={{ color: active ? color : isNext ? color : "#555" }}>
           H{level}
         </span>
-        {active && (
-          <span className="text-[10px] text-white/40">{pct}%</span>
-        )}
+        {active && <span className="text-[10px] text-white/40">{pct}%</span>}
+        {isNext && <span className="text-[10px] font-bold animate-pulse" style={{ color }}>Активировать</span>}
       </motion.button>
     );
   }
@@ -245,7 +246,11 @@ export function HiveCard({ level, active, address, onClick, compact = false }: H
           </div>
         ) : (
           <div className="mt-3 text-center">
-            <span className="text-xs text-white/20">Нажми для активации</span>
+            {isNext ? (
+              <span className="text-xs font-bold animate-pulse" style={{ color }}>🐝 Активировать</span>
+            ) : (
+              <span className="text-xs text-white/20">Недоступно</span>
+            )}
           </div>
         )}
       </div>
