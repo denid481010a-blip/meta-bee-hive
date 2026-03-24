@@ -39,7 +39,13 @@ function RegisterBlock({ onSuccess }: { onSuccess: () => void }) {
         className="px-8 py-3 rounded-2xl font-black text-lg flex items-center gap-2"
         style={{ background: "rgba(245,166,35,0.15)", border: "1px solid rgba(245,166,35,0.3)", color: "#ffffff" }}
       >
-        {isPending ? <><Loader2 className="w-4 h-4 animate-spin" /> {t.dashboard.registering}</> : t.dashboard.join}
+        {isPending
+          ? <><Loader2 className="w-4 h-4 animate-spin" /> {t.dashboard.registering}</>
+          : <span className="flex flex-col items-center leading-tight">
+              <span>{t.dashboard.join}</span>
+              <span className="text-xs font-medium opacity-60">({t.dashboard.joinSub})</span>
+            </span>
+        }
       </button>
     </div>
   );

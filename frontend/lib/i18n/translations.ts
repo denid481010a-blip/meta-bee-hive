@@ -33,6 +33,7 @@ const ru = {
     notInSwarm:   "Ты ещё не в рое",
     joinDesc:     "Нажми кнопку ниже чтобы вступить в рой",
     join:         "🐝 Вступить в рой",
+    joinSub:      "регистрация",
     registering:  "Регистрация...",
   },
   stats: {
@@ -175,6 +176,7 @@ const uk: Translations = {
     notInSwarm:   "Ти ще не в рої",
     joinDesc:     "Натисни кнопку нижче щоб вступити в рій",
     join:         "🐝 Вступити в рій",
+    joinSub:      "реєстрація",
     registering:  "Реєстрація...",
   },
   stats: {
@@ -317,6 +319,7 @@ const en: Translations = {
     notInSwarm:   "You're not in the swarm yet",
     joinDesc:     "Click the button below to join the swarm",
     join:         "🐝 Join the Swarm",
+    joinSub:      "registration",
     registering:  "Registering...",
   },
   stats: {
@@ -459,6 +462,7 @@ const tr: Translations = {
     notInSwarm:   "Henüz sürüde değilsin",
     joinDesc:     "Sürüye katılmak için aşağıdaki butona tıkla",
     join:         "🐝 Sürüye Katıl",
+    joinSub:      "kayıt",
     registering:  "Kayıt oluyor...",
   },
   stats: {
@@ -601,6 +605,7 @@ const vi: Translations = {
     notInSwarm:   "Bạn chưa trong đàn",
     joinDesc:     "Nhấn nút bên dưới để tham gia đàn",
     join:         "🐝 Tham gia đàn",
+    joinSub:      "đăng ký",
     registering:  "Đang đăng ký...",
   },
   stats: {
@@ -743,6 +748,7 @@ const hi: Translations = {
     notInSwarm:   "आप अभी झुंड में नहीं हैं",
     joinDesc:     "झुंड में शामिल होने के लिए नीचे बटन दबाएं",
     join:         "🐝 झुंड में शामिल हों",
+    joinSub:      "पंजीकरण",
     registering:  "पंजीकरण हो रहा है...",
   },
   stats: {
@@ -885,6 +891,7 @@ const zh: Translations = {
     notInSwarm:   "你还未加入蜂群",
     joinDesc:     "点击下方按钮加入蜂群",
     join:         "🐝 加入蜂群",
+    joinSub:      "注册",
     registering:  "注册中...",
   },
   stats: {
@@ -1027,6 +1034,7 @@ const ko: Translations = {
     notInSwarm:   "아직 떼에 합류하지 않았습니다",
     joinDesc:     "아래 버튼을 눌러 떼에 합류하세요",
     join:         "🐝 떼에 합류",
+    joinSub:      "등록",
     registering:  "등록 중...",
   },
   stats: {
@@ -1169,6 +1177,7 @@ const uz: Translations = {
     notInSwarm:   "Siz hali to'daga qo'shilmagansiz",
     joinDesc:     "To'daga qo'shilish uchun quyidagi tugmani bosing",
     join:         "🐝 To'daga qo'shilish",
+    joinSub:      "ro'yxatdan o'tish",
     registering:  "Ro'yxatdan o'tilmoqda...",
   },
   stats: {
@@ -1311,6 +1320,7 @@ const ky: Translations = {
     notInSwarm:   "Сиз азыр топко кирген эмессиз",
     joinDesc:     "Топко кошулуу үчүн төмөндөгү баскычты басыңыз",
     join:         "🐝 Топко кошулуу",
+    joinSub:      "каттоо",
     registering:  "Катталуу...",
   },
   stats: {
@@ -1453,6 +1463,7 @@ const th: Translations = {
     notInSwarm:   "คุณยังไม่ได้อยู่ในฝูง",
     joinDesc:     "กดปุ่มด้านล่างเพื่อเข้าร่วมฝูง",
     join:         "🐝 เข้าร่วมฝูง",
+    joinSub:      "ลงทะเบียน",
     registering:  "กำลังลงทะเบียน...",
   },
   stats: {
@@ -1595,6 +1606,7 @@ const ja: Translations = {
     notInSwarm:   "まだ群れに参加していません",
     joinDesc:     "下のボタンを押して群れに参加してください",
     join:         "🐝 群れに参加",
+    joinSub:      "登録",
     registering:  "登録中...",
   },
   stats: {
