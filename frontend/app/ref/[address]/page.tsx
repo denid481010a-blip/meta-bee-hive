@@ -159,7 +159,7 @@ export default function RefPage() {
 
         <button
           onClick={() => router.push("/dashboard")}
-          className="w-full mt-4 text-white/40 text-sm hover:text-white/70 transition-colors py-2"
+          className="w-full mt-4 text-white font-bold text-sm hover:text-gold transition-colors py-2"
         >
           Посмотреть приложение →
         </button>
