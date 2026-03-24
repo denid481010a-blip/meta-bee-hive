@@ -7,6 +7,7 @@ import { Card } from "@/components/ui/Card";
 import { Zap } from "lucide-react";
 import { clsx } from "clsx";
 import toast from "react-hot-toast";
+import { useT } from "@/lib/i18n/LanguageContext";
 
 interface AutoBuyToggleProps {
   enabled: boolean;
@@ -16,6 +17,7 @@ interface AutoBuyToggleProps {
 export function AutoBuyToggle({ enabled, onToggled }: AutoBuyToggleProps) {
   const [pending, setPending] = useState(false);
   const { writeContractAsync } = useWriteContract();
+  const { t } = useT();
 
   async function toggle() {
     setPending(true);
@@ -42,10 +44,8 @@ export function AutoBuyToggle({ enabled, onToggled }: AutoBuyToggleProps) {
           <Zap className={clsx("w-4 h-4", enabled ? "text-bee-green" : "text-white/40")} />
         </div>
         <div>
-          <p className="font-medium text-white text-sm">Автопокупка улия</p>
-          <p className="text-white/40 text-xs mt-0.5">
-            Выплаты накапливаются для покупки улия — и он покупается автоматически
-          </p>
+          <p className="font-medium text-white text-sm">{t.autobuy.title}</p>
+          <p className="text-white/40 text-xs mt-0.5">{t.autobuy.desc}</p>
         </div>
       </div>
 

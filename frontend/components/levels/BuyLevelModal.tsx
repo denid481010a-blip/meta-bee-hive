@@ -4,12 +4,10 @@ import { Modal } from "@/components/ui/Modal";
 import { Button } from "@/components/ui/Button";
 import { HIVE_PRICES_DAI, HIVE_PRICES_WEI, LEVEL_COLORS } from "@/lib/constants";
 import { useBuyLevel } from "@/hooks/useBuyLevel";
-import { BHS_ABI } from "@/lib/contract";
-import { CONTRACT_ADDRESS } from "@/lib/constants";
 import { CheckCircle2, ArrowRight, Loader2 } from "lucide-react";
 import { clsx } from "clsx";
 import toast from "react-hot-toast";
-import { useReadContract } from "wagmi";
+import { useT } from "@/lib/i18n/LanguageContext";
 
 interface BuyLevelModalProps {
   level:    number | null;
@@ -18,21 +16,22 @@ interface BuyLevelModalProps {
   onSuccess: () => void;
 }
 
-const STEP_LABELS = {
-  idle:            "Готов к покупке",
-  approving:       "Подтвердите в кошельке...",
-  approve_pending: "Ожидаем подтверждения...",
-  buying:          "Подтвердите покупку в кошельке...",
-  buy_pending:     "Ожидаем подтверждения покупки...",
-  success:         "Куплено!",
-  error:           "Ошибка",
-};
-
 export function BuyLevelModal({ level, address, onClose, onSuccess }: BuyLevelModalProps) {
   const { step, error, buy, reset } = useBuyLevel();
-  const color   = LEVEL_COLORS[level ?? 1] ?? "#F5A623";
-  const price   = level ? HIVE_PRICES_DAI[level - 1] : 0;
+  const { t } = useT();
+  const color    = LEVEL_COLORS[level ?? 1] ?? "#F5A623";
+  const price    = level ? HIVE_PRICES_DAI[level - 1] : 0;
   const priceWei = level ? HIVE_PRICES_WEI[level - 1] : 0n;
+
+  const STEP_LABELS: Record<string, string> = {
+    idle:            t.modal.idle,
+    approving:       t.modal.approving,
+    approve_pending: t.modal.approvePend,
+    buying:          t.modal.buying,
+    buy_pending:     t.modal.buyPend,
+    success:         t.modal.success,
+    error:           t.modal.error,
+  };
 
   useEffect(() => {
     if (step === "success") {
@@ -45,24 +44,22 @@ export function BuyLevelModal({ level, address, onClose, onSuccess }: BuyLevelMo
   const isLoading = ["approving", "approve_pending", "buying", "buy_pending"].includes(step);
 
   return (
-    <Modal open={!!level} onClose={!isLoading ? onClose : () => {}} title={`Купить Hive ${level}`}>
+    <Modal open={!!level} onClose={!isLoading ? onClose : () => {}} title={`${t.modal.buyTitle} ${level}`}>
       {level && (
         <div className="space-y-4">
-          {/* Level info */}
           <div
             className="rounded-xl border p-4 text-center"
             style={{ borderColor: color + "44", backgroundColor: color + "11" }}
           >
             <p className="text-4xl mb-1">🐝</p>
             <h3 className="font-bold text-2xl" style={{ color }}>Hive {level}</h3>
-            <p className="text-white/60 text-sm mt-1">Цена: {price} DAI</p>
+            <p className="text-white/60 text-sm mt-1">{t.modal.priceLbl} {price} DAI</p>
           </div>
 
-          {/* Steps */}
           <div className="space-y-2">
             {[
-              { label: "Шаг 1: Утвердить наличие DAI на кошельке", done: ["buying", "buy_pending", "success"].includes(step) },
-              { label: "Шаг 2: Купить Улий",                       done: step === "success" },
+              { label: t.modal.step1, done: ["buying", "buy_pending", "success"].includes(step) },
+              { label: t.modal.step2, done: step === "success" },
             ].map(({ label, done }, i) => (
               <div key={i} className={clsx("flex items-center gap-3 p-3 rounded-xl border", done ? "border-bee-green/30 bg-bee-green/5" : "border-white/10")}>
                 {done
@@ -74,7 +71,6 @@ export function BuyLevelModal({ level, address, onClose, onSuccess }: BuyLevelMo
             ))}
           </div>
 
-          {/* Status */}
           <div className={clsx(
             "text-center text-sm py-2 px-4 rounded-xl",
             step === "success" ? "text-bee-green bg-bee-green/10" :
@@ -85,7 +81,6 @@ export function BuyLevelModal({ level, address, onClose, onSuccess }: BuyLevelMo
             {error ?? STEP_LABELS[step]}
           </div>
 
-          {/* Action button */}
           {step === "idle" || step === "error" ? (
             <button
               className="w-full rounded-2xl py-4 flex items-center justify-center gap-3"
@@ -94,13 +89,13 @@ export function BuyLevelModal({ level, address, onClose, onSuccess }: BuyLevelMo
             >
               <ArrowRight className="w-5 h-5" style={{ color: "#F5A623" }} />
               <span className="text-xl font-black" style={{ color: "#F5A623" }}>
-                {step === "error" ? "Попробовать снова" : `Купить за ${price} DAI`}
+                {step === "error" ? t.modal.retry : `${t.modal.buyBtn} ${price} DAI`}
               </span>
             </button>
           ) : step === "success" ? (
             <Button variant="navy" size="lg" className="w-full" onClick={onClose}>
               <CheckCircle2 className="w-4 h-4 text-bee-green" />
-              Готово!
+              {t.modal.done}
             </Button>
           ) : null}
         </div>

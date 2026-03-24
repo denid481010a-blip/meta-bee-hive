@@ -14,9 +14,11 @@ import { Loader2 } from "lucide-react";
 import { useRegister } from "@/hooks/useRegister";
 import { CONTRACT_ADDRESS } from "@/lib/constants";
 import { clearLogsCache } from "@/lib/getLogs";
+import { useT } from "@/lib/i18n/LanguageContext";
 
 function RegisterBlock({ onSuccess }: { onSuccess: () => void }) {
   const { register, isPending, isSuccess } = useRegister();
+  const { t } = useT();
 
   if (isSuccess) {
     onSuccess();
@@ -27,10 +29,8 @@ function RegisterBlock({ onSuccess }: { onSuccess: () => void }) {
     <div className="flex flex-col items-center justify-center h-64 text-center space-y-6">
       <div className="text-5xl">🐣</div>
       <div className="space-y-2">
-        <h2 className="text-xl font-bold text-white">Ты ещё не в рое</h2>
-        <p className="text-white/50 text-sm max-w-xs">
-          Нажми кнопку ниже чтобы вступить в рой
-        </p>
+        <h2 className="text-xl font-bold text-white">{t.dashboard.notInSwarm}</h2>
+        <p className="text-white/50 text-sm max-w-xs">{t.dashboard.joinDesc}</p>
       </div>
       <button
         onClick={() => register(CONTRACT_ADDRESS)}
@@ -38,7 +38,7 @@ function RegisterBlock({ onSuccess }: { onSuccess: () => void }) {
         className="px-8 py-3 rounded-2xl font-black text-lg flex items-center gap-2"
         style={{ background: "rgba(245,166,35,0.15)", border: "1px solid rgba(245,166,35,0.3)", color: "#ffffff" }}
       >
-        {isPending ? <><Loader2 className="w-4 h-4 animate-spin" /> Регистрация...</> : "🐝 Вступить в рой"}
+        {isPending ? <><Loader2 className="w-4 h-4 animate-spin" /> {t.dashboard.registering}</> : t.dashboard.join}
       </button>
     </div>
   );
@@ -61,6 +61,7 @@ export default function DashboardPage() {
     return <RegisterBlock onSuccess={refetch} />;
   }
 
+  const { t } = useT();
   const activeLevels = stats?.activeLevels ?? 0;
   const teamSize     = Number(stats?.teamSize ?? 0);
   const cycles       = Number(stats?.totalCycles ?? 0);
@@ -70,7 +71,7 @@ export default function DashboardPage() {
       {/* Header */}
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-white">Мой улей 🐝</h1>
+          <h1 className="text-2xl font-bold text-white">{t.dashboard.title}</h1>
           <p className="text-white/40 text-sm font-mono">{address && shortAddress(address)}</p>
         </div>
         <TitleBadge activeLevels={activeLevels} teamSize={teamSize} cycles={cycles} />
@@ -97,7 +98,7 @@ export default function DashboardPage() {
 
       {/* Hive grid */}
       <div>
-        <h2 className="text-lg font-bold text-white mb-4">Мои ульи</h2>
+        <h2 className="text-lg font-bold text-white mb-4">{t.dashboard.myHives}</h2>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
           {Array.from({ length: 10 }, (_, i) => i + 1).map((level) => {
             const isActive = (stats?.activeLevelsList ?? []).includes(level);

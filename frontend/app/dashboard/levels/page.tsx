@@ -5,6 +5,7 @@ import { HiveCard } from "@/components/hive/HiveCard";
 import { useStats } from "@/hooks/useStats";
 import { useMatrix } from "@/hooks/useMatrix";
 import { HIVE_PRICES_DAI, LEVEL_COLORS } from "@/lib/constants";
+import { useT } from "@/lib/i18n/LanguageContext";
 import { RefreshCw } from "lucide-react";
 
 // Receives cycles as prop — no extra RPC call
@@ -15,6 +16,7 @@ function LevelRow({
 }) {
   const color       = LEVEL_COLORS[level] ?? "#F5A623";
   const cycleIncome = +(price * 3 * 0.9).toFixed(2);
+  const { t } = useT();
 
   return (
     <motion.div
@@ -39,12 +41,12 @@ function LevelRow({
         {active ? (
           <span className="text-[11px] px-2 py-0.5 rounded-full font-bold whitespace-nowrap"
             style={{ background: "rgba(39,174,96,0.12)", color: "#27AE60" }}>
-            ✓ Куплен
+            {t.levels.bought}
           </span>
         ) : (
           <span className="text-[11px] px-2 py-0.5 rounded-full font-medium whitespace-nowrap"
             style={{ background: "rgba(255,255,255,0.05)", color: "rgba(255,255,255,0.25)" }}>
-            Не активен
+            {t.levels.inactive}
           </span>
         )}
       </span>
@@ -72,6 +74,7 @@ function LevelEntry({
 export default function LevelsPage() {
   const { address } = useAccount();
   const { stats } = useStats(address);
+  const { t } = useT();
 
   const activeLevels: number[] = stats?.activeLevelsList ?? [];
 
@@ -80,8 +83,8 @@ export default function LevelsPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-black text-white">Уровни улиев</h1>
-          <p className="text-white/30 text-sm mt-1">Активно: {activeLevels.length} из 10</p>
+          <h1 className="text-2xl font-black text-white">{t.levels.title}</h1>
+          <p className="text-white/30 text-sm mt-1">{t.levels.activeOf}: {activeLevels.length} {t.levels.of} 10</p>
         </div>
         <div className="hidden sm:flex gap-1">
           {Array.from({ length: 10 }, (_, i) => i + 1).map((level) => {
@@ -103,11 +106,11 @@ export default function LevelsPage() {
         style={{ background: "#10101e", border: "1px solid rgba(255,255,255,0.07)" }}
       >
         <div className="grid grid-cols-5 text-[10px] uppercase tracking-widest text-white/25 px-5 py-3 border-b border-white/5">
-          <span>Улий</span>
-          <span>Цена</span>
-          <span>Доход с цикла</span>
-          <span>Циклов</span>
-          <span>Статус</span>
+          <span>{t.levels.hive}</span>
+          <span>{t.levels.price}</span>
+          <span>{t.levels.cycleIncome}</span>
+          <span>{t.levels.cycles}</span>
+          <span>{t.levels.status}</span>
         </div>
         {HIVE_PRICES_DAI.map((price, i) => (
           <LevelEntry
@@ -124,7 +127,7 @@ export default function LevelsPage() {
       {/* Card grid — HiveCard also uses useMatrix internally,
           but wagmi deduplicates identical calls via React Query cache */}
       <div>
-        <h2 className="text-base font-bold text-white/60 mb-4">Детали</h2>
+        <h2 className="text-base font-bold text-white/60 mb-4">{t.levels.details}</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {Array.from({ length: 10 }, (_, i) => i + 1).map((level) => (
             <HiveCard

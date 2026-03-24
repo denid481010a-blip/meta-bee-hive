@@ -5,6 +5,7 @@ import { formatDAI, shortAddress, formatDate } from "@/lib/formatters";
 import { LEVEL_COLORS, CONTRACT_ADDRESS, DEPLOY_BLOCK } from "@/lib/constants";
 import { BHS_ABI } from "@/lib/contract";
 import { getLogsAll } from "@/lib/getLogs";
+import { useT } from "@/lib/i18n/LanguageContext";
 import { Loader2, ArrowDownLeft, ArrowUpRight } from "lucide-react";
 import { clsx } from "clsx";
 import { formatUnits } from "viem";
@@ -25,6 +26,7 @@ export default function PaymentsPage() {
   const [payments, setPayments]   = useState<Payment[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [filter, setFilter]       = useState<"all" | "income" | "expense">("all");
+  const { t } = useT();
 
   useEffect(() => {
     if (!address || !publicClient) return;
@@ -82,18 +84,18 @@ export default function PaymentsPage() {
   return (
     <div className="max-w-4xl mx-auto space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-white">История платежей</h1>
-        <p className="text-white/40 text-sm mt-1">Все транзакции по твоему адресу</p>
+        <h1 className="text-2xl font-bold text-white">{t.payments.title}</h1>
+        <p className="text-white/40 text-sm mt-1">{t.payments.subtitle}</p>
       </div>
 
       {/* Summary */}
       <div className="grid grid-cols-2 gap-4">
         <div className="bg-navy rounded-2xl p-4 border border-bee-green/20">
-          <p className="text-white/40 text-sm">Получено</p>
+          <p className="text-white/40 text-sm">{t.payments.received}</p>
           <p className="text-2xl font-bold text-bee-green mt-1">+{formatDAI(totalIncome)}</p>
         </div>
         <div className="bg-navy rounded-2xl p-4 border border-white/10">
-          <p className="text-white/40 text-sm">Потрачено</p>
+          <p className="text-white/40 text-sm">{t.payments.spent}</p>
           <p className="text-2xl font-bold text-white/70 mt-1">−{formatDAI(totalExpense)}</p>
         </div>
       </div>
@@ -110,7 +112,7 @@ export default function PaymentsPage() {
             )}
             style={filter === f ? { background: "rgba(245,166,35,0.2)", border: "1px solid rgba(245,166,35,0.3)", color: "#F5A623" } : undefined}
           >
-            {{ all: "Все", income: "Доходы", expense: "Расходы" }[f]}
+            {{ all: t.payments.all, income: t.payments.income, expense: t.payments.expense }[f]}
           </button>
         ))}
       </div>
@@ -123,7 +125,7 @@ export default function PaymentsPage() {
       ) : filtered.length === 0 ? (
         <div className="text-center py-12 text-white/30">
           <div className="text-4xl mb-3">📭</div>
-          <p>Транзакций пока нет</p>
+          <p>{t.payments.empty}</p>
         </div>
       ) : (
         <div className="bg-navy rounded-2xl border border-white/10 overflow-hidden">
@@ -150,7 +152,7 @@ export default function PaymentsPage() {
                       H{p.level}
                     </span>
                     <span className="text-white/60 text-sm truncate">
-                      {p.type === "income" ? `от ${shortAddress(p.from as any)}` : `покупка улья`}
+                      {p.type === "income" ? `${t.payments.from} ${shortAddress(p.from as any)}` : t.payments.buyHive}
                     </span>
                   </div>
                 </div>

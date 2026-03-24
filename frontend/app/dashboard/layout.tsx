@@ -5,6 +5,7 @@ import { useAccount } from "wagmi";
 import { Header } from "@/components/layout/Header";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { MobileNav } from "@/components/layout/MobileNav";
+import { LanguageProvider } from "@/lib/i18n/LanguageContext";
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
@@ -15,6 +16,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   }, [isConnected]);
 
   return (
+    <LanguageProvider>
     <div className="min-h-screen bg-bg flex flex-col">
       <Header />
       <div className="flex flex-1 pt-16">
@@ -34,5 +36,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       {/* Mobile bottom nav */}
       <MobileNav />
     </div>
+    </LanguageProvider>
   );
 }

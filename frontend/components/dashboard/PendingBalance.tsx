@@ -8,6 +8,7 @@ import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Download } from "lucide-react";
 import toast from "react-hot-toast";
+import { useT } from "@/lib/i18n/LanguageContext";
 
 interface PendingBalanceProps {
   pending: bigint;
@@ -18,6 +19,7 @@ export function PendingBalance({ pending, onWithdrawn }: PendingBalanceProps) {
   const [txHash, setTxHash] = useState<`0x${string}` | undefined>();
   const { writeContractAsync, isPending } = useWriteContract();
   const { isLoading: isWaiting } = useWaitForTransactionReceipt({ hash: txHash });
+  const { t } = useT();
 
   if (pending === 0n) return null;
 
@@ -40,7 +42,7 @@ export function PendingBalance({ pending, onWithdrawn }: PendingBalanceProps) {
   return (
     <Card glow="gold" className="flex items-center justify-between">
       <div>
-        <p className="text-white/50 text-sm">Накоплено (автопокупка)</p>
+        <p className="text-white/50 text-sm">{t.pending.title}</p>
         <p className="text-gold text-2xl font-bold mt-1">{formatDAI(pending)}</p>
       </div>
       <Button
@@ -50,7 +52,7 @@ export function PendingBalance({ pending, onWithdrawn }: PendingBalanceProps) {
         loading={isPending || isWaiting}
       >
         <Download className="w-4 h-4" />
-        Вывести
+        {isPending || isWaiting ? t.pending.withdrawing : t.pending.withdraw}
       </Button>
     </Card>
   );

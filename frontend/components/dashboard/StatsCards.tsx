@@ -2,6 +2,7 @@
 import { motion } from "framer-motion";
 import { TrendingUp, TrendingDown, Layers, Clock } from "lucide-react";
 import { formatDAI } from "@/lib/formatters";
+import { useT } from "@/lib/i18n/LanguageContext";
 
 interface StatsCardsProps {
   totalEarned:  bigint;
@@ -12,11 +13,12 @@ interface StatsCardsProps {
 
 export function StatsCards({ totalEarned, totalSpent, activeLevels, pending }: StatsCardsProps) {
   const net = totalEarned - totalSpent;
+  const { t } = useT();
 
   const cards = [
     {
       icon:  TrendingUp,
-      label: "Заработано на меде",
+      label: t.stats.earned,
       value: formatDAI(totalEarned),
       color: "#27AE60",
       bg:    "rgba(39,174,96,0.08)",
@@ -24,7 +26,7 @@ export function StatsCards({ totalEarned, totalSpent, activeLevels, pending }: S
     },
     {
       icon:  TrendingDown,
-      label: "Потрачено",
+      label: t.stats.spent,
       value: formatDAI(totalSpent),
       color: "rgba(255,255,255,0.5)",
       bg:    "rgba(255,255,255,0.04)",
@@ -32,7 +34,7 @@ export function StatsCards({ totalEarned, totalSpent, activeLevels, pending }: S
     },
     {
       icon:  Layers,
-      label: "Уровней активно",
+      label: t.stats.activeLevels,
       value: `${activeLevels} / 10`,
       color: "#F5A623",
       bg:    "rgba(245,166,35,0.08)",
@@ -40,7 +42,7 @@ export function StatsCards({ totalEarned, totalSpent, activeLevels, pending }: S
     },
     {
       icon:  Clock,
-      label: "Накоплено",
+      label: t.stats.pending,
       value: formatDAI(pending),
       color: "#FFC857",
       bg:    "rgba(255,200,87,0.06)",
@@ -79,7 +81,7 @@ export function StatsCards({ totalEarned, totalSpent, activeLevels, pending }: S
         className="rounded-2xl px-5 py-3 flex items-center justify-between"
         style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" }}
       >
-        <span className="text-white/40 text-sm">Чистый доход с Пасики</span>
+        <span className="text-white/40 text-sm">{t.stats.netIncome}</span>
         <span
           className="text-xl font-black"
           style={{ color: net >= 0n ? "#27AE60" : "#E94560" }}

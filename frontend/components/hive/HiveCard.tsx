@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { clsx } from "clsx";
 import { HIVE_PRICES_DAI, LEVEL_COLORS } from "@/lib/constants";
 import { useMatrix } from "@/hooks/useMatrix";
+import { useT } from "@/lib/i18n/LanguageContext";
 
 interface HiveCardProps {
   level:    number;
@@ -121,6 +122,7 @@ export function HiveCard({ level, active, isNext = false, address, onClick, comp
   const color = LEVEL_COLORS[level] ?? "#F5A623";
   const price = HIVE_PRICES_DAI[level - 1];
   const { matrix } = useMatrix(address, active ? level : undefined);
+  const { t } = useT();
 
   const slotCount = matrix?.slotCount ?? 0;
   const cycles    = matrix?.cycles    ?? 0;
@@ -152,7 +154,7 @@ export function HiveCard({ level, active, isNext = false, address, onClick, comp
           H{level}
         </span>
         {active && <span className="text-[10px] text-white/40">{pct}%</span>}
-        {isNext && <span className="text-[10px] font-bold animate-pulse" style={{ color }}>Активировать</span>}
+        {isNext && <span className="text-[10px] font-bold animate-pulse" style={{ color }}>{t.hive.activate}</span>}
       </motion.button>
     );
   }
@@ -185,13 +187,13 @@ export function HiveCard({ level, active, isNext = false, address, onClick, comp
         {/* Header */}
         <div className="flex items-center justify-between mb-4">
           <div>
-            <div className="text-[10px] text-white/30 uppercase tracking-widest mb-0.5">Уровень</div>
+            <div className="text-[10px] text-white/30 uppercase tracking-widest mb-0.5">{t.hive.level}</div>
             <div className="text-2xl font-black" style={{ color: active ? color : "#444" }}>
               H{level}
             </div>
           </div>
           <div className="text-right">
-            <div className="text-[10px] text-white/30 uppercase tracking-widest mb-0.5">Цена</div>
+            <div className="text-[10px] text-white/30 uppercase tracking-widest mb-0.5">{t.hive.price}</div>
             <div className="text-sm font-bold text-white/70">{price} DAI</div>
           </div>
         </div>
@@ -248,9 +250,9 @@ export function HiveCard({ level, active, isNext = false, address, onClick, comp
         ) : (
           <div className="mt-3 text-center">
             {isNext ? (
-              <span className="text-xs font-bold animate-pulse" style={{ color }}>🐝 Активировать</span>
+              <span className="text-xs font-bold animate-pulse" style={{ color }}>🐝 {t.hive.activate}</span>
             ) : (
-              <span className="text-xs text-white/20">Недоступно</span>
+              <span className="text-xs text-white/20">{t.hive.unavailable}</span>
             )}
           </div>
         )}
