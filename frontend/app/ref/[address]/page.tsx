@@ -90,7 +90,7 @@ export default function RefPage() {
               "Подтверди транзакцию",
               "Купи первый Hive H1 за 5 DAI",
             ].map((s, i) => (
-              <div key={i} className="flex items-center gap-3 text-white/60">
+              <div key={i} className="flex items-center gap-3 text-white/80 font-medium">
                 <div className="w-6 h-6 rounded-full bg-gold/20 text-gold text-xs flex items-center justify-center font-bold shrink-0">
                   {i + 1}
                 </div>
@@ -121,21 +121,18 @@ export default function RefPage() {
               Ожидаем подтверждения...
             </Button>
           ) : !isSuccess ? (
-            <Button
-              variant="gold"
-              size="lg"
-              className="w-full"
-              disabled={!refIsRegistered}
+            <button
+              className="w-full rounded-2xl py-4 flex items-center justify-center gap-3"
+              style={{ background: "rgba(245,166,35,0.15)", border: "1px solid rgba(245,166,35,0.4)" }}
               onClick={async () => {
-                if (!refIsRegistered) return;
                 setRegError(null);
                 try { await register(refAddr); }
                 catch (e: any) { setRegError(e?.shortMessage ?? e?.message ?? "Ошибка"); }
               }}
             >
-              <ArrowRight className="w-4 h-4" />
-              Вступить в рой
-            </Button>
+              <ArrowRight className="w-5 h-5 text-white" />
+              <span className="text-xl font-black text-white">Вступить в рой</span>
+            </button>
           ) : null}
         </div>
 
