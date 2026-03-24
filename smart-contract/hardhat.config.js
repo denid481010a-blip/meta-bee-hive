@@ -27,6 +27,14 @@ module.exports = {
       chainId: 31337,
     },
 
+    // Polygon testnet (Amoy)
+    polygonAmoy: {
+      url: process.env.POLYGON_AMOY_RPC || "https://rpc-amoy.polygon.technology",
+      accounts: [PRIVATE_KEY],
+      chainId: 80002,
+      gasPrice: 30_000_000_000, // 30 gwei
+    },
+
     // Polygon testnet (Mumbai)
     polygonMumbai: {
       url: process.env.POLYGON_MUMBAI_RPC || "https://rpc-mumbai.maticvigil.com",
