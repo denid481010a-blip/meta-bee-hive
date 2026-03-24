@@ -6,7 +6,7 @@ export function LanguageSwitcher() {
   const { lang, setLang } = useT();
 
   return (
-    <div className="flex flex-wrap gap-2">
+    <div className="grid grid-cols-6 gap-2">
       {LANGUAGES.map((l) => (
         <button
           key={l.code}
