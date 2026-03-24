@@ -11,6 +11,37 @@ import { BuyLevelModal } from "@/components/levels/BuyLevelModal";
 import { TitleBadge } from "@/components/achievements/TitleBadge";
 import { shortAddress } from "@/lib/formatters";
 import { Loader2 } from "lucide-react";
+import { useRegister } from "@/hooks/useRegister";
+import { CONTRACT_ADDRESS } from "@/lib/constants";
+
+function RegisterBlock({ onSuccess }: { onSuccess: () => void }) {
+  const { register, isPending, isSuccess } = useRegister();
+
+  if (isSuccess) {
+    onSuccess();
+    return null;
+  }
+
+  return (
+    <div className="flex flex-col items-center justify-center h-64 text-center space-y-6">
+      <div className="text-5xl">🐣</div>
+      <div className="space-y-2">
+        <h2 className="text-xl font-bold text-white">Ты ещё не в рое</h2>
+        <p className="text-white/50 text-sm max-w-xs">
+          Нажми кнопку ниже чтобы вступить в рой
+        </p>
+      </div>
+      <button
+        onClick={() => register(CONTRACT_ADDRESS)}
+        disabled={isPending}
+        className="px-8 py-3 rounded-2xl font-bold text-sm flex items-center gap-2"
+        style={{ background: "rgba(245,166,35,0.15)", border: "1px solid rgba(245,166,35,0.3)", color: "#F5A623" }}
+      >
+        {isPending ? <><Loader2 className="w-4 h-4 animate-spin" /> Регистрация...</> : "🐝 Вступить в рой"}
+      </button>
+    </div>
+  );
+}
 
 export default function DashboardPage() {
   const { address } = useAccount();
@@ -26,15 +57,7 @@ export default function DashboardPage() {
   }
 
   if (!stats?.isRegistered) {
-    return (
-      <div className="flex flex-col items-center justify-center h-64 text-center space-y-4">
-        <div className="text-5xl">🐣</div>
-        <h2 className="text-xl font-bold text-white">Ты ещё не в рое</h2>
-        <p className="text-white/50 text-sm max-w-xs">
-          Чтобы войти, тебе нужна реферальная ссылка. Попроси пчелу из роя пригласить тебя.
-        </p>
-      </div>
-    );
+    return <RegisterBlock onSuccess={refetch} />;
   }
 
   const activeLevels = stats?.activeLevels ?? 0;
