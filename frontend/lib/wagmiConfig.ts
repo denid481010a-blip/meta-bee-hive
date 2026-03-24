@@ -15,7 +15,7 @@ export const wagmiConfig = createConfig({
     walletConnect({ projectId: WC_PROJECT_ID }),
   ],
   transports: {
-    [polygonAmoy.id]:   http("https://rpc-amoy.polygon.technology"),
+    [polygonAmoy.id]:   http("https://polygon-amoy-bor-rpc.publicnode.com"),
     [polygon.id]:       http(process.env.NEXT_PUBLIC_POLYGON_RPC ?? "https://polygon-rpc.com"),
     [hardhat.id]:       http("http://127.0.0.1:8545"),
   },

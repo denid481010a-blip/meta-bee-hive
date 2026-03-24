@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { useAccount, usePublicClient } from "wagmi";
 import { formatDAI, shortAddress, formatDate } from "@/lib/formatters";
-import { LEVEL_COLORS, CONTRACT_ADDRESS } from "@/lib/constants";
+import { LEVEL_COLORS, CONTRACT_ADDRESS, DEPLOY_BLOCK } from "@/lib/constants";
 import { BHS_ABI } from "@/lib/contract";
 import { Loader2, ArrowDownLeft, ArrowUpRight } from "lucide-react";
 import { clsx } from "clsx";
@@ -35,7 +35,7 @@ export default function PaymentsPage() {
         address: CONTRACT_ADDRESS,
         event: BHS_ABI.find((e) => e.name === "PaymentSent") as any,
         args: { to: address },
-        fromBlock: 0n,
+        fromBlock: DEPLOY_BLOCK,
         toBlock: "latest",
       }),
       // Расходы: HiveBought where user = address
@@ -43,7 +43,7 @@ export default function PaymentsPage() {
         address: CONTRACT_ADDRESS,
         event: BHS_ABI.find((e) => e.name === "HiveBought") as any,
         args: { user: address },
-        fromBlock: 0n,
+        fromBlock: DEPLOY_BLOCK,
         toBlock: "latest",
       }),
     ]).then(([incomeLogs, expenseLogs]) => {

@@ -69,5 +69,8 @@ export const LEVEL_COLORS: Record<number, string> = {
   10: "#F5A623",
 };
 
+// ── Блок деплоя контракта (Polygon Amoy) ──────────────────────────────────
+export const DEPLOY_BLOCK = 35611130n;
+
 // ── Backend API ───────────────────────────────────────────────────────────
 export const API_BASE = process.env.NEXT_PUBLIC_API_BASE ?? "http://localhost:3001/api";
