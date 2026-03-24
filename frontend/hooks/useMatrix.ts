@@ -9,7 +9,7 @@ export function useMatrix(address?: `0x${string}`, level?: number) {
     abi: BHS_ABI,
     functionName: "getMatrix",
     args: address && level ? [address, level as number] : undefined,
-    query: { enabled: !!address && !!level, refetchInterval: 15_000 },
+    query: { enabled: !!address && !!level, staleTime: 60_000, refetchInterval: 60_000 },
   });
 
   if (!data) return { isLoading, refetch, matrix: null };

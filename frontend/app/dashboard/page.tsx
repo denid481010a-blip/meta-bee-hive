@@ -13,6 +13,7 @@ import { shortAddress } from "@/lib/formatters";
 import { Loader2 } from "lucide-react";
 import { useRegister } from "@/hooks/useRegister";
 import { CONTRACT_ADDRESS } from "@/lib/constants";
+import { clearLogsCache } from "@/lib/getLogs";
 
 function RegisterBlock({ onSuccess }: { onSuccess: () => void }) {
   const { register, isPending, isSuccess } = useRegister();
@@ -121,7 +122,7 @@ export default function DashboardPage() {
         level={buyLevel}
         address={address}
         onClose={() => setBuyLevel(null)}
-        onSuccess={() => { setBuyLevel(null); refetch(); }}
+        onSuccess={() => { setBuyLevel(null); clearLogsCache(address); refetch(); }}
       />
     </div>
   );

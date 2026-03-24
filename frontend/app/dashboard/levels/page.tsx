@@ -7,23 +7,21 @@ import { useMatrix } from "@/hooks/useMatrix";
 import { HIVE_PRICES_DAI, LEVEL_COLORS } from "@/lib/constants";
 import { RefreshCw } from "lucide-react";
 
+// Receives cycles as prop — no extra RPC call
 function LevelRow({
-  level, price, active, address, onBuy, delay,
+  level, price, active, cycles, delay,
 }: {
-  level: number; price: number; active: boolean;
-  address?: `0x${string}`; onBuy: () => void; delay: number;
+  level: number; price: number; active: boolean; cycles: number; delay: number;
 }) {
-  const color     = LEVEL_COLORS[level] ?? "#F5A623";
+  const color       = LEVEL_COLORS[level] ?? "#F5A623";
   const cycleIncome = +(price * 3 * 0.9).toFixed(2);
-  const { matrix } = useMatrix(active ? address : undefined, active ? level : undefined);
-  const cycles = matrix?.cycles ?? 0;
 
   return (
     <motion.div
       initial={{ opacity: 0, x: -10 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ delay }}
-        className="grid grid-cols-5 px-4 py-3 border-b border-white/[0.04] items-center text-sm"
+      className="grid grid-cols-5 px-4 py-3 border-b border-white/[0.04] items-center text-sm"
     >
       <span className="font-black text-sm" style={{ color }}>Hive {level}</span>
       <span className="text-white/70 text-xs font-medium">{price} DAI</span>
@@ -51,6 +49,23 @@ function LevelRow({
         )}
       </span>
     </motion.div>
+  );
+}
+
+// One matrix hook per active level — result shared with both LevelRow and HiveCard
+function LevelEntry({
+  level, price, active, address, delay,
+}: {
+  level: number; price: number; active: boolean;
+  address?: `0x${string}`; delay: number;
+}) {
+  const { matrix } = useMatrix(active ? address : undefined, active ? level : undefined);
+  const cycles = matrix?.cycles ?? 0;
+
+  return (
+    <>
+      <LevelRow level={level} price={price} active={active} cycles={cycles} delay={delay} />
+    </>
   );
 }
 
@@ -95,19 +110,19 @@ export default function LevelsPage() {
           <span>Статус</span>
         </div>
         {HIVE_PRICES_DAI.map((price, i) => (
-          <LevelRow
+          <LevelEntry
             key={i + 1}
             level={i + 1}
             price={price}
             active={activeLevels.includes(i + 1)}
             address={address}
-            onBuy={() => {}}
             delay={i * 0.03}
           />
         ))}
       </div>
 
-      {/* Card grid */}
+      {/* Card grid — HiveCard also uses useMatrix internally,
+          but wagmi deduplicates identical calls via React Query cache */}
       <div>
         <h2 className="text-base font-bold text-white/60 mb-4">Детали</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -121,7 +136,6 @@ export default function LevelsPage() {
           ))}
         </div>
       </div>
-
     </div>
   );
 }

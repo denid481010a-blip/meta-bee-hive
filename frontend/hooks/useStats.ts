@@ -15,7 +15,7 @@ export function useStats(address?: `0x${string}`) {
     abi: BHS_ABI,
     functionName: "getStats",
     args: address ? [address] : undefined,
-    query: { enabled: !!address, refetchInterval: 15_000 },
+    query: { enabled: !!address, staleTime: 60_000, refetchInterval: 60_000 },
   });
 
   // teamSize: count UserRegistered events where referrer == address
