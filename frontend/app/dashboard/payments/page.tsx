@@ -1,43 +1,84 @@
 "use client";
 import { useEffect, useState } from "react";
-import { useAccount } from "wagmi";
+import { useAccount, usePublicClient } from "wagmi";
 import { formatDAI, shortAddress, formatDate } from "@/lib/formatters";
-import { API_BASE, LEVEL_COLORS } from "@/lib/constants";
+import { LEVEL_COLORS, CONTRACT_ADDRESS } from "@/lib/constants";
+import { BHS_ABI } from "@/lib/contract";
 import { Loader2, ArrowDownLeft, ArrowUpRight } from "lucide-react";
-import { parseUnits } from "viem";
 import { clsx } from "clsx";
+import { formatUnits } from "viem";
 
 interface Payment {
-  id:        number;
-  type:      "income" | "expense" | "overflow";
+  type:      "income" | "expense";
   level:     number;
-  amount:    string;
+  amount:    bigint;
   from:      string;
   to:        string;
   txHash:    string;
-  timestamp: number;
+  blockNumber: bigint;
 }
 
 export default function PaymentsPage() {
   const { address } = useAccount();
+  const publicClient = usePublicClient();
   const [payments, setPayments]   = useState<Payment[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [filter, setFilter]       = useState<"all" | "income" | "expense">("all");
 
   useEffect(() => {
-    if (!address) return;
+    if (!address || !publicClient) return;
     setIsLoading(true);
-    fetch(`${API_BASE}/payments/${address}`)
-      .then((r) => r.json())
-      .then((d) => setPayments(d.payments ?? []))
-      .catch(() => setPayments([]))
+
+    Promise.all([
+      // Входящие: PaymentSent where to = address
+      publicClient.getLogs({
+        address: CONTRACT_ADDRESS,
+        event: BHS_ABI.find((e) => e.name === "PaymentSent") as any,
+        args: { to: address },
+        fromBlock: 0n,
+        toBlock: "latest",
+      }),
+      // Расходы: HiveBought where user = address
+      publicClient.getLogs({
+        address: CONTRACT_ADDRESS,
+        event: BHS_ABI.find((e) => e.name === "HiveBought") as any,
+        args: { user: address },
+        fromBlock: 0n,
+        toBlock: "latest",
+      }),
+    ]).then(([incomeLogs, expenseLogs]) => {
+      const income: Payment[] = incomeLogs.map((log: any) => ({
+        type: "income",
+        level: Number(log.args.level),
+        amount: log.args.amount,
+        from: log.args.from,
+        to: log.args.to,
+        txHash: log.transactionHash,
+        blockNumber: log.blockNumber,
+      }));
+
+      const expenses: Payment[] = expenseLogs.map((log: any) => ({
+        type: "expense",
+        level: Number(log.args.level),
+        amount: log.args.price,
+        from: address,
+        to: CONTRACT_ADDRESS,
+        txHash: log.transactionHash,
+        blockNumber: log.blockNumber,
+      }));
+
+      const all = [...income, ...expenses].sort((a, b) =>
+        Number(b.blockNumber - a.blockNumber)
+      );
+      setPayments(all);
+    }).catch(() => setPayments([]))
       .finally(() => setIsLoading(false));
-  }, [address]);
+  }, [address, publicClient]);
 
   const filtered = filter === "all" ? payments : payments.filter((p) => p.type === filter);
 
-  const totalIncome  = payments.filter((p) => p.type === "income").reduce((s, p) => s + parseFloat(p.amount), 0);
-  const totalExpense = payments.filter((p) => p.type === "expense").reduce((s, p) => s + parseFloat(p.amount), 0);
+  const totalIncome  = payments.filter((p) => p.type === "income").reduce((s, p) => s + p.amount, 0n);
+  const totalExpense = payments.filter((p) => p.type === "expense").reduce((s, p) => s + p.amount, 0n);
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
@@ -50,11 +91,11 @@ export default function PaymentsPage() {
       <div className="grid grid-cols-2 gap-4">
         <div className="bg-navy rounded-2xl p-4 border border-bee-green/20">
           <p className="text-white/40 text-sm">Получено</p>
-          <p className="text-2xl font-bold text-bee-green mt-1">+{totalIncome.toFixed(2)} DAI</p>
+          <p className="text-2xl font-bold text-bee-green mt-1">+{formatDAI(totalIncome)}</p>
         </div>
         <div className="bg-navy rounded-2xl p-4 border border-white/10">
           <p className="text-white/40 text-sm">Потрачено</p>
-          <p className="text-2xl font-bold text-white/70 mt-1">−{totalExpense.toFixed(2)} DAI</p>
+          <p className="text-2xl font-bold text-white/70 mt-1">−{formatDAI(totalExpense)}</p>
         </div>
       </div>
 
@@ -66,8 +107,9 @@ export default function PaymentsPage() {
             onClick={() => setFilter(f)}
             className={clsx(
               "px-4 py-2 rounded-xl text-sm font-medium transition-colors",
-              filter === f ? "bg-gold text-bg" : "bg-white/10 text-white/60 hover:bg-white/20"
+              filter === f ? "text-white font-bold" : "bg-white/10 text-white/60 hover:bg-white/20"
             )}
+            style={filter === f ? { background: "rgba(245,166,35,0.2)", border: "1px solid rgba(245,166,35,0.3)", color: "#F5A623" } : undefined}
           >
             {{ all: "Все", income: "Доходы", expense: "Расходы" }[f]}
           </button>
@@ -90,7 +132,7 @@ export default function PaymentsPage() {
             const color = LEVEL_COLORS[p.level] ?? "#F5A623";
             return (
               <div
-                key={p.id}
+                key={`${p.txHash}-${i}`}
                 className={clsx("flex items-center gap-4 px-4 py-3 hover:bg-white/5 transition-colors", i > 0 && "border-t border-white/5")}
               >
                 <div className={clsx(
@@ -109,18 +151,17 @@ export default function PaymentsPage() {
                       H{p.level}
                     </span>
                     <span className="text-white/60 text-sm truncate">
-                      {p.type === "income" ? `от ${shortAddress(p.from)}` : `→ ${shortAddress(p.to)}`}
+                      {p.type === "income" ? `от ${shortAddress(p.from as any)}` : `покупка улья`}
                     </span>
                   </div>
-                  <p className="text-white/30 text-xs mt-0.5">{formatDate(p.timestamp)}</p>
                 </div>
 
                 <div className="text-right shrink-0">
                   <p className={clsx("font-bold text-sm", p.type === "income" ? "text-bee-green" : "text-white/60")}>
-                    {p.type === "income" ? "+" : "−"}{formatDAI(parseUnits(parseFloat(p.amount).toFixed(6), 18))}
+                    {p.type === "income" ? "+" : "−"}{formatDAI(p.amount)}
                   </p>
                   <a
-                    href={`https://polygonscan.com/tx/${p.txHash}`}
+                    href={`https://amoy.polygonscan.com/tx/${p.txHash}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-white/20 text-xs hover:text-white/50 transition-colors"
