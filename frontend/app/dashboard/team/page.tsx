@@ -1,21 +1,20 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useAccount, usePublicClient } from "wagmi";
-import { LEVEL_COLORS, CONTRACT_ADDRESS, DEPLOY_BLOCK } from "@/lib/constants";
-import { getLogsAll } from "@/lib/getLogs";
+import { CONTRACT_ADDRESS, DEPLOY_BLOCK } from "@/lib/constants";
 import { BHS_ABI } from "@/lib/contract";
+import { getLogsAll } from "@/lib/getLogs";
 import { Loader2 } from "lucide-react";
 import { AddressDisplay } from "@/components/ui/AddressDisplay";
 
 interface TeamMember {
-  address:      string;
-  activeLevels: number;
-  blockNumber:  bigint;
+  address: string;
+  depth:   1 | 2;
 }
 
 export default function TeamPage() {
-  const { address }    = useAccount();
-  const publicClient   = usePublicClient();
+  const { address }  = useAccount();
+  const publicClient = usePublicClient();
   const [members, setMembers]     = useState<TeamMember[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -23,35 +22,44 @@ export default function TeamPage() {
     if (!address || !publicClient) return;
     setIsLoading(true);
 
+    // Загружаем ВСЕ регистрации разом — один пакет запросов
     getLogsAll(publicClient as any, {
       address: CONTRACT_ADDRESS,
       event: BHS_ABI.find((e) => e.name === "UserRegistered") as any,
-      args: { referrer: address },
       fromBlock: DEPLOY_BLOCK,
-    }).then(async (logs) => {
-      const members: TeamMember[] = await Promise.all(
-        logs.map(async (log: any) => {
-          const userAddr = log.args.user as `0x${string}`;
-          try {
-            const stats = await publicClient.readContract({
-              address: CONTRACT_ADDRESS,
-              abi: BHS_ABI,
-              functionName: "getStats",
-              args: [userAddr],
-            }) as any;
-            const levels: boolean[] = stats[2];
-            const activeLevels = levels.filter(Boolean).length;
-            return { address: userAddr, activeLevels, blockNumber: log.blockNumber };
-          } catch {
-            return { address: userAddr, activeLevels: 0, blockNumber: log.blockNumber };
-          }
-        })
-      );
-      const sorted = members.sort((a, b) => Number(b.blockNumber - a.blockNumber));
-      setMembers(sorted);
+    }).then((logs) => {
+      // Строим карту: referrer -> [users]
+      const referralMap = new Map<string, string[]>();
+      for (const log of logs) {
+        const user     = (log as any).args.user?.toLowerCase();
+        const referrer = (log as any).args.referrer?.toLowerCase();
+        if (!user || !referrer) continue;
+        if (!referralMap.has(referrer)) referralMap.set(referrer, []);
+        referralMap.get(referrer)!.push(user);
+      }
+
+      const me = address.toLowerCase();
+
+      // Личные (depth 1)
+      const direct = (referralMap.get(me) ?? []).map((a) => ({ address: a, depth: 1 as const }));
+
+      // Рабочие (depth 2)
+      const indirect: TeamMember[] = [];
+      for (const d of direct) {
+        const sub = referralMap.get(d.address) ?? [];
+        for (const a of sub) {
+          indirect.push({ address: a, depth: 2 });
+        }
+      }
+
+      const all = [...direct, ...indirect];
+      setMembers(all);
     }).catch(() => setMembers([]))
       .finally(() => setIsLoading(false));
   }, [address, publicClient]);
+
+  const direct   = members.filter((m) => m.depth === 1);
+  const indirect = members.filter((m) => m.depth === 2);
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
@@ -61,18 +69,21 @@ export default function TeamPage() {
       </div>
 
       {/* Summary */}
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-3 gap-4">
         <div className="bg-navy rounded-2xl p-4 border border-white/10 text-center">
-          <div className="text-xl mx-auto mb-2">🐝🐝🐝</div>
+          <div className="text-xl mb-2">🐝🐝🐝</div>
           <p className="text-2xl font-bold text-white">{members.length}</p>
-          <p className="text-white/40 text-xs">Личных пчёл</p>
+          <p className="text-white/40 text-xs">Все пчёлы</p>
         </div>
         <div className="bg-navy rounded-2xl p-4 border border-white/10 text-center">
-          <div className="text-xl mx-auto mb-2">🏆</div>
-          <p className="text-2xl font-bold text-white">
-            {members.filter((m) => m.activeLevels > 0).length}
-          </p>
-          <p className="text-white/40 text-xs">Активных пчёл</p>
+          <div className="text-xl mb-2">🐝</div>
+          <p className="text-2xl font-bold text-white">{direct.length}</p>
+          <p className="text-white/40 text-xs">Личные пчёлы</p>
+        </div>
+        <div className="bg-navy rounded-2xl p-4 border border-white/10 text-center">
+          <div className="text-xl mb-2">⚙️</div>
+          <p className="text-2xl font-bold text-white">{indirect.length}</p>
+          <p className="text-white/40 text-xs">Рабочие пчёлы</p>
         </div>
       </div>
 
@@ -90,24 +101,21 @@ export default function TeamPage() {
         <div className="bg-navy rounded-2xl border border-white/10 overflow-hidden">
           <div className="grid grid-cols-3 text-xs text-white/30 px-4 py-3 border-b border-white/10">
             <span className="col-span-2">Адрес</span>
-            <span>Активных уровней</span>
+            <span>Тип</span>
           </div>
-          {members.map((m, i) => {
-            const color = LEVEL_COLORS[m.activeLevels] ?? "#555";
-            return (
-              <div
-                key={m.address}
-                className={`grid grid-cols-3 px-4 py-3 items-center text-sm ${i > 0 ? "border-t border-white/5" : ""}`}
-              >
-                <div className="col-span-2">
-                  <AddressDisplay address={m.address as `0x${string}`} />
-                </div>
-                <span className="font-bold" style={{ color: m.activeLevels > 0 ? color : "rgba(255,255,255,0.2)" }}>
-                  {m.activeLevels > 0 ? `${m.activeLevels} / 10` : "—"}
-                </span>
+          {members.map((m, i) => (
+            <div
+              key={m.address}
+              className={`grid grid-cols-3 px-4 py-3 items-center text-sm ${i > 0 ? "border-t border-white/5" : ""}`}
+            >
+              <div className="col-span-2">
+                <AddressDisplay address={m.address as `0x${string}`} />
               </div>
-            );
-          })}
+              <span className={m.depth === 1 ? "text-bee-green text-xs font-medium" : "text-white/40 text-xs"}>
+                {m.depth === 1 ? "Личная" : "Рабочая"}
+              </span>
+            </div>
+          ))}
         </div>
       )}
     </div>
