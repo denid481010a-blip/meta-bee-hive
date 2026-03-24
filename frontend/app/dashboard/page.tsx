@@ -22,10 +22,17 @@ function RegisterBlock({ onSuccess }: { onSuccess: () => void }) {
   const { register, isPending, isSuccess } = useRegister();
   const { t } = useT();
 
+  const savedRef = typeof window !== "undefined"
+    ? (localStorage.getItem("bee_ref") as `0x${string}` | null)
+    : null;
+
   if (isSuccess) {
+    if (typeof window !== "undefined") localStorage.removeItem("bee_ref");
     onSuccess();
     return null;
   }
+
+  const referrer: `0x${string}` = savedRef ?? CONTRACT_ADDRESS;
 
   return (
     <div className="flex flex-col items-center justify-center text-center space-y-6 py-10">
@@ -34,8 +41,19 @@ function RegisterBlock({ onSuccess }: { onSuccess: () => void }) {
         <h2 className="text-xl font-bold text-white">{t.dashboard.notInSwarm}</h2>
         <p className="text-white/50 text-sm max-w-xs">{t.dashboard.joinDesc}</p>
       </div>
+
+      {savedRef && (
+        <div className="flex items-center gap-2 px-4 py-2 rounded-2xl text-sm"
+          style={{ background: "rgba(245,166,35,0.1)", border: "1px solid rgba(245,166,35,0.2)" }}>
+          <span className="text-white/50">{t.ref.invitedBy}</span>
+          <span className="text-gold font-mono font-bold">
+            {savedRef.slice(0, 6)}...{savedRef.slice(-4)}
+          </span>
+        </div>
+      )}
+
       <button
-        onClick={() => register(CONTRACT_ADDRESS)}
+        onClick={() => register(referrer)}
         disabled={isPending}
         className="px-8 py-3 rounded-2xl font-black text-lg flex items-center gap-2"
         style={{ background: "rgba(245,166,35,0.15)", border: "1px solid rgba(245,166,35,0.3)", color: "#ffffff" }}

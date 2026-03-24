@@ -44,8 +44,16 @@ export default function RefPage() {
 
   const refIsRegistered = refStats && (refStats as any).isRegistered;
 
+  // Save referrer to localStorage so dashboard can use it later
+  useEffect(() => {
+    if (refAddr) {
+      localStorage.setItem("bee_ref", refAddr);
+    }
+  }, [refAddr]);
+
   useEffect(() => {
     if (isSuccess) {
+      localStorage.removeItem("bee_ref");
       toast.success("Добро пожаловать в рой! 🐝");
       setTimeout(() => router.push("/dashboard"), 2000);
     }
@@ -149,7 +157,14 @@ export default function RefPage() {
           ) : null}
         </div>
 
-        <p className="text-center text-white/20 text-xs mt-6">
+        <button
+          onClick={() => router.push("/dashboard")}
+          className="w-full mt-4 text-white/40 text-sm hover:text-white/70 transition-colors py-2"
+        >
+          Посмотреть приложение →
+        </button>
+
+        <p className="text-center text-white/20 text-xs mt-2">
           Смарт-контракт на Polygon · DAI · Прозрачные выплаты
         </p>
       </div>
