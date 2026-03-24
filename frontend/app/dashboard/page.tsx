@@ -114,6 +114,9 @@ export default function DashboardPage() {
         totalSpent={stats.totalSpent}
         activeLevels={stats.activeLevels}
         pending={stats.pending}
+        totalRefs={stats.totalRefs}
+        directRefs={stats.directRefs}
+        workingRefs={stats.workingRefs}
       />
 
       {/* Quick actions row */}

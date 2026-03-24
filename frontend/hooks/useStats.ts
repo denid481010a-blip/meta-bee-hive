@@ -7,7 +7,8 @@ import { getLogsAll } from "@/lib/getLogs";
 
 export function useStats(address?: `0x${string}`) {
   const publicClient = usePublicClient();
-  const [teamSize, setTeamSize]       = useState(0);
+  const [directRefs, setDirectRefs]   = useState(0);
+  const [totalRefs, setTotalRefs]     = useState(0);
   const [totalCycles, setTotalCycles] = useState(0);
 
   const { data, isLoading, refetch } = useReadContract({
@@ -18,35 +19,64 @@ export function useStats(address?: `0x${string}`) {
     query: { enabled: !!address, staleTime: 60_000, refetchInterval: 60_000 },
   });
 
-  // teamSize: count UserRegistered events where referrer == address (кэш 2 часа)
+  // Подсчёт прямых рефералов и всего дерева (кэш 2 часа в localStorage)
   useEffect(() => {
     if (!address || !publicClient) return;
 
-    const CACHE_TTL = 2 * 60 * 60 * 1000; // 2 часа
-    const cacheKey = `teamSize_${address}`;
+    const CACHE_TTL = 2 * 60 * 60 * 1000;
+    const cacheKey  = `beeTree_${address}`;
 
     try {
       const cached = localStorage.getItem(cacheKey);
       if (cached) {
-        const { value, ts } = JSON.parse(cached);
+        const { direct, total, ts } = JSON.parse(cached);
         if (Date.now() - ts < CACHE_TTL) {
-          setTeamSize(value);
+          setDirectRefs(direct);
+          setTotalRefs(total);
           return;
         }
       }
     } catch {}
 
+    // Загружаем ВСЕ регистрации системы одним запросом
     getLogsAll(publicClient as any, {
       address: CONTRACT_ADDRESS,
       event: BHS_ABI.find((e) => e.name === "UserRegistered") as any,
-      args: { referrer: address },
       fromBlock: DEPLOY_BLOCK,
     }).then((logs) => {
-      setTeamSize(logs.length);
+      // Строим граф: referrer → [users]
+      const tree: Record<string, string[]> = {};
+      for (const log of logs) {
+        const user     = (log.args?.user     as string)?.toLowerCase();
+        const referrer = (log.args?.referrer as string)?.toLowerCase();
+        if (!referrer || !user) continue;
+        if (!tree[referrer]) tree[referrer] = [];
+        tree[referrer].push(user);
+      }
+
+      const me = address.toLowerCase();
+
+      // Прямые рефералы
+      const direct = (tree[me] ?? []).length;
+
+      // BFS — вся глубина дерева
+      let total = 0;
+      const queue = [...(tree[me] ?? [])];
+      const visited = new Set<string>([me]);
+      while (queue.length) {
+        const node = queue.shift()!;
+        if (visited.has(node)) continue;
+        visited.add(node);
+        total++;
+        for (const child of tree[node] ?? []) queue.push(child);
+      }
+
+      setDirectRefs(direct);
+      setTotalRefs(total);
       try {
-        localStorage.setItem(cacheKey, JSON.stringify({ value: logs.length, ts: Date.now() }));
+        localStorage.setItem(cacheKey, JSON.stringify({ direct, total, ts: Date.now() }));
       } catch {}
-    }).catch(() => setTeamSize(0));
+    }).catch(() => { setDirectRefs(0); setTotalRefs(0); });
   }, [address, publicClient]);
 
   // totalCycles: sum of cycles from all active levels
@@ -95,7 +125,9 @@ export function useStats(address?: `0x${string}`) {
       pending,
       activeLevels:    activeLevelsList.length,
       activeLevelsList,
-      teamSize,
+      directRefs,
+      totalRefs,
+      workingRefs:     totalRefs - directRefs,
       totalCycles,
     },
   };

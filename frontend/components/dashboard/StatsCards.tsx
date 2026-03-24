@@ -9,9 +9,12 @@ interface StatsCardsProps {
   totalSpent:   bigint;
   activeLevels: number;
   pending:      bigint;
+  totalRefs:    number;
+  directRefs:   number;
+  workingRefs:  number;
 }
 
-export function StatsCards({ totalEarned, totalSpent, activeLevels, pending }: StatsCardsProps) {
+export function StatsCards({ totalEarned, totalSpent, activeLevels, pending, totalRefs, directRefs, workingRefs }: StatsCardsProps) {
   const net = totalEarned - totalSpent;
   const { t } = useT();
 
@@ -50,6 +53,12 @@ export function StatsCards({ totalEarned, totalSpent, activeLevels, pending }: S
     },
   ];
 
+  const beeCards = [
+    { emoji: "🐝", label: "Все пчелы в улье",  value: totalRefs,   color: "#F5A623", bg: "rgba(245,166,35,0.08)",  border: "rgba(245,166,35,0.2)"  },
+    { emoji: "👤", label: "Личные пчелы",       value: directRefs,  color: "#60A5FA", bg: "rgba(96,165,250,0.08)",  border: "rgba(96,165,250,0.2)"  },
+    { emoji: "⚙️", label: "Рабочие пчелы",      value: workingRefs, color: "#A78BFA", bg: "rgba(167,139,250,0.08)", border: "rgba(167,139,250,0.2)" },
+  ];
+
   return (
     <div className="space-y-3">
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
@@ -73,11 +82,31 @@ export function StatsCards({ totalEarned, totalSpent, activeLevels, pending }: S
         ))}
       </div>
 
+      {/* Bee stats */}
+      <div className="grid grid-cols-3 gap-3">
+        {beeCards.map(({ emoji, label, value, color, bg, border }, i) => (
+          <motion.div
+            key={label}
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.28 + i * 0.07 }}
+            className="rounded-2xl p-4 flex flex-col gap-2"
+            style={{ background: bg, border: `1px solid ${border}` }}
+          >
+            <div className="flex items-center gap-2">
+              <span className="text-base">{emoji}</span>
+              <span className="text-white/40 text-xs font-medium leading-tight">{label}</span>
+            </div>
+            <p className="text-2xl font-black" style={{ color }}>{value}</p>
+          </motion.div>
+        ))}
+      </div>
+
       {/* Net profit */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 0.35 }}
+        transition={{ delay: 0.5 }}
         className="rounded-2xl px-5 py-3 flex items-center justify-between"
         style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" }}
       >
