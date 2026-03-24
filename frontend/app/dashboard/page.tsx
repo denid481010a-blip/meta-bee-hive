@@ -16,6 +16,8 @@ import { CONTRACT_ADDRESS } from "@/lib/constants";
 import { clearLogsCache } from "@/lib/getLogs";
 import { useT } from "@/lib/i18n/LanguageContext";
 import { LanguageSwitcher } from "@/components/dashboard/LanguageSwitcher";
+import { DaiFaucet } from "@/components/dashboard/DaiFaucet";
+import { CHAIN_ID } from "@/lib/constants";
 
 
 function RegisterBlock({ onSuccess }: { onSuccess: () => void }) {
@@ -120,6 +122,7 @@ export default function DashboardPage() {
         <div className="md:col-span-2 space-y-3">
           <ReferralLink address={address ?? ""} />
           <LanguageSwitcher />
+          {CHAIN_ID === 80002 && <DaiFaucet onMinted={refetch} />}
         </div>
         <PendingBalance pending={stats.pending} onWithdrawn={refetch} />
       </div>
