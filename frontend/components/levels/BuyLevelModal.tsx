@@ -87,15 +87,16 @@ export function BuyLevelModal({ level, address, onClose, onSuccess }: BuyLevelMo
 
           {/* Action button */}
           {step === "idle" || step === "error" ? (
-            <Button
-              variant="gold"
-              size="lg"
-              className="w-full"
+            <button
+              className="w-full rounded-2xl py-4 flex items-center justify-center gap-3"
+              style={{ background: "rgba(245,166,35,0.15)", border: "1px solid rgba(245,166,35,0.4)" }}
               onClick={() => buy(level, priceWei)}
             >
-              <ArrowRight className="w-4 h-4" />
-              {step === "error" ? "Попробовать снова" : `Купить Hive ${level} за ${price} DAI`}
-            </Button>
+              <ArrowRight className="w-5 h-5" style={{ color: "#F5A623" }} />
+              <span className="text-xl font-black" style={{ color: "#F5A623" }}>
+                {step === "error" ? "Попробовать снова" : `Купить за ${price} DAI`}
+              </span>
+            </button>
           ) : step === "success" ? (
             <Button variant="navy" size="lg" className="w-full" onClick={onClose}>
               <CheckCircle2 className="w-4 h-4 text-bee-green" />
