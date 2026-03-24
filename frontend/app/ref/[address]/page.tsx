@@ -1,8 +1,9 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { useAccount } from "wagmi";
+import { useAccount, useSwitchChain } from "wagmi";
 import { useReadContract } from "wagmi";
+import { CHAIN_ID } from "@/lib/constants";
 import { BHS_ABI } from "@/lib/contract";
 import { CONTRACT_ADDRESS } from "@/lib/constants";
 import { ConnectButton } from "@/components/wallet/ConnectButton";
@@ -17,9 +18,11 @@ export default function RefPage() {
   const router  = useRouter();
   const refAddr = params.address as `0x${string}`;
 
-  const { address, isConnected } = useAccount();
+  const { address, isConnected, chainId } = useAccount();
   const { register, isPending, isSuccess } = useRegister();
+  const { switchChainAsync } = useSwitchChain();
   const [regError, setRegError] = useState<string | null>(null);
+  const wrongNetwork = isConnected && chainId !== CHAIN_ID;
 
   // Check if referrer is registered
   const { data: refStats } = useReadContract({
@@ -121,18 +124,28 @@ export default function RefPage() {
               Ожидаем подтверждения...
             </Button>
           ) : !isSuccess ? (
-            <button
-              className="w-full rounded-2xl py-4 flex items-center justify-center gap-3"
-              style={{ background: "rgba(245,166,35,0.15)", border: "1px solid rgba(245,166,35,0.4)" }}
-              onClick={async () => {
-                setRegError(null);
-                try { await register(refAddr); }
-                catch (e: any) { setRegError(e?.shortMessage ?? e?.message ?? "Ошибка"); }
-              }}
-            >
-              <ArrowRight className="w-5 h-5 text-white" />
-              <span className="text-xl font-black text-white">Вступить в рой</span>
-            </button>
+            {wrongNetwork ? (
+              <button
+                className="w-full rounded-2xl py-4 flex items-center justify-center gap-3"
+                style={{ background: "rgba(245,166,35,0.15)", border: "1px solid rgba(245,166,35,0.4)" }}
+                onClick={() => switchChainAsync({ chainId: CHAIN_ID })}
+              >
+                <span className="text-xl font-black text-white">⚠️ Переключить на Polygon</span>
+              </button>
+            ) : (
+              <button
+                className="w-full rounded-2xl py-4 flex items-center justify-center gap-3"
+                style={{ background: "rgba(245,166,35,0.15)", border: "1px solid rgba(245,166,35,0.4)" }}
+                onClick={async () => {
+                  setRegError(null);
+                  try { await register(refAddr); }
+                  catch (e: any) { setRegError(e?.shortMessage ?? e?.message ?? "Ошибка"); }
+                }}
+              >
+                <ArrowRight className="w-5 h-5 text-white" />
+                <span className="text-xl font-black text-white">Вступить в рой</span>
+              </button>
+            )}
           ) : null}
         </div>
 
