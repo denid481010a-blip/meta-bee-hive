@@ -15,6 +15,7 @@ import { useRegister } from "@/hooks/useRegister";
 import { CONTRACT_ADDRESS } from "@/lib/constants";
 import { clearLogsCache } from "@/lib/getLogs";
 import { useT } from "@/lib/i18n/LanguageContext";
+import { LanguageSwitcher } from "@/components/dashboard/LanguageSwitcher";
 
 function RegisterBlock({ onSuccess }: { onSuccess: () => void }) {
   const { register, isPending, isSuccess } = useRegister();
@@ -87,8 +88,9 @@ export default function DashboardPage() {
 
       {/* Quick actions row */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="md:col-span-2">
+        <div className="md:col-span-2 space-y-3">
           <ReferralLink address={address ?? ""} />
+          <LanguageSwitcher />
         </div>
         <PendingBalance pending={stats.pending} onWithdrawn={refetch} />
       </div>
