@@ -43,7 +43,7 @@ export default function MatrixPage() {
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-white">{t.nav.matrix}</h1>
-          <p className="text-white/40 text-sm mt-1">Состояние слотов по каждому уровню</p>
+          <p className="text-white/40 text-sm mt-1">{t.matrix.subtitle}</p>
         </div>
         <TitleBadge activeLevels={activeLevels.length} teamSize={teamSize} cycles={cycles} />
       </div>

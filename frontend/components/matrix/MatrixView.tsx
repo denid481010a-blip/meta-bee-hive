@@ -4,6 +4,7 @@ import { useMatrix } from "@/hooks/useMatrix";
 import { LEVEL_COLORS } from "@/lib/constants";
 import { shortAddress } from "@/lib/formatters";
 import { RefreshCw } from "lucide-react";
+import { useT } from "@/lib/i18n/LanguageContext";
 
 interface MatrixViewProps {
   address: `0x${string}`;
@@ -107,6 +108,7 @@ function HiveSVG({ color, level, size = 100 }: { color: string; level: number; s
 
 export function MatrixView({ address, level }: MatrixViewProps) {
   const { matrix, isLoading } = useMatrix(address, level);
+  const { t } = useT();
   const color = LEVEL_COLORS[level] ?? "#F5A623";
 
   const slots     = matrix?.slots     ?? [];
@@ -138,13 +140,13 @@ export function MatrixView({ address, level }: MatrixViewProps) {
           </div>
           <div>
             <p className="font-bold text-white text-sm">Hive {level}</p>
-            <p className="text-white/30 text-xs">Матрица S4</p>
+            <p className="text-white/30 text-xs">{t.matrix.matrixS4}</p>
           </div>
         </div>
         {cycles > 0 && (
           <div className="flex items-center gap-1.5 text-xs font-medium" style={{ color: "#27AE60" }}>
             <RefreshCw className="w-3.5 h-3.5" />
-            {cycles} цикл{cycles > 1 ? "а" : ""}
+            {cycles} {cycles > 1 ? t.hive.cycles2 : t.hive.cycle}
           </div>
         )}
       </div>
@@ -214,7 +216,7 @@ export function MatrixView({ address, level }: MatrixViewProps) {
               const is4th     = i === 3;
               const nodeColor = is4th ? CYCLE_COLOR : color;
               const filled    = slotCount > i && slots[i] !== undefined && slots[i] !== ZERO;
-              const slotLabel = is4th ? "реактивация" : `слот ${i + 1}`;
+              const slotLabel = is4th ? t.matrix.reactivation : `${t.matrix.slot} ${i + 1}`;
 
               return (
                 <motion.g key={i}
@@ -273,11 +275,11 @@ export function MatrixView({ address, level }: MatrixViewProps) {
       <div className="flex justify-center gap-6 px-5 pb-5 text-xs" style={{ color: "rgba(255,255,255,0.2)" }}>
         <span className="flex items-center gap-1.5">
           <span className="w-2 h-2 rounded-full" style={{ backgroundColor: color }} />
-          Слоты 1–3 → сбор меда
+          {t.matrix.slotsHint}
         </span>
         <span className="flex items-center gap-1.5">
           <span className="w-2 h-2 rounded-full bg-bee-green" />
-          Слот 4 → реактивация улия
+          {t.matrix.slot4Hint}
         </span>
       </div>
     </div>

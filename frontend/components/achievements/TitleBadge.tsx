@@ -1,5 +1,6 @@
-import { TITLES } from "@/lib/constants";
+"use client";
 import { clsx } from "clsx";
+import { useT } from "@/lib/i18n/LanguageContext";
 
 interface TitleBadgeProps {
   activeLevels: number;
@@ -9,16 +10,15 @@ interface TitleBadgeProps {
 }
 
 export function TitleBadge({ activeLevels, teamSize, cycles, className }: TitleBadgeProps) {
-  const titles = TITLES as readonly { id: string; label: string; condition: string; min: number }[];
+  const { t } = useT();
 
-  let title = titles[0];
-
-  if (activeLevels >= 10)   title = titles[5]; // Королева улья
-  else if (teamSize >= 100) title = titles[6]; // Легенда роя
-  else if (cycles >= 10)    title = titles[4]; // Мастер улья
-  else if (cycles >= 1)     title = titles[3]; // Медосборщик
-  else if (teamSize >= 10)  title = titles[2]; // Пчелиный рой
-  else if (activeLevels >= 3) title = titles[1]; // Строитель
+  let titleKey: keyof typeof t.titles = "worker";
+  if (activeLevels >= 10)    titleKey = "queen";
+  else if (teamSize >= 100)  titleKey = "legend";
+  else if (cycles >= 10)     titleKey = "master";
+  else if (cycles >= 1)      titleKey = "harvest";
+  else if (teamSize >= 10)   titleKey = "swarm";
+  else if (activeLevels >= 3) titleKey = "builder";
 
   return (
     <div className={clsx(
@@ -27,7 +27,7 @@ export function TitleBadge({ activeLevels, teamSize, cycles, className }: TitleB
       className
     )}>
       <span>👑</span>
-      <span>{title.label}</span>
+      <span>{t.titles[titleKey]}</span>
     </div>
   );
 }

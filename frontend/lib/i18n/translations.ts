@@ -138,6 +138,23 @@ const ru = {
     step2:        "Нажми «Вступить в рой»",
     step3:        "Купи первый улей Hive 1",
   },
+  matrix: {
+    subtitle:     "Состояние слотов по каждому уровню",
+    matrixS4:     "Матрица S4",
+    slot:         "слот",
+    reactivation: "реактивация",
+    slotsHint:    "Слоты 1–3 → сбор меда",
+    slot4Hint:    "Слот 4 → реактивация улья",
+  },
+  titles: {
+    worker:  "Рабочая пчела",
+    builder: "Строитель ульев",
+    swarm:   "Пчелиный рой",
+    harvest: "Медосборщик",
+    master:  "Мастер улья",
+    queen:   "Королева улья",
+    legend:  "Легенда роя",
+  },
 };
 
 const uk: Translations = {
@@ -262,6 +279,23 @@ const uk: Translations = {
     step1:        "Підключи гаманець",
     step2:        "Натисни «Вступити в рій»",
     step3:        "Купи перший вулик Hive 1",
+  },
+  matrix: {
+    subtitle:     "Стан слотів по кожному рівню",
+    matrixS4:     "Матриця S4",
+    slot:         "слот",
+    reactivation: "реактивація",
+    slotsHint:    "Слоти 1–3 → збір меду",
+    slot4Hint:    "Слот 4 → реактивація вулика",
+  },
+  titles: {
+    worker:  "Робоча бджола",
+    builder: "Будівельник вуликів",
+    swarm:   "Бджолиний рій",
+    harvest: "Медозбирач",
+    master:  "Майстер вулика",
+    queen:   "Королева вулика",
+    legend:  "Легенда рою",
   },
 };
 
@@ -388,6 +422,23 @@ const en: Translations = {
     step2:        "Click «Join the Swarm»",
     step3:        "Buy your first Hive 1",
   },
+  matrix: {
+    subtitle:     "Slot status for each level",
+    matrixS4:     "Matrix S4",
+    slot:         "slot",
+    reactivation: "reactivation",
+    slotsHint:    "Slots 1–3 → honey harvest",
+    slot4Hint:    "Slot 4 → hive reactivation",
+  },
+  titles: {
+    worker:  "Worker Bee",
+    builder: "Hive Builder",
+    swarm:   "Bee Swarm",
+    harvest: "Honey Harvester",
+    master:  "Hive Master",
+    queen:   "Queen Bee",
+    legend:  "Swarm Legend",
+  },
 };
 
 const tr: Translations = {
@@ -512,6 +563,23 @@ const tr: Translations = {
     step1:        "Cüzdanını bağla",
     step2:        "«Sürüye Katıl» tıkla",
     step3:        "İlk kovanı satın al Hive 1",
+  },
+  matrix: {
+    subtitle:     "Her seviye için slot durumu",
+    matrixS4:     "Matris S4",
+    slot:         "yuva",
+    reactivation: "yeniden aktifleştirme",
+    slotsHint:    "Yuva 1–3 → bal hasadı",
+    slot4Hint:    "Yuva 4 → kovan yeniden aktifleştirme",
+  },
+  titles: {
+    worker:  "İşçi Arı",
+    builder: "Kovan İnşaatçısı",
+    swarm:   "Arı Sürüsü",
+    harvest: "Bal Toplayıcı",
+    master:  "Kovan Ustası",
+    queen:   "Kraliçe Arı",
+    legend:  "Sürü Efsanesi",
   },
 };
 
@@ -638,6 +706,23 @@ const vi: Translations = {
     step2:        "Nhấn «Tham gia đàn»",
     step3:        "Mua tổ ong đầu tiên Hive 1",
   },
+  matrix: {
+    subtitle:     "Trạng thái slot của mỗi cấp độ",
+    matrixS4:     "Ma trận S4",
+    slot:         "slot",
+    reactivation: "tái kích hoạt",
+    slotsHint:    "Slot 1–3 → thu hoạch mật",
+    slot4Hint:    "Slot 4 → tái kích hoạt tổ ong",
+  },
+  titles: {
+    worker:  "Ong thợ",
+    builder: "Người xây tổ",
+    swarm:   "Đàn ong",
+    harvest: "Người thu hoạch mật",
+    master:  "Bậc thầy tổ ong",
+    queen:   "Ong chúa",
+    legend:  "Huyền thoại đàn",
+  },
 };
 
 const hi: Translations = {
@@ -762,6 +847,23 @@ const hi: Translations = {
     step1:        "वॉलेट कनेक्ट करें",
     step2:        "«झुंड में शामिल हों» दबाएं",
     step3:        "पहला Hive 1 खरीदें",
+  },
+  matrix: {
+    subtitle:     "प्रत्येक स्तर के लिए स्लॉट स्थिति",
+    matrixS4:     "मैट्रिक्स S4",
+    slot:         "स्लॉट",
+    reactivation: "पुनर्सक्रियण",
+    slotsHint:    "स्लॉट 1–3 → शहद संग्रह",
+    slot4Hint:    "स्लॉट 4 → छत्ता पुनर्सक्रियण",
+  },
+  titles: {
+    worker:  "कामगार मधुमक्खी",
+    builder: "छत्ता निर्माता",
+    swarm:   "मधुमक्खी झुंड",
+    harvest: "शहद संग्रहकर्ता",
+    master:  "छत्ता मास्टर",
+    queen:   "रानी मधुमक्खी",
+    legend:  "झुंड की किंवदंती",
   },
 };
 
@@ -888,6 +990,23 @@ const zh: Translations = {
     step2:        "点击«加入蜂群»",
     step3:        "购买第一个 Hive 1",
   },
+  matrix: {
+    subtitle:     "每个等级的槽位状态",
+    matrixS4:     "矩阵 S4",
+    slot:         "槽",
+    reactivation: "重新激活",
+    slotsHint:    "槽位 1–3 → 采蜜",
+    slot4Hint:    "槽位 4 → 蜂巢重新激活",
+  },
+  titles: {
+    worker:  "工蜂",
+    builder: "蜂巢建造者",
+    swarm:   "蜂群",
+    harvest: "采蜜者",
+    master:  "蜂巢大师",
+    queen:   "蜂王",
+    legend:  "蜂群传奇",
+  },
 };
 
 const ko: Translations = {
@@ -1012,6 +1131,23 @@ const ko: Translations = {
     step1:        "지갑 연결",
     step2:        "«떼에 합류» 클릭",
     step3:        "첫 번째 Hive 1 구매",
+  },
+  matrix: {
+    subtitle:     "각 레벨의 슬롯 상태",
+    matrixS4:     "매트릭스 S4",
+    slot:         "슬롯",
+    reactivation: "재활성화",
+    slotsHint:    "슬롯 1–3 → 꿀 수확",
+    slot4Hint:    "슬롯 4 → 벌집 재활성화",
+  },
+  titles: {
+    worker:  "일벌",
+    builder: "벌집 건설자",
+    swarm:   "벌 떼",
+    harvest: "꿀 수확자",
+    master:  "벌집 마스터",
+    queen:   "여왕벌",
+    legend:  "떼의 전설",
   },
 };
 
@@ -1138,6 +1274,23 @@ const uz: Translations = {
     step2:        "«To'daga qo'shilish» ni bosing",
     step3:        "Birinchi Hive 1 ni sotib oling",
   },
+  matrix: {
+    subtitle:     "Har bir daraja uchun slot holati",
+    matrixS4:     "Matritsa S4",
+    slot:         "slot",
+    reactivation: "qayta faollashtirish",
+    slotsHint:    "Slot 1–3 → asal yig'ish",
+    slot4Hint:    "Slot 4 → uyni qayta faollashtirish",
+  },
+  titles: {
+    worker:  "Ishchi asalari",
+    builder: "Uy quruvchi",
+    swarm:   "Asalari to'dasi",
+    harvest: "Asal yig'uvchi",
+    master:  "Uy ustasi",
+    queen:   "Malika asalari",
+    legend:  "To'da afsonasi",
+  },
 };
 
 const ky: Translations = {
@@ -1262,6 +1415,23 @@ const ky: Translations = {
     step1:        "Капчыкты туташтыруу",
     step2:        "«Топко кошулуу» басыңыз",
     step3:        "Биринчи Hive 1 сатып алыңыз",
+  },
+  matrix: {
+    subtitle:     "Ар бир деңгээл үчүн слот абалы",
+    matrixS4:     "Матрица S4",
+    slot:         "слот",
+    reactivation: "кайра иштетүү",
+    slotsHint:    "Слот 1–3 → бал чогултуу",
+    slot4Hint:    "Слот 4 → уяны кайра иштетүү",
+  },
+  titles: {
+    worker:  "Жумушчу аары",
+    builder: "Уя куруучу",
+    swarm:   "Аары тобу",
+    harvest: "Бал чогултуучу",
+    master:  "Уя устасы",
+    queen:   "Аары мыкты",
+    legend:  "Топтун легендасы",
   },
 };
 
