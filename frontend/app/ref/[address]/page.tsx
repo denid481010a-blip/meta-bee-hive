@@ -1,0 +1,148 @@
+"use client";
+import { useEffect, useState } from "react";
+import { useParams, useRouter } from "next/navigation";
+import { useAccount } from "wagmi";
+import { useReadContract } from "wagmi";
+import { BHS_ABI } from "@/lib/contract";
+import { CONTRACT_ADDRESS } from "@/lib/constants";
+import { ConnectButton } from "@/components/wallet/ConnectButton";
+import { useRegister } from "@/hooks/useRegister";
+import { shortAddress } from "@/lib/formatters";
+import { Loader2, CheckCircle2, ArrowRight } from "lucide-react";
+import { Button } from "@/components/ui/Button";
+import toast from "react-hot-toast";
+
+export default function RefPage() {
+  const params  = useParams();
+  const router  = useRouter();
+  const refAddr = params.address as `0x${string}`;
+
+  const { address, isConnected } = useAccount();
+  const { register, isPending, isSuccess } = useRegister();
+  const [regError, setRegError] = useState<string | null>(null);
+
+  // Check if referrer is registered
+  const { data: refStats } = useReadContract({
+    address: CONTRACT_ADDRESS,
+    abi: BHS_ABI,
+    functionName: "getStats",
+    args: refAddr ? [refAddr] : undefined,
+    query: { enabled: !!refAddr },
+  });
+
+  // Check if current user is already registered
+  const { data: myStats } = useReadContract({
+    address: CONTRACT_ADDRESS,
+    abi: BHS_ABI,
+    functionName: "getStats",
+    args: address ? [address] : undefined,
+    query: { enabled: !!address },
+  });
+
+  const refIsRegistered = refStats && (refStats as any).isRegistered;
+
+  useEffect(() => {
+    if (isSuccess) {
+      toast.success("Добро пожаловать в рой! 🐝");
+      setTimeout(() => router.push("/dashboard"), 2000);
+    }
+  }, [isSuccess]);
+
+  useEffect(() => {
+    // If already registered — redirect to dashboard
+    if (myStats && (myStats as any).isRegistered) {
+      router.push("/dashboard");
+    }
+  }, [myStats]);
+
+  return (
+    <div className="min-h-screen bg-bg honeycomb-bg flex flex-col items-center justify-center px-4 py-12">
+      <div className="w-full max-w-md">
+        {/* Logo */}
+        <div className="text-center mb-8">
+          <div className="text-6xl mb-3">🐝</div>
+          <h1 className="text-3xl font-extrabold text-gold text-glow-gold">BEE HIVE SYSTEM</h1>
+          <p className="text-white/50 text-sm mt-2">Тебя пригласили в рой</p>
+        </div>
+
+        {/* Card */}
+        <div className="bg-navy rounded-3xl border border-white/10 p-6 space-y-6">
+          {/* Referrer info */}
+          <div className="bg-bg rounded-2xl p-4 border border-gold/20 text-center">
+            <p className="text-white/40 text-xs mb-1">Пригласил</p>
+            <p className="text-gold font-mono font-bold">{shortAddress(refAddr)}</p>
+            {refIsRegistered ? (
+              <span className="mt-2 inline-block text-xs bg-bee-green/20 text-bee-green px-2 py-0.5 rounded-full">
+                ✓ Активная пчела
+              </span>
+            ) : (
+              <span className="mt-2 inline-block text-xs bg-white/10 text-white/60 px-2 py-0.5 rounded-full">
+                Не зарегистрирован
+              </span>
+            )}
+          </div>
+
+          {/* Steps */}
+          <div className="space-y-3 text-sm">
+            {[
+              "Подключи кошелёк Polygon",
+              "Нажми «Вступить в рой»",
+              "Подтверди транзакцию",
+              "Купи первый Hive H1 за 5 DAI",
+            ].map((s, i) => (
+              <div key={i} className="flex items-center gap-3 text-white/60">
+                <div className="w-6 h-6 rounded-full bg-gold/20 text-gold text-xs flex items-center justify-center font-bold shrink-0">
+                  {i + 1}
+                </div>
+                {s}
+              </div>
+            ))}
+          </div>
+
+          {/* Status */}
+          {isSuccess && (
+            <div className="text-center text-bee-green bg-bee-green/10 rounded-xl py-3 text-sm">
+              <CheckCircle2 className="w-5 h-5 inline mr-2" />
+              Добро пожаловать в рой!
+            </div>
+          )}
+          {regError && (
+            <div className="text-center text-white/70 bg-white/10 rounded-xl py-3 text-sm">
+              {regError}
+            </div>
+          )}
+
+          {/* Action */}
+          {!isConnected ? (
+            <ConnectButton />
+          ) : isPending ? (
+            <Button variant="navy" size="lg" className="w-full" disabled>
+              <Loader2 className="w-4 h-4 animate-spin" />
+              Ожидаем подтверждения...
+            </Button>
+          ) : !isSuccess ? (
+            <Button
+              variant="gold"
+              size="lg"
+              className="w-full"
+              disabled={!refIsRegistered}
+              onClick={async () => {
+                if (!refIsRegistered) return;
+                setRegError(null);
+                try { await register(refAddr); }
+                catch (e: any) { setRegError(e?.shortMessage ?? e?.message ?? "Ошибка"); }
+              }}
+            >
+              <ArrowRight className="w-4 h-4" />
+              Вступить в рой
+            </Button>
+          ) : null}
+        </div>
+
+        <p className="text-center text-white/20 text-xs mt-6">
+          Смарт-контракт на Polygon · DAI · Прозрачные выплаты
+        </p>
+      </div>
+    </div>
+  );
+}
