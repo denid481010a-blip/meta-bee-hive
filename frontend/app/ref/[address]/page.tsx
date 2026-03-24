@@ -124,7 +124,7 @@ export default function RefPage() {
               Ожидаем подтверждения...
             </Button>
           ) : !isSuccess ? (
-            {wrongNetwork ? (
+            wrongNetwork ? (
               <button
                 className="w-full rounded-2xl py-4 flex items-center justify-center gap-3"
                 style={{ background: "rgba(245,166,35,0.15)", border: "1px solid rgba(245,166,35,0.4)" }}
@@ -145,7 +145,7 @@ export default function RefPage() {
                 <ArrowRight className="w-5 h-5 text-white" />
                 <span className="text-xl font-black text-white">Вступить в рой</span>
               </button>
-            )}
+            )
           ) : null}
         </div>
 
