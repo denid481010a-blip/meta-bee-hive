@@ -18,16 +18,35 @@ export function useStats(address?: `0x${string}`) {
     query: { enabled: !!address, staleTime: 60_000, refetchInterval: 60_000 },
   });
 
-  // teamSize: count UserRegistered events where referrer == address
+  // teamSize: count UserRegistered events where referrer == address (кэш 2 часа)
   useEffect(() => {
     if (!address || !publicClient) return;
+
+    const CACHE_TTL = 2 * 60 * 60 * 1000; // 2 часа
+    const cacheKey = `teamSize_${address}`;
+
+    try {
+      const cached = localStorage.getItem(cacheKey);
+      if (cached) {
+        const { value, ts } = JSON.parse(cached);
+        if (Date.now() - ts < CACHE_TTL) {
+          setTeamSize(value);
+          return;
+        }
+      }
+    } catch {}
+
     getLogsAll(publicClient as any, {
       address: CONTRACT_ADDRESS,
       event: BHS_ABI.find((e) => e.name === "UserRegistered") as any,
       args: { referrer: address },
       fromBlock: DEPLOY_BLOCK,
-    }).then((logs) => setTeamSize(logs.length))
-      .catch(() => setTeamSize(0));
+    }).then((logs) => {
+      setTeamSize(logs.length);
+      try {
+        localStorage.setItem(cacheKey, JSON.stringify({ value: logs.length, ts: Date.now() }));
+      } catch {}
+    }).catch(() => setTeamSize(0));
   }, [address, publicClient]);
 
   // totalCycles: sum of cycles from all active levels
