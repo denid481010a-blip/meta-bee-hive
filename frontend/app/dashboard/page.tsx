@@ -12,6 +12,8 @@ import { useRegister } from "@/hooks/useRegister";
 import { CONTRACT_ADDRESS } from "@/lib/constants";
 import { useT } from "@/lib/i18n/LanguageContext";
 import { LanguageSwitcher } from "@/components/dashboard/LanguageSwitcher";
+import Link from "next/link";
+import { HelpCircle } from "lucide-react";
 
 
 function RegisterBlock({ onSuccess }: { onSuccess: () => void }) {
@@ -121,6 +123,18 @@ export default function DashboardPage() {
 
       {/* Auto-buy */}
       <AutoBuyToggle enabled={stats.autoBuy} onToggled={refetch} />
+
+      {/* How it works */}
+      <Link href="/dashboard/how-it-works"
+        className="flex items-center gap-3 px-5 py-3 rounded-2xl transition-all hover:opacity-80"
+        style={{ background: "rgba(245,166,35,0.06)", border: "1px solid rgba(245,166,35,0.15)" }}>
+        <HelpCircle className="w-5 h-5 flex-shrink-0" style={{ color: "#F5A623" }} />
+        <div>
+          <p className="text-white text-sm font-bold">How does it work?</p>
+          <p className="text-white/40 text-xs">S4 matrix, earnings, referrals — full explanation</p>
+        </div>
+        <span className="ml-auto text-white/20 text-lg">›</span>
+      </Link>
     </div>
   );
 }
