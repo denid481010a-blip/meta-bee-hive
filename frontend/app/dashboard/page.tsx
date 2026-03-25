@@ -44,16 +44,16 @@ export default function DashboardPage() {
 
       {/* Register banner (only if not registered) */}
       {!isRegistered && (
-        <div className="rounded-2xl px-5 py-4 flex items-center justify-between gap-4"
-          style={{ background: "rgba(245,166,35,0.08)", border: "1px solid rgba(245,166,35,0.25)" }}>
-          <div>
-            <p className="text-white font-bold text-sm">👑🐝 {t.dashboard.notInSwarm}</p>
-            <p className="text-white/40 text-xs mt-0.5">{t.dashboard.joinDesc}</p>
+        <div className="flex flex-col items-center justify-center text-center py-10 space-y-5">
+          <div className="text-6xl">👑🐝</div>
+          <div className="space-y-2">
+            <h2 className="text-3xl font-black text-white">{t.dashboard.notInSwarm}</h2>
+            <p className="text-white/50 text-sm">{t.dashboard.joinDesc}</p>
           </div>
           <button
             onClick={() => setShowRegister(true)}
-            className="flex-shrink-0 px-4 py-2 rounded-xl font-black text-sm"
-            style={{ background: "linear-gradient(135deg, #F5A623, #FF8C00)", color: "#000" }}
+            className="px-10 py-4 rounded-2xl font-black text-lg"
+            style={{ background: "linear-gradient(135deg, #F5A623, #FF8C00)", color: "#000", boxShadow: "0 0 30px rgba(245,166,35,0.35)" }}
           >
             {t.dashboard.join}
           </button>
