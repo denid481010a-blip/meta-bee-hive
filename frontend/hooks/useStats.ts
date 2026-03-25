@@ -24,7 +24,7 @@ export function useStats(address?: `0x${string}`) {
     if (!address || !publicClient) return;
 
     const CACHE_TTL = 2 * 60 * 60 * 1000;
-    const cacheKey  = `beeTree_${address}`;
+    const cacheKey  = `beeTree_v3_${address}`;
 
     try {
       const cached = localStorage.getItem(cacheKey);

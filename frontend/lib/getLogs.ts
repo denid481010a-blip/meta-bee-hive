@@ -1,47 +1,59 @@
 import type { PublicClient } from "viem";
 
-const CHUNK = 1500n; // Alchemy free plan limits eth_getLogs to ~2000 blocks
-
 // Simple in-memory cache: key → { data, expiresAt }
 const cache = new Map<string, { data: any[]; expiresAt: number }>();
-const CACHE_TTL = 60_000; // 60 seconds
+const CACHE_TTL = 5 * 60_000; // 5 minutes
 
 function cacheKey(address: string, eventName: string, args: any, fromBlock: bigint): string {
   return `${address}-${eventName}-${JSON.stringify(args ?? {})}-${fromBlock}`;
 }
 
-async function fetchChunk(
+/**
+ * Single getLogs call. Returns logs or throws.
+ */
+async function fetchRange(
   publicClient: PublicClient,
   params: { address: `0x${string}`; event: any; args?: Record<string, any> },
   from: bigint,
-  to: bigint,
-  chunkSize: bigint
+  to: bigint
+): Promise<any[]> {
+  return publicClient.getLogs({
+    address: params.address,
+    event: params.event,
+    args: params.args,
+    fromBlock: from,
+    toBlock: to,
+  });
+}
+
+/**
+ * Fetch a range, splitting recursively on failure until chunks are small enough.
+ */
+async function fetchSplit(
+  publicClient: PublicClient,
+  params: { address: `0x${string}`; event: any; args?: Record<string, any> },
+  from: bigint,
+  to: bigint
 ): Promise<any[]> {
   try {
-    return await publicClient.getLogs({
-      address: params.address,
-      event: params.event,
-      args: params.args,
-      fromBlock: from,
-      toBlock: to,
-    });
+    return await fetchRange(publicClient, params, from, to);
   } catch {
-    // On failure, halve the chunk and retry both halves
-    if (chunkSize <= 100n) return []; // give up on very small chunks
-    const mid = from + chunkSize / 2n;
-    if (mid >= to) return [];
+    const size = to - from;
+    if (size < 100n) return [];
+    const mid = from + size / 2n;
     const [a, b] = await Promise.all([
-      fetchChunk(publicClient, params, from, mid, chunkSize / 2n),
-      fetchChunk(publicClient, params, mid + 1n, to, chunkSize / 2n),
+      fetchSplit(publicClient, params, from, mid),
+      fetchSplit(publicClient, params, mid + 1n, to),
     ]);
     return [...a, ...b];
   }
 }
 
 /**
- * Fetches logs in chunks to work around RPC block range limits.
- * On chunk failure, halves the range and retries.
- * Results are cached for 60 seconds.
+ * Fetches logs efficiently:
+ * 1. First tries full range in one call (works for indexed/specific filters).
+ * 2. On failure, splits into parallel chunks of CHUNK_SIZE and recurse-splits on error.
+ * Results are cached for 5 minutes.
  */
 export async function getLogsAll(
   publicClient: PublicClient,
@@ -61,12 +73,31 @@ export async function getLogsAll(
   }
 
   const toBlock = await publicClient.getBlockNumber();
-  const results: any[] = [];
 
-  for (let from = params.fromBlock; from <= toBlock; from += CHUNK) {
-    const to = from + CHUNK - 1n < toBlock ? from + CHUNK - 1n : toBlock;
-    const logs = await fetchChunk(publicClient, params, from, to, CHUNK);
-    results.push(...logs);
+  // Step 1: try full range (best case — 1 request)
+  let results: any[];
+  try {
+    results = await fetchRange(publicClient, params, params.fromBlock, toBlock);
+  } catch {
+    // Step 2: split into parallel chunks of 100k blocks
+    const CHUNK = 100_000n;
+    const ranges: Array<[bigint, bigint]> = [];
+    for (let from = params.fromBlock; from <= toBlock; from += CHUNK) {
+      const to = from + CHUNK - 1n < toBlock ? from + CHUNK - 1n : toBlock;
+      ranges.push([from, to]);
+    }
+
+    // Fetch all chunks in parallel, each will auto-split on error
+    const BATCH = 10;
+    const allLogs: any[] = [];
+    for (let i = 0; i < ranges.length; i += BATCH) {
+      const batch = ranges.slice(i, i + BATCH);
+      const batchResults = await Promise.all(
+        batch.map(([from, to]) => fetchSplit(publicClient, params, from, to))
+      );
+      allLogs.push(...batchResults.flat());
+    }
+    results = allLogs;
   }
 
   cache.set(key, { data: results, expiresAt: Date.now() + CACHE_TTL });
