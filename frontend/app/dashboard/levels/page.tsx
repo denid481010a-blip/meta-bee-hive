@@ -26,7 +26,8 @@ function LevelRow({
       initial={{ opacity: 0, x: -10 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ delay }}
-      className="grid grid-cols-5 px-4 py-3 border-b border-white/[0.04] items-center text-sm"
+      className="grid px-4 py-3 border-b border-white/[0.04] items-center text-sm"
+      style={{ gridTemplateColumns: "1fr 1fr 1fr 1fr 1.5fr" }}
     >
       <span className="font-black text-sm" style={{ color }}>Hive {level}</span>
       <span className="text-white/70 text-xs font-medium">{price} DAI</span>
@@ -107,7 +108,8 @@ export default function LevelsPage() {
       {/* Table */}
       <div className="rounded-2xl overflow-hidden"
         style={{ background: "#10101e", border: "1px solid rgba(255,255,255,0.07)" }}>
-        <div className="grid grid-cols-5 text-[10px] uppercase tracking-widest text-white/25 px-5 py-3 border-b border-white/5">
+        <div className="grid text-[10px] uppercase tracking-widest text-white/25 px-5 py-3 border-b border-white/5"
+          style={{ gridTemplateColumns: "1fr 1fr 1fr 1fr 1.5fr" }}>
           <span>{t.levels.hive}</span>
           <span>{t.levels.price}</span>
           <span>{t.levels.cycleIncome}</span>
