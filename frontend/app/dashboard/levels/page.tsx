@@ -47,14 +47,6 @@ function LevelRow({
             style={{ background: "rgba(39,174,96,0.12)", color: "#27AE60" }}>
             {t.levels.bought}
           </span>
-        ) : isNext ? (
-          <button
-            onClick={onBuy}
-            className="text-xs px-3 py-1 rounded-lg font-black whitespace-nowrap uppercase tracking-wide transition-all hover:opacity-90"
-            style={{ background: `rgba(245,166,35,0.2)`, border: `2px solid ${color}`, color, boxShadow: `0 0 10px ${color}40` }}
-          >
-            {t.hive.activate}
-          </button>
         ) : (
           <span className="text-[11px] px-2 py-0.5 rounded-full font-medium whitespace-nowrap"
             style={{ background: "rgba(255,255,255,0.05)", color: "rgba(255,255,255,0.25)" }}>
