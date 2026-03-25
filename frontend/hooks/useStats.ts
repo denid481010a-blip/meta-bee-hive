@@ -38,38 +38,30 @@ export function useStats(address?: `0x${string}`) {
       }
     } catch {}
 
-    // Загружаем ВСЕ регистрации системы одним запросом
+    const event = BHS_ABI.find((e) => e.name === "UserRegistered") as any;
+
+    // Шаг 1: только мои прямые рефералы (indexed filter)
     getLogsAll(publicClient as any, {
       address: CONTRACT_ADDRESS,
-      event: BHS_ABI.find((e) => e.name === "UserRegistered") as any,
+      event,
+      args: { referrer: address },
       fromBlock: DEPLOY_BLOCK,
-    }).then((logs) => {
-      // Строим граф: referrer → [users]
-      const tree: Record<string, string[]> = {};
-      for (const log of logs) {
-        const user     = (log.args?.user     as string)?.toLowerCase();
-        const referrer = (log.args?.referrer as string)?.toLowerCase();
-        if (!referrer || !user) continue;
-        if (!tree[referrer]) tree[referrer] = [];
-        tree[referrer].push(user);
-      }
+    }).then(async (directLogs) => {
+      const directAddrs = directLogs.map((l) => (l.args?.user as string)?.toLowerCase()).filter(Boolean);
+      const direct = directAddrs.length;
 
-      const me = address.toLowerCase();
-
-      // Прямые рефералы
-      const direct = (tree[me] ?? []).length;
-
-      // BFS — вся глубина дерева
-      let total = 0;
-      const queue = [...(tree[me] ?? [])];
-      const visited = new Set<string>([me]);
-      while (queue.length) {
-        const node = queue.shift()!;
-        if (visited.has(node)) continue;
-        visited.add(node);
-        total++;
-        for (const child of tree[node] ?? []) queue.push(child);
-      }
+      // Шаг 2: рефералы каждого прямого (depth 2+)
+      const indirectResults = await Promise.all(
+        directAddrs.map((ref) =>
+          getLogsAll(publicClient as any, {
+            address: CONTRACT_ADDRESS,
+            event,
+            args: { referrer: ref as `0x${string}` },
+            fromBlock: DEPLOY_BLOCK,
+          }).catch(() => [])
+        )
+      );
+      const total = direct + indirectResults.reduce((sum, logs) => sum + logs.length, 0);
 
       setDirectRefs(direct);
       setTotalRefs(total);
