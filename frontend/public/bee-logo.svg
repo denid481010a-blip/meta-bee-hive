@@ -44,20 +44,6 @@
   <!-- Stinger -->
   <path d="M95 165 Q100 178 105 165" fill="#e0e0e0" stroke="#999" stroke-width="1"/>
 
-  <!-- Crown -->
-  <!-- Crown base -->
-  <rect x="82" y="48" width="36" height="14" rx="3" fill="#F5A623"/>
-  <!-- Crown points -->
-  <polygon points="82,48 86,34 91,48" fill="#F5A623"/>
-  <polygon points="97,48 100,32 103,48" fill="#F5A623"/>
-  <polygon points="109,48 114,34 118,48" fill="#F5A623"/>
-  <!-- Crown gems -->
-  <circle cx="86" cy="36" r="3" fill="#FFD700"/>
-  <circle cx="100" cy="34" r="3.5" fill="#FFD700"/>
-  <circle cx="114" cy="36" r="3" fill="#FFD700"/>
-  <!-- Crown outline -->
-  <rect x="82" y="48" width="36" height="14" rx="3" fill="none" stroke="#d4890a" stroke-width="1"/>
-
   <!-- Antennae -->
   <line x1="93" y1="60" x2="82" y2="46" stroke="#1a1a1a" stroke-width="2.5" stroke-linecap="round"/>
   <line x1="107" y1="60" x2="118" y2="46" stroke="#1a1a1a" stroke-width="2.5" stroke-linecap="round"/>
