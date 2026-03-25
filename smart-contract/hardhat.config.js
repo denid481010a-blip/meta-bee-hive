@@ -45,10 +45,10 @@ module.exports = {
 
     // Polygon mainnet
     polygon: {
-      url: process.env.POLYGON_MAINNET_RPC || "https://polygon-rpc.com",
+      url: process.env.POLYGON_MAINNET_RPC || "https://rpc-mainnet.matic.quiknode.pro",
       accounts: [PRIVATE_KEY],
       chainId: 137,
-      gasPrice: 50_000_000_000, // 50 gwei
+      gasPrice: 200_000_000_000, // 200 gwei
     },
   },
 
