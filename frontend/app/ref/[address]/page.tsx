@@ -72,7 +72,7 @@ export default function RefPage() {
         {/* Logo */}
         <div className="text-center mb-8">
           <div className="text-6xl mb-3">🐝</div>
-          <h1 className="text-3xl font-extrabold text-gold text-glow-gold">BEE HIVE SYSTEM</h1>
+          <h1 className="text-3xl font-extrabold text-gold text-glow-gold">META BEE HIVE</h1>
           <p className="text-white/50 text-sm mt-2">Тебя пригласили в рой</p>
         </div>
 

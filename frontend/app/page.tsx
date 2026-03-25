@@ -225,7 +225,7 @@ export default function LandingPage() {
 
       {/* Footer */}
       <footer className="py-8 px-4 text-center text-white/15 text-xs border-t border-white/5">
-        BEE HIVE SYSTEM · Смарт-контракт на Polygon · Без администратора
+        META BEE HIVE · Смарт-контракт на Polygon · Без администратора
       </footer>
     </div>
   );

@@ -4,7 +4,7 @@ import { Web3Provider } from "@/components/providers/Web3Provider";
 import { Toaster } from "react-hot-toast";
 
 export const metadata: Metadata = {
-  title: "BEE HIVE SYSTEM — Децентрализованная реферальная матрица",
+  title: "META BEE HIVE — Децентрализованная реферальная матрица",
   description: "Зарабатывай вместе с роем. Матрица S4 на Polygon + DAI.",
 };
 

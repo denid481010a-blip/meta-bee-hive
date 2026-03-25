@@ -22,7 +22,7 @@ export function ReferralLink({ address }: ReferralLinkProps) {
 
   function share() {
     if (navigator.share) {
-      navigator.share({ title: "BEE HIVE SYSTEM", text: t.referral.hint, url: link });
+      navigator.share({ title: "META BEE HIVE", text: t.referral.hint, url: link });
     } else {
       copy();
     }
