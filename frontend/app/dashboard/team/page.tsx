@@ -24,38 +24,35 @@ export default function TeamPage() {
     if (!address || !publicClient) return;
     setIsLoading(true);
 
-    // Загружаем ВСЕ регистрации разом — один пакет запросов
+    const event = BHS_ABI.find((e) => e.name === "UserRegistered") as any;
+
+    // Step 1: get only MY direct referrals (filtered by indexed referrer = me)
     getLogsAll(publicClient as any, {
       address: CONTRACT_ADDRESS,
-      event: BHS_ABI.find((e) => e.name === "UserRegistered") as any,
+      event,
+      args: { referrer: address },
       fromBlock: DEPLOY_BLOCK,
-    }).then((logs) => {
-      // Строим карту: referrer -> [users]
-      const referralMap = new Map<string, string[]>();
-      for (const log of logs) {
-        const user     = (log as any).args.user?.toLowerCase();
-        const referrer = (log as any).args.referrer?.toLowerCase();
-        if (!user || !referrer) continue;
-        if (!referralMap.has(referrer)) referralMap.set(referrer, []);
-        referralMap.get(referrer)!.push(user);
-      }
+    }).then(async (directLogs) => {
+      const directAddresses = directLogs.map((log) => (log as any).args.user as `0x${string}`);
+      const direct: TeamMember[] = directAddresses.map((a) => ({ address: a.toLowerCase(), depth: 1 as const }));
 
-      const me = address.toLowerCase();
+      // Step 2: for each direct referral, get their referrals (depth 2)
+      const indirectResults = await Promise.all(
+        directAddresses.map((ref) =>
+          getLogsAll(publicClient as any, {
+            address: CONTRACT_ADDRESS,
+            event,
+            args: { referrer: ref },
+            fromBlock: DEPLOY_BLOCK,
+          })
+        )
+      );
+      const indirect: TeamMember[] = indirectResults.flat().map((log) => ({
+        address: ((log as any).args.user as string).toLowerCase(),
+        depth: 2 as const,
+      }));
 
-      // Личные (depth 1)
-      const direct = (referralMap.get(me) ?? []).map((a) => ({ address: a, depth: 1 as const }));
-
-      // Рабочие (depth 2)
-      const indirect: TeamMember[] = [];
-      for (const d of direct) {
-        const sub = referralMap.get(d.address) ?? [];
-        for (const a of sub) {
-          indirect.push({ address: a, depth: 2 });
-        }
-      }
-
-      const all = [...direct, ...indirect];
-      setMembers(all);
+      setMembers([...direct, ...indirect]);
     }).catch(() => setMembers([]))
       .finally(() => setIsLoading(false));
   }, [address, publicClient]);
