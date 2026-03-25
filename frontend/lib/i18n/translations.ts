@@ -14,8 +14,6 @@ export const LANGUAGES: { code: LangCode; label: string; flag: string }[] = [
   { code: "th", label: "ภาษาไทย",    flag: "🇹🇭" },
   { code: "ja", label: "日本語",      flag: "🇯🇵" },
 ];
-  { code: "ja", label: "日本語",      flag: "🇯🇵" },
-];
 
 export type Translations = typeof ru;
 
