@@ -94,7 +94,7 @@ export default function DashboardPage() {
 
   const { t } = useT();
   const activeLevels = stats?.activeLevels ?? 0;
-  const teamSize     = Number(stats?.teamSize ?? 0);
+  const teamSize     = Number(stats?.totalRefs ?? 0);
   const cycles       = Number(stats?.totalCycles ?? 0);
 
   return (

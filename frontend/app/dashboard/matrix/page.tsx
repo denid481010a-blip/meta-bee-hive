@@ -17,7 +17,7 @@ export default function MatrixPage() {
 
   const { t } = useT();
   const activeLevels: number[] = stats?.activeLevelsList ?? [];
-  const teamSize    = Number(stats?.teamSize   ?? 0);
+  const teamSize    = Number(stats?.totalRefs   ?? 0);
   const cycles      = Number(stats?.totalCycles ?? 0);
   const earnedDai   = Number(formatUnits(stats?.totalEarned ?? 0n, 18));
 

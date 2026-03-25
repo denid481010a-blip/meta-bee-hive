@@ -14,7 +14,7 @@ export default function AchievementsPage() {
   const { t } = useT();
 
   const activeLevels  = stats?.activeLevels  ?? 0;
-  const teamSize      = Number(stats?.teamSize   ?? 0);
+  const teamSize      = Number(stats?.totalRefs  ?? 0);
   const cycles        = Number(stats?.totalCycles ?? 0);
   const totalEarned   = stats?.totalEarned ?? 0n;
   const earnedDai     = Number(formatUnits(totalEarned, 18));
