@@ -10,6 +10,7 @@ import { HIVE_PRICES_DAI, LEVEL_COLORS } from "@/lib/constants";
 import { useT } from "@/lib/i18n/LanguageContext";
 import { clearLogsCache } from "@/lib/getLogs";
 import { RefreshCw } from "lucide-react";
+import { RegisterModal } from "@/components/dashboard/RegisterModal";
 
 function LevelRow({
   level, price, active, cycles, delay, isNext, onBuy,
@@ -77,9 +78,16 @@ export default function LevelsPage() {
   const { stats, refetch } = useStats(address);
   const { t } = useT();
   const [buyLevel, setBuyLevel] = useState<number | null>(null);
+  const [showRegister, setShowRegister] = useState(false);
 
+  const isRegistered = stats?.isRegistered ?? false;
   const activeLevels: number[] = stats?.activeLevelsList ?? [];
   const nextLevel = (stats?.activeLevels ?? 0) + 1;
+
+  function handleCardClick(level: number) {
+    if (!isRegistered) { setShowRegister(true); return; }
+    if (level === nextLevel) setBuyLevel(level);
+  }
 
   return (
     <div className="max-w-5xl mx-auto space-y-6">
@@ -131,15 +139,20 @@ export default function LevelsPage() {
               <HiveCard
                 level={level}
                 active={activeLevels.includes(level)}
-                isNext={level === nextLevel}
+                isNext={level === nextLevel || !isRegistered}
                 address={address}
-                onClick={level === nextLevel ? () => setBuyLevel(level) : undefined}
+                onClick={() => handleCardClick(level)}
               />
             </motion.div>
           ))}
         </div>
       </div>
 
+      <RegisterModal
+        open={showRegister}
+        onClose={() => setShowRegister(false)}
+        onSuccess={() => { setShowRegister(false); refetch(); }}
+      />
       <BuyLevelModal
         level={buyLevel}
         address={address}
