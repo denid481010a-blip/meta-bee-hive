@@ -45,7 +45,7 @@ export default function DashboardPage() {
       {/* Register banner (only if not registered) */}
       {!isRegistered && (
         <div className="flex flex-col items-center justify-center text-center py-10 space-y-5">
-          <div className="text-6xl">👑🐝</div>
+          <img src="/bee-logo.svg" alt="Queen Bee" className="w-24 h-24" />
           <div className="space-y-2">
             <h2 className="text-3xl font-black text-white">{t.dashboard.notInSwarm}</h2>
             <p className="text-white/50 text-sm">{t.dashboard.joinDesc}</p>

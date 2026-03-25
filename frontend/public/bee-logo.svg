@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <!-- Background -->
+  <rect width="200" height="200" fill="#000"/>
+
+  <!-- Left wing -->
+  <ellipse cx="62" cy="95" rx="48" ry="28" fill="white" transform="rotate(-15 62 95)"/>
+  <ellipse cx="58" cy="115" rx="30" ry="16" fill="white" transform="rotate(10 58 115)"/>
+
+  <!-- Right wing -->
+  <ellipse cx="138" cy="95" rx="48" ry="28" fill="white" transform="rotate(15 138 95)"/>
+  <ellipse cx="142" cy="115" rx="30" ry="16" fill="white" transform="rotate(-10 142 115)"/>
+
+  <!-- Wing inner shadows -->
+  <ellipse cx="62" cy="95" rx="36" ry="20" fill="black" opacity="0.15" transform="rotate(-15 62 95)"/>
+  <ellipse cx="138" cy="95" rx="36" ry="20" fill="black" opacity="0.15" transform="rotate(15 138 95)"/>
+
+  <!-- Body (thorax + abdomen) -->
+  <!-- Thorax -->
+  <ellipse cx="100" cy="90" rx="22" ry="20" fill="#1a1a1a"/>
+  <!-- Head -->
+  <ellipse cx="100" cy="72" rx="16" ry="14" fill="#1a1a1a"/>
+
+  <!-- Eyes -->
+  <ellipse cx="92" cy="68" rx="5" ry="6" fill="white" transform="rotate(-10 92 68)"/>
+  <ellipse cx="108" cy="68" rx="5" ry="6" fill="white" transform="rotate(10 108 68)"/>
+  <ellipse cx="91" cy="68" rx="3" ry="4" fill="#111" transform="rotate(-10 91 68)"/>
+  <ellipse cx="109" cy="68" rx="3" ry="4" fill="#111" transform="rotate(10 109 68)"/>
+
+  <!-- Abdomen stripes -->
+  <!-- Stripe 1: yellow -->
+  <ellipse cx="100" cy="108" rx="20" ry="10" fill="#F5A623"/>
+  <!-- Stripe 2: black -->
+  <ellipse cx="100" cy="120" rx="19" ry="9" fill="#111"/>
+  <!-- Stripe 3: yellow -->
+  <ellipse cx="100" cy="131" rx="17" ry="8" fill="#F5A623"/>
+  <!-- Stripe 4: black -->
+  <ellipse cx="100" cy="141" rx="15" ry="7" fill="#111"/>
+  <!-- Stripe 5: yellow -->
+  <ellipse cx="100" cy="150" rx="12" ry="6" fill="#F5A623"/>
+
+  <!-- Abdomen outline / shape -->
+  <path d="M80 105 Q75 130 82 152 Q90 168 100 170 Q110 168 118 152 Q125 130 120 105 Q110 100 100 100 Q90 100 80 105Z" fill="none" stroke="#000" stroke-width="0" opacity="0"/>
+
+  <!-- Stinger -->
+  <path d="M95 165 Q100 178 105 165" fill="#e0e0e0" stroke="#999" stroke-width="1"/>
+
+  <!-- Crown -->
+  <!-- Crown base -->
+  <rect x="82" y="48" width="36" height="14" rx="3" fill="#F5A623"/>
+  <!-- Crown points -->
+  <polygon points="82,48 86,34 91,48" fill="#F5A623"/>
+  <polygon points="97,48 100,32 103,48" fill="#F5A623"/>
+  <polygon points="109,48 114,34 118,48" fill="#F5A623"/>
+  <!-- Crown gems -->
+  <circle cx="86" cy="36" r="3" fill="#FFD700"/>
+  <circle cx="100" cy="34" r="3.5" fill="#FFD700"/>
+  <circle cx="114" cy="36" r="3" fill="#FFD700"/>
+  <!-- Crown outline -->
+  <rect x="82" y="48" width="36" height="14" rx="3" fill="none" stroke="#d4890a" stroke-width="1"/>
+
+  <!-- Antennae -->
+  <line x1="93" y1="60" x2="82" y2="46" stroke="#1a1a1a" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="107" y1="60" x2="118" y2="46" stroke="#1a1a1a" stroke-width="2.5" stroke-linecap="round"/>
+  <circle cx="81" cy="44" r="3" fill="#1a1a1a"/>
+  <circle cx="119" cy="44" r="3" fill="#1a1a1a"/>
+
+  <!-- Wing inner detail lines -->
+  <line x1="90" y1="88" x2="42" y2="90" stroke="#ddd" stroke-width="0.5" opacity="0.4"/>
+  <line x1="88" y1="94" x2="38" y2="100" stroke="#ddd" stroke-width="0.5" opacity="0.4"/>
+  <line x1="110" y1="88" x2="158" y2="90" stroke="#ddd" stroke-width="0.5" opacity="0.4"/>
+  <line x1="112" y1="94" x2="162" y2="100" stroke="#ddd" stroke-width="0.5" opacity="0.4"/>
+</svg>
