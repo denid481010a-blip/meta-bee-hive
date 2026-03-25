@@ -49,8 +49,8 @@ function LevelRow({
         ) : isNext ? (
           <button
             onClick={onBuy}
-            className="text-[11px] px-2 py-0.5 rounded-full font-bold whitespace-nowrap animate-pulse"
-            style={{ background: `rgba(245,166,35,0.15)`, border: `1px solid rgba(245,166,35,0.4)`, color }}
+            className="text-xs px-3 py-1 rounded-lg font-black whitespace-nowrap uppercase tracking-wide transition-all hover:opacity-90"
+            style={{ background: `rgba(245,166,35,0.2)`, border: `2px solid ${color}`, color, boxShadow: `0 0 10px ${color}40` }}
           >
             {t.hive.activate}
           </button>
