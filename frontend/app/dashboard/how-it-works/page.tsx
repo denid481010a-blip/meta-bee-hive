@@ -100,11 +100,23 @@ export default function HowItWorksPage() {
       <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }}
         className="rounded-3xl p-6 space-y-4"
         style={{ background: "rgba(245,166,35,0.06)", border: "1px solid rgba(245,166,35,0.15)" }}>
-        <h2 className="text-lg font-black text-white">🍯 Суть за 10 секунд</h2>
+        <h2 className="text-lg font-black text-white">🍯 Суть за 1 минуту</h2>
+        <div className="flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-bold"
+          style={{ background: "rgba(39,174,96,0.12)", border: "1px solid rgba(39,174,96,0.25)", color: "#27AE60", width: "fit-content" }}>
+          💵 1 DAI = 1$
+        </div>
         <p className="text-white/70 text-sm leading-relaxed">
           META BEE HIVE — это <span className="text-gold font-bold">децентрализованная матрица S4</span> на блокчейне Polygon.
-          Ты покупаешь уровень (Hive), получаешь 4 слота. Когда другие участники попадают в твою матрицу — ты получаешь DAI автоматически на кошелёк. Никаких администраторов, всё работает через смарт-контракт.
+          Ты покупаешь улий (уровень), получаешь 4 слота. Когда другие участники попадают в твой улий — ты автоматически получаешь DAI прямо на кошелёк MetaMask. Никаких администраторов, всё работает через смарт-контракт.
         </p>
+        <div className="flex items-start gap-2 px-4 py-3 rounded-2xl text-xs"
+          style={{ background: "rgba(76,143,255,0.08)", border: "1px solid rgba(76,143,255,0.2)" }}>
+          <span className="text-xl flex-shrink-0">🔐</span>
+          <p className="text-white/60 leading-relaxed">
+            <span className="text-white font-bold">Приложение не имеет доступа к твоему кошельку.</span>{" "}
+            Оно не может снять твои деньги. Все выплаты идут напрямую через смарт-контракт — без посредников и без возможности заблокировать средства.
+          </p>
+        </div>
         <div className="grid grid-cols-3 gap-3 text-center text-xs">
           {[
             { icon: "⚡", label: "Мгновенные выплаты", sub: "Сразу на кошелёк" },
@@ -189,7 +201,7 @@ export default function HowItWorksPage() {
         style={{ background: "#10101e", border: "1px solid rgba(255,255,255,0.07)" }}>
         <h2 className="text-lg font-black text-white">📋 Как начать зарабатывать</h2>
         <div className="space-y-4">
-          <FlowStep n="1" title="Зарегистрируйся" desc="Одна бесплатная транзакция. Нужен только MATIC для газа (~0.01$)" />
+          <FlowStep n="1" title="Зарегистрируйся" desc="Одна бесплатная транзакция. Нужен только POL для газа (~0.01$)" />
           <FlowStep n="2" title="Купи Hive 1 за 5 DAI" desc="Твоя первая матрица активирована. 4 слота ждут участников." color="#27AE60" />
           <FlowStep n="3" title="Пригласи людей по реф-ссылке" desc="Каждый кто зарегистрируется через тебя — попадёт в твою матрицу" color="#4C8FFF" />
           <FlowStep n="4" title="Получай выплаты автоматически" desc="Как только слот заполняется — DAI приходит сразу на кошелёк. Без кнопок, без ожидания." color="#7C4DFF" />
@@ -224,31 +236,62 @@ export default function HowItWorksPage() {
         <h2 className="text-lg font-black text-white">🔗 Рефералы и переливы</h2>
 
         {/* Ref tree visual */}
-        <div className="rounded-2xl p-4 space-y-2" style={{ background: "rgba(255,255,255,0.03)" }}>
+        <div className="rounded-2xl p-4 space-y-1" style={{ background: "rgba(255,255,255,0.03)" }}>
+          {/* YOU */}
           <div className="flex justify-center">
-            <div className="rounded-full px-4 py-1.5 text-xs font-black"
-              style={{ background: "rgba(245,166,35,0.2)", border: "1px solid rgba(245,166,35,0.4)", color: "#F5A623" }}>
-              ТЫ
+            <div className="rounded-full px-5 py-2 text-xs font-black flex items-center gap-2"
+              style={{ background: "rgba(245,166,35,0.2)", border: "1px solid rgba(245,166,35,0.5)", color: "#F5A623" }}>
+              ТЫ 💰
             </div>
           </div>
-          <div className="flex justify-center gap-1 text-white/20 text-xs">│</div>
-          <div className="flex justify-center gap-6">
-            {["Петя", "Маша", "Саша"].map((name, i) => (
-              <div key={i} className="rounded-full px-3 py-1 text-xs font-bold"
-                style={{ background: "rgba(96,165,250,0.1)", border: "1px solid rgba(96,165,250,0.25)", color: "#60A5FA" }}>
-                {name}
+          {/* arrow up from lvl1 */}
+          <div className="flex justify-center">
+            <div className="flex flex-col items-center gap-0">
+              <span className="text-[10px] font-bold" style={{ color: "#27AE60" }}>+DAI</span>
+              <span className="text-base leading-none" style={{ color: "#27AE60" }}>↑</span>
+            </div>
+          </div>
+          {/* Level 1 refs */}
+          <div className="flex justify-center gap-4">
+            {[
+              { name: "Петя", dai: "4.5" },
+              { name: "Маша", dai: "4.5" },
+              { name: "Саша", dai: "4.5" },
+            ].map((r, i) => (
+              <div key={i} className="flex flex-col items-center gap-1">
+                <div className="rounded-full px-3 py-1 text-xs font-bold"
+                  style={{ background: "rgba(96,165,250,0.1)", border: "1px solid rgba(96,165,250,0.25)", color: "#60A5FA" }}>
+                  {r.name}
+                </div>
+                <span className="text-[9px] font-bold" style={{ color: "#27AE60" }}>цикл → +{r.dai} DAI</span>
               </div>
             ))}
           </div>
-          <div className="flex justify-center gap-1 text-white/20 text-xs">│</div>
-          <div className="flex justify-center gap-3">
-            {["Игорь", "Лена", "Дима", "Оля"].map((name, i) => (
-              <div key={i} className="rounded-full px-2 py-0.5 text-[10px] font-bold"
-                style={{ background: "rgba(167,139,250,0.1)", border: "1px solid rgba(167,139,250,0.2)", color: "#A78BFA" }}>
-                {name}
+          {/* arrow up from lvl2 */}
+          <div className="flex justify-center mt-1">
+            <div className="flex flex-col items-center gap-0">
+              <span className="text-[10px] font-bold" style={{ color: "#A78BFA" }}>+DAI</span>
+              <span className="text-base leading-none" style={{ color: "#A78BFA" }}>↑</span>
+            </div>
+          </div>
+          {/* Level 2 refs */}
+          <div className="flex justify-center gap-2">
+            {[
+              { name: "Игорь", dai: "4.5" },
+              { name: "Лена", dai: "4.5" },
+              { name: "Дима", dai: "4.5" },
+              { name: "Оля", dai: "4.5" },
+            ].map((r, i) => (
+              <div key={i} className="flex flex-col items-center gap-1">
+                <div className="rounded-full px-2 py-0.5 text-[10px] font-bold"
+                  style={{ background: "rgba(167,139,250,0.1)", border: "1px solid rgba(167,139,250,0.2)", color: "#A78BFA" }}>
+                  {r.name}
+                </div>
+                <span className="text-[8px] font-bold" style={{ color: "#27AE60" }}>+{r.dai} DAI</span>
               </div>
             ))}
           </div>
+          <p className="text-center text-white/30 text-[10px] pt-2">Когда у рефералов закрывается цикл — DAI идёт прямо тебе</p>
         </div>
 
         <div className="space-y-3 text-sm">
