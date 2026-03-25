@@ -40,7 +40,6 @@ export function useBuyLevel() {
           abi: DAI_ABI,
           functionName: "approve",
           args: [CONTRACT_ADDRESS, MAX_UINT256],
-          gasPrice: BigInt(35_000_000_000), // 35 gwei — выше минимума Amoy
         });
         setApproveTx(approveTxHash);
         setStep("approve_pending");
@@ -54,7 +53,6 @@ export function useBuyLevel() {
         abi: BHS_ABI,
         functionName: "buyHive",
         args: [level],
-        gasPrice: BigInt(35_000_000_000), // 35 gwei — выше минимума Amoy
       });
       setBuyTx(buyTxHash);
       setStep("buy_pending");

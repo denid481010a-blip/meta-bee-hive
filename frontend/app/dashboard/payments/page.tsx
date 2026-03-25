@@ -162,7 +162,7 @@ export default function PaymentsPage() {
                     {p.type === "income" ? "+" : "−"}{formatDAI(p.amount)}
                   </p>
                   <a
-                    href={`https://amoy.polygonscan.com/tx/${p.txHash}`}
+                    href={`https://polygonscan.com/tx/${p.txHash}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-white/20 text-xs hover:text-white/50 transition-colors"
