@@ -1,6 +1,6 @@
 import type { PublicClient } from "viem";
 
-const CHUNK = 2000n; // Alchemy Amoy limit
+const CHUNK = 9000n; // Polygon Amoy official RPC limit is 10k
 const CACHE_TTL = 5 * 60_000;
 
 const cache = new Map<string, { data: any[]; expiresAt: number }>();
