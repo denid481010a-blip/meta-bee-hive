@@ -1,19 +1,15 @@
 "use client";
-import { useState } from "react";
 import { useAccount } from "wagmi";
 import { useStats } from "@/hooks/useStats";
 import { StatsCards } from "@/components/dashboard/StatsCards";
 import { ReferralLink } from "@/components/dashboard/ReferralLink";
 import { AutoBuyToggle } from "@/components/dashboard/AutoBuyToggle";
 import { PendingBalance } from "@/components/dashboard/PendingBalance";
-import { HiveCard } from "@/components/hive/HiveCard";
-import { BuyLevelModal } from "@/components/levels/BuyLevelModal";
 import { TitleBadge } from "@/components/achievements/TitleBadge";
 import { shortAddress } from "@/lib/formatters";
 import { Loader2 } from "lucide-react";
 import { useRegister } from "@/hooks/useRegister";
 import { CONTRACT_ADDRESS } from "@/lib/constants";
-import { clearLogsCache } from "@/lib/getLogs";
 import { useT } from "@/lib/i18n/LanguageContext";
 import { LanguageSwitcher } from "@/components/dashboard/LanguageSwitcher";
 
@@ -77,7 +73,6 @@ function RegisterBlock({ onSuccess }: { onSuccess: () => void }) {
 export default function DashboardPage() {
   const { address } = useAccount();
   const { stats, isLoading, refetch } = useStats(address);
-  const [buyLevel, setBuyLevel] = useState<number | null>(null);
 
   if (isLoading) {
     return (
@@ -113,9 +108,6 @@ export default function DashboardPage() {
         totalSpent={stats.totalSpent}
         activeLevels={stats.activeLevels}
         pending={stats.pending}
-        totalRefs={stats.totalRefs}
-        directRefs={stats.directRefs}
-        workingRefs={stats.workingRefs}
       />
 
       {/* Quick actions row */}
@@ -129,36 +121,6 @@ export default function DashboardPage() {
 
       {/* Auto-buy */}
       <AutoBuyToggle enabled={stats.autoBuy} onToggled={refetch} />
-
-      {/* Hive grid */}
-      <div>
-        <h2 className="text-lg font-bold text-white mb-4">{t.dashboard.myHives}</h2>
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
-          {Array.from({ length: 10 }, (_, i) => i + 1).map((level) => {
-            const isActive = (stats?.activeLevelsList ?? []).includes(level);
-            const nextLevel = (stats?.activeLevels ?? 0) + 1;
-            const isNext = level === nextLevel;
-            return (
-              <HiveCard
-                key={level}
-                level={level}
-                active={isActive}
-                isNext={isNext}
-                address={address}
-                onClick={isNext ? () => setBuyLevel(level) : undefined}
-                compact
-              />
-            );
-          })}
-        </div>
-      </div>
-
-      <BuyLevelModal
-        level={buyLevel}
-        address={address}
-        onClose={() => setBuyLevel(null)}
-        onSuccess={() => { setBuyLevel(null); clearLogsCache(address); refetch(); }}
-      />
     </div>
   );
 }
