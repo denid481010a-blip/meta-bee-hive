@@ -1,6 +1,6 @@
 "use client";
 import { createConfig, http } from "wagmi";
-import { polygon } from "wagmi/chains";
+import { polygonAmoy } from "wagmi/chains";
 import { injected, walletConnect } from "wagmi/connectors";
 
 const WC_PROJECT_ID =
@@ -9,12 +9,15 @@ const WC_PROJECT_ID =
   "bee-hive-system-dev";
 
 export const wagmiConfig = createConfig({
-  chains: [polygon],
+  chains: [polygonAmoy],
   connectors: [
     injected({ target: "metaMask" }),
     walletConnect({ projectId: WC_PROJECT_ID }),
   ],
   transports: {
-    [polygon.id]: http(process.env.NEXT_PUBLIC_POLYGON_RPC ?? "https://polygon.llamarpc.com"),
+    [polygonAmoy.id]: http(
+      process.env.NEXT_PUBLIC_POLYGON_RPC ??
+      "https://rpc-amoy.polygon.technology"
+    ),
   },
 });

@@ -70,7 +70,7 @@ export const LEVEL_COLORS: Record<number, string> = {
 };
 
 // ── Блок деплоя контракта (Polygon mainnet) ───────────────────────────────
-export const DEPLOY_BLOCK = 84659300n;
+export const DEPLOY_BLOCK = BigInt(process.env.NEXT_PUBLIC_DEPLOY_BLOCK ?? "0");
 
 // ── Backend API ───────────────────────────────────────────────────────────
 export const API_BASE = process.env.NEXT_PUBLIC_API_BASE ?? "http://localhost:3001/api";
