@@ -7,10 +7,10 @@ import { HIVE_PRICES_DAI, LEVEL_COLORS } from "@/lib/constants";
 import { motion } from "framer-motion";
 
 const STEPS = [
-  { n: "01", title: "Подключи кошелёк",   desc: "MetaMask на Polygon. 30 секунд." },
-  { n: "02", title: "Зарегистрируйся",     desc: "Введи реф-ссылку и войди в рой." },
-  { n: "03", title: "Купи первый Hive",    desc: "H1 всего 5 DAI — старт в один клик." },
-  { n: "04", title: "Получай DAI",         desc: "Слоты заполняются → выплаты автоматически." },
+  { n: "01", title: "Connect Wallet",    desc: "MetaMask on Polygon. 30 seconds." },
+  { n: "02", title: "Register",          desc: "Use a referral link and join the swarm." },
+  { n: "03", title: "Buy First Hive",    desc: "H1 is only 5 DAI — start in one click." },
+  { n: "04", title: "Earn DAI",          desc: "Slots fill up → payouts automatically." },
 ];
 
 function OrbitalPreview({ color, slots }: { color: string; slots: number }) {
@@ -75,30 +75,30 @@ export default function LandingPage() {
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium mb-8"
             style={{ background: "rgba(245,166,35,0.1)", border: "1px solid rgba(245,166,35,0.2)", color: "#F5A623" }}>
             <span className="w-1.5 h-1.5 rounded-full bg-gold animate-pulse" />
-            Работает на Polygon · DAI
+            Powered by Polygon · DAI
           </div>
 
           {/* Title */}
           <h1 className="text-5xl md:text-7xl font-black tracking-tight mb-4 leading-[1.05]">
-            <span className="text-white">BEE</span>
-            <span className="shimmer-text">HIVE</span>
+            <span className="text-white">META </span>
+            <span className="shimmer-text">BEE</span>
             <br />
-            <span className="text-white/60 text-3xl md:text-4xl font-bold">SYSTEM</span>
+            <span className="text-white/60 text-3xl md:text-4xl font-bold">HIVE</span>
           </h1>
 
           <p className="text-white/50 text-lg md:text-xl mb-3 max-w-md mx-auto leading-relaxed">
-            Децентрализованная матрица S4
+            Decentralized S4 Matrix
           </p>
           <p className="text-white/25 text-sm mb-10">
-            Прозрачные выплаты · Без администратора · Смарт-контракт с открытым кодом
+            Transparent payouts · No admin · Open-source smart contract
           </p>
 
           <ConnectButton />
 
           <div className="mt-8 flex flex-wrap justify-center gap-6 text-xs text-white/25">
-            <span>✦ Без скрытых комиссий</span>
-            <span>✦ Только DAI стейблкоин</span>
-            <span>✦ Авто-выплаты на кошелёк</span>
+            <span>✦ No hidden fees</span>
+            <span>✦ DAI stablecoin only</span>
+            <span>✦ Auto-payouts to wallet</span>
           </div>
         </motion.div>
       </section>
@@ -111,8 +111,8 @@ export default function LandingPage() {
           viewport={{ once: true }}
           className="text-center mb-14"
         >
-          <h2 className="text-3xl font-black text-white mb-3">Как это работает</h2>
-          <p className="text-white/35 text-sm">4 шага до первых DAI</p>
+          <h2 className="text-3xl font-black text-white mb-3">How It Works</h2>
+          <p className="text-white/35 text-sm">4 steps to your first DAI</p>
         </motion.div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -142,8 +142,8 @@ export default function LandingPage() {
           viewport={{ once: true }}
           className="text-center mb-14"
         >
-          <h2 className="text-3xl font-black text-white mb-3">10 уровней Hive</h2>
-          <p className="text-white/35 text-sm">Каждый следующий × 1.8 — и потенциал выше</p>
+          <h2 className="text-3xl font-black text-white mb-3">10 Hive Levels</h2>
+          <p className="text-white/35 text-sm">Each next level ×1.8 — higher potential</p>
         </motion.div>
 
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
@@ -187,14 +187,14 @@ export default function LandingPage() {
           style={{ background: "rgba(16,16,30,0.8)", border: "1px solid rgba(255,255,255,0.07)" }}
         >
           <div className="px-8 py-10 text-center border-b border-white/5">
-            <h2 className="text-3xl font-black text-white mb-3">Матрица S4</h2>
-            <p className="text-white/35 text-sm">4 слота — понятная механика</p>
+            <h2 className="text-3xl font-black text-white mb-3">S4 Matrix</h2>
+            <p className="text-white/35 text-sm">4 slots — simple mechanics</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-0">
             {[
-              { icon: "🐝", label: "Слоты 1–3 из 4", desc: "3 слота из 4 идут тебе. С каждого платежа 10% берёт система — остальное автоматически на кошелёк.", color: "#F5A623" },
-              { icon: "♻️", label: "Слот 4",    desc: "Цикл завершён — уровень перезапускается, ты снова в матрице", color: "#7C4DFF" },
-              { icon: "⬆️", label: "Переливы",  desc: "Нет уровня у реферера — выплата идёт наставнику вверх по цепи", color: "#4C8FFF" },
+              { icon: "🐝", label: "Slots 1–3 of 4", desc: "3 out of 4 slots go to you. 10% fee per payment — the rest goes straight to your wallet.", color: "#F5A623" },
+              { icon: "♻️", label: "Slot 4",    desc: "Cycle complete — level restarts, you're back in the matrix", color: "#7C4DFF" },
+              { icon: "⬆️", label: "Overflow",  desc: "No level at referrer — payment flows up the chain to the upline", color: "#4C8FFF" },
             ].map((item, i) => (
               <div key={i} className={`px-6 py-8 text-center ${i < 2 ? "md:border-r border-white/5" : ""}`}>
                 <div className="text-3xl mb-4">{item.icon}</div>
@@ -216,16 +216,16 @@ export default function LandingPage() {
         >
           <div className="text-5xl mb-6 animate-float">🍯</div>
           <h2 className="text-4xl font-black text-white mb-3">
-            Войди в <span className="shimmer-text">рой</span>
+            Join the <span className="shimmer-text">Swarm</span>
           </h2>
-          <p className="text-white/35 mb-8">Polygon · DAI · 5 DAI для старта</p>
+          <p className="text-white/35 mb-8">Polygon · DAI · 5 DAI to start</p>
           <ConnectButton />
         </motion.div>
       </section>
 
       {/* Footer */}
       <footer className="py-8 px-4 text-center text-white/15 text-xs border-t border-white/5">
-        META BEE HIVE · Смарт-контракт на Polygon · Без администратора
+        META BEE HIVE · Smart contract on Polygon · No admin
       </footer>
     </div>
   );
