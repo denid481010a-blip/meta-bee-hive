@@ -1,6 +1,5 @@
 "use client";
 import { useAccount, useConnect, useDisconnect, useSwitchChain } from "wagmi";
-import { hardhat } from "wagmi/chains";
 import { useState } from "react";
 import { Wallet, ChevronDown, LogOut, AlertTriangle } from "lucide-react";
 import { shortAddress } from "@/lib/formatters";
@@ -28,7 +27,7 @@ export function ConnectButton() {
         }}
       >
         <Wallet className="w-4 h-4" />
-        Подключить
+        Connect
       </button>
     );
   }
@@ -40,7 +39,7 @@ export function ConnectButton() {
         className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold bg-white/10 border border-white/20 text-white transition-all hover:bg-white/15"
       >
         <AlertTriangle className="w-4 h-4" />
-        Сменить сеть
+        Switch Network
       </button>
     );
   }
@@ -75,7 +74,7 @@ export function ConnectButton() {
               className="w-full flex items-center gap-2.5 px-4 py-3 text-sm text-white/60 hover:text-white hover:bg-white/5 transition-all"
             >
               <LogOut className="w-3.5 h-3.5" />
-              Отключиться
+              Disconnect
             </button>
           </div>
         </>
