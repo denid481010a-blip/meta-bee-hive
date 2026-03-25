@@ -39,7 +39,7 @@ export function RegisterModal({ open, onClose, onSuccess }: RegisterModalProps) 
           <X className="w-5 h-5" />
         </button>
 
-        <div className="text-5xl">🐣</div>
+        <div className="text-5xl">👑🐝</div>
         <div className="space-y-1">
           <h2 className="text-lg font-black text-white">{t.dashboard.notInSwarm}</h2>
           <p className="text-white/50 text-sm">{t.dashboard.joinDesc}</p>

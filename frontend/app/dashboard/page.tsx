@@ -47,7 +47,7 @@ export default function DashboardPage() {
         <div className="rounded-2xl px-5 py-4 flex items-center justify-between gap-4"
           style={{ background: "rgba(245,166,35,0.08)", border: "1px solid rgba(245,166,35,0.25)" }}>
           <div>
-            <p className="text-white font-bold text-sm">🐣 {t.dashboard.notInSwarm}</p>
+            <p className="text-white font-bold text-sm">👑🐝 {t.dashboard.notInSwarm}</p>
             <p className="text-white/40 text-xs mt-0.5">{t.dashboard.joinDesc}</p>
           </div>
           <button
