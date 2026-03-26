@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAccount } from "wagmi";
 import { motion } from "framer-motion";
 import { HiveCard } from "@/components/hive/HiveCard";
@@ -9,8 +9,8 @@ import { useMatrix } from "@/hooks/useMatrix";
 import { HIVE_PRICES_DAI, LEVEL_COLORS } from "@/lib/constants";
 import { useT } from "@/lib/i18n/LanguageContext";
 import { clearLogsCache } from "@/lib/getLogs";
+import { supabase } from "@/lib/supabase";
 import { RefreshCw } from "lucide-react";
-import { RegisterModal } from "@/components/dashboard/RegisterModal";
 
 function LevelRow({
   level, price, active, cycles, delay, isNext, onBuy,
@@ -78,16 +78,18 @@ export default function LevelsPage() {
   const { stats, refetch } = useStats(address);
   const { t } = useT();
   const [buyLevel, setBuyLevel] = useState<number | null>(null);
-  const [showRegister, setShowRegister] = useState(false);
+  const [pollingLevel, setPollingLevel] = useState<number | null>(null);
 
-  const isRegistered = stats?.isRegistered ?? false;
+  // После покупки — polling каждые 2с пока уровень не засветится
+  useEffect(() => {
+    if (!pollingLevel) return;
+    if (stats?.activeLevelsList?.includes(pollingLevel)) { setPollingLevel(null); return; }
+    const id = setInterval(() => refetch(), 2000);
+    return () => clearInterval(id);
+  }, [pollingLevel, stats?.activeLevelsList, refetch]);
+
   const activeLevels: number[] = stats?.activeLevelsList ?? [];
   const nextLevel = (stats?.activeLevels ?? 0) + 1;
-
-  function handleCardClick(level: number) {
-    if (!isRegistered) { setShowRegister(true); return; }
-    if (level === nextLevel) setBuyLevel(level);
-  }
 
   return (
     <div className="max-w-5xl mx-auto space-y-6">
@@ -139,25 +141,29 @@ export default function LevelsPage() {
               <HiveCard
                 level={level}
                 active={activeLevels.includes(level)}
-                isNext={level === nextLevel || !isRegistered}
+                isNext={level === nextLevel}
                 address={address}
-                onClick={() => handleCardClick(level)}
+                onClick={level === nextLevel ? () => setBuyLevel(level) : undefined}
               />
             </motion.div>
           ))}
         </div>
       </div>
 
-      <RegisterModal
-        open={showRegister}
-        onClose={() => setShowRegister(false)}
-        onSuccess={() => { setShowRegister(false); refetch(); }}
-      />
       <BuyLevelModal
         level={buyLevel}
         address={address}
         onClose={() => setBuyLevel(null)}
-        onSuccess={() => { setBuyLevel(null); clearLogsCache(address); refetch(); }}
+        onSuccess={() => {
+          const boughtLevel = buyLevel;
+          setBuyLevel(null);
+          clearLogsCache(address);
+          // Очищаем Supabase кеш платежей — при следующем заходе пересканирует
+          if (address) supabase.from("payments").delete().eq("wallet", address.toLowerCase()).then(() => {});
+          refetch();
+          // Polling пока уровень не засветится
+          if (boughtLevel) setPollingLevel(boughtLevel);
+        }}
       />
     </div>
   );

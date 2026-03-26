@@ -1,9 +1,11 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Copy, Check, Share2 } from "lucide-react";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { useT } from "@/lib/i18n/LanguageContext";
+
+const TG_BOT = process.env.NEXT_PUBLIC_TG_BOT_NAME ?? "";
 
 interface ReferralLinkProps {
   address: string;
@@ -11,8 +13,16 @@ interface ReferralLinkProps {
 
 export function ReferralLink({ address }: ReferralLinkProps) {
   const [copied, setCopied] = useState(false);
+  const [isTelegram, setIsTelegram] = useState(false);
   const { t } = useT();
-  const link = `${typeof window !== "undefined" ? window.location.origin : ""}/ref/${address}`;
+
+  useEffect(() => {
+    setIsTelegram(!!(window as any).Telegram?.WebApp);
+  }, []);
+
+  const webLink = `${typeof window !== "undefined" ? window.location.origin : "https://metabeehive.com"}/ref/${address}`;
+  const tgLink  = TG_BOT ? `https://t.me/${TG_BOT}?startapp=${address}` : webLink;
+  const link    = isTelegram && TG_BOT ? tgLink : webLink;
 
   function copy() {
     navigator.clipboard.writeText(link);
@@ -21,7 +31,11 @@ export function ReferralLink({ address }: ReferralLinkProps) {
   }
 
   function share() {
-    if (navigator.share) {
+    const tg = (window as any).Telegram?.WebApp;
+    if (tg) {
+      // В Telegram — открываем шаринг через tg.openTelegramLink
+      tg.openTelegramLink(`https://t.me/share/url?url=${encodeURIComponent(link)}&text=${encodeURIComponent("🐝 Присоединяйся к META BEE HIVE!")}`);
+    } else if (navigator.share) {
       navigator.share({ title: "META BEE HIVE", text: t.referral.hint, url: link });
     } else {
       copy();

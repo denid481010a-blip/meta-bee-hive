@@ -13,7 +13,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   useEffect(() => {
     if (!isConnected) router.push("/");
-  }, [isConnected]);
+  }, [isConnected, router]);
 
   return (
     <LanguageProvider>

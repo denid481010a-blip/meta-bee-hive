@@ -1,19 +1,21 @@
 "use client";
 import { motion } from "framer-motion";
-import { TrendingUp, TrendingDown, Layers, Clock } from "lucide-react";
+import { TrendingUp, TrendingDown, Layers, Wallet } from "lucide-react";
 import { formatDAI } from "@/lib/formatters";
 import { useT } from "@/lib/i18n/LanguageContext";
+import { useDAIBalance } from "@/hooks/useDAIBalance";
 
 interface StatsCardsProps {
   totalEarned:  bigint;
   totalSpent:   bigint;
   activeLevels: number;
-  pending:      bigint;
+  address?:     `0x${string}`;
 }
 
-export function StatsCards({ totalEarned, totalSpent, activeLevels, pending }: StatsCardsProps) {
+export function StatsCards({ totalEarned, totalSpent, activeLevels, address }: StatsCardsProps) {
   const net = totalEarned - totalSpent;
   const { t } = useT();
+  const { balance } = useDAIBalance(address);
 
   const cards = [
     {
@@ -41,12 +43,12 @@ export function StatsCards({ totalEarned, totalSpent, activeLevels, pending }: S
       border:"rgba(245,166,35,0.15)",
     },
     {
-      icon:  Clock,
-      label: t.stats.pending,
-      value: formatDAI(pending),
-      color: "#FFC857",
-      bg:    "rgba(255,200,87,0.06)",
-      border:"rgba(255,200,87,0.12)",
+      icon:  Wallet,
+      label: "DAI в кошельке",
+      value: balance !== undefined ? formatDAI(balance) : "—",
+      color: "#29B6F6",
+      bg:    "rgba(41,182,246,0.08)",
+      border:"rgba(41,182,246,0.15)",
     },
   ];
 

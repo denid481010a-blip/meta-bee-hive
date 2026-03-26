@@ -19,7 +19,12 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const saved = localStorage.getItem("lang") as LangCode | null;
-    if (saved && translations[saved]) setLangState(saved);
+    if (saved && translations[saved]) {
+      setLangState(saved);
+    } else {
+      const browserLang = navigator.language.slice(0, 2) as LangCode;
+      if (translations[browserLang]) setLangState(browserLang);
+    }
   }, []);
 
   function setLang(l: LangCode) {

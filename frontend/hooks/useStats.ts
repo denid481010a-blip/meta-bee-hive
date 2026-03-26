@@ -4,12 +4,14 @@ import { useReadContract, usePublicClient } from "wagmi";
 import { BHS_ABI } from "@/lib/contract";
 import { CONTRACT_ADDRESS, DEPLOY_BLOCK } from "@/lib/constants";
 import { getLogsAll } from "@/lib/getLogs";
+import { getTeam } from "@/lib/teamCache";
 
 export function useStats(address?: `0x${string}`) {
   const publicClient = usePublicClient();
-  const [directRefs, setDirectRefs]   = useState(0);
-  const [totalRefs, setTotalRefs]     = useState(0);
-  const [totalCycles, setTotalCycles] = useState(0);
+  const [directRefs, setDirectRefs]     = useState(0);
+  const [totalRefs, setTotalRefs]       = useState(0);
+  const [totalCycles, setTotalCycles]   = useState(0);
+  const [isTeamLoading, setIsTeamLoading] = useState(false);
 
   const { data, isLoading, refetch } = useReadContract({
     address: CONTRACT_ADDRESS,
@@ -19,56 +21,22 @@ export function useStats(address?: `0x${string}`) {
     query: { enabled: !!address, staleTime: 60_000, refetchInterval: 60_000 },
   });
 
-  // Подсчёт прямых рефералов и всего дерева (кэш 2 часа в localStorage)
+  // Подсчёт прямых рефералов и всего дерева (кэш через Supabase)
   useEffect(() => {
     if (!address || !publicClient) return;
+    setIsTeamLoading(true);
 
-    const CACHE_TTL = 2 * 60 * 60 * 1000;
-    const cacheKey  = `beeTree_v3_${address}`;
-
-    try {
-      const cached = localStorage.getItem(cacheKey);
-      if (cached) {
-        const { direct, total, ts } = JSON.parse(cached);
-        if (Date.now() - ts < CACHE_TTL) {
-          setDirectRefs(direct);
-          setTotalRefs(total);
-          return;
-        }
-      }
-    } catch {}
-
-    const event = BHS_ABI.find((e) => e.name === "UserRegistered") as any;
-
-    // Шаг 1: только мои прямые рефералы (indexed filter)
-    getLogsAll(publicClient as any, {
-      address: CONTRACT_ADDRESS,
-      event,
-      args: { referrer: address },
-      fromBlock: DEPLOY_BLOCK,
-    }).then(async (directLogs) => {
-      const directAddrs = directLogs.map((l) => (l.args?.user as string)?.toLowerCase()).filter(Boolean);
-      const direct = directAddrs.length;
-
-      // Шаг 2: рефералы каждого прямого (depth 2+)
-      const indirectResults = await Promise.all(
-        directAddrs.map((ref) =>
-          getLogsAll(publicClient as any, {
-            address: CONTRACT_ADDRESS,
-            event,
-            args: { referrer: ref as `0x${string}` },
-            fromBlock: DEPLOY_BLOCK,
-          }).catch(() => [])
-        )
-      );
-      const total = direct + indirectResults.reduce((sum, logs) => sum + logs.length, 0);
-
+    getTeam(address.toLowerCase(), publicClient as any, (fresh) => {
+      const direct = fresh.filter((m) => m.depth === 1).length;
+      const total  = fresh.length;
       setDirectRefs(direct);
       setTotalRefs(total);
-      try {
-        localStorage.setItem(cacheKey, JSON.stringify({ direct, total, ts: Date.now() }));
-      } catch {}
-    }).catch(() => { setDirectRefs(0); setTotalRefs(0); });
+      setIsTeamLoading(false);
+    }).then((members) => {
+      setDirectRefs(members.filter((m) => m.depth === 1).length);
+      setTotalRefs(members.length);
+      setIsTeamLoading(false);
+    }).catch(() => { setDirectRefs(0); setTotalRefs(0); setIsTeamLoading(false); });
   }, [address, publicClient]);
 
   // totalCycles: sum of cycles from all active levels
@@ -92,7 +60,7 @@ export function useStats(address?: `0x${string}`) {
     ).then((cycles) => setTotalCycles(cycles.reduce((a, b) => a + b, 0)));
   }, [address, data, publicClient]);
 
-  if (!data) return { isLoading, refetch, stats: null };
+  if (!data) return { isLoading, refetch, stats: null, isTeamLoading };
 
   const [referrer, registered, levels, autoBuy, totalEarned, totalSpent, pending] = data as unknown as [
     string, boolean, readonly boolean[], boolean, bigint, bigint, bigint
@@ -121,6 +89,7 @@ export function useStats(address?: `0x${string}`) {
       totalRefs,
       workingRefs:     totalRefs - directRefs,
       totalCycles,
+      isTeamLoading,
     },
   };
 }

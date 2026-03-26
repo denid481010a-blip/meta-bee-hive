@@ -19,9 +19,8 @@ export default function RefPage() {
   const refAddr = params.address as `0x${string}`;
 
   const { address, isConnected, chainId } = useAccount();
-  const { register, isPending, isSuccess } = useRegister();
+  const { register, isPending, isSuccess, error: regError } = useRegister();
   const { switchChainAsync } = useSwitchChain();
-  const [regError, setRegError] = useState<string | null>(null);
   const wrongNetwork = isConnected && chainId !== CHAIN_ID;
 
   // Check if referrer is registered
@@ -42,7 +41,8 @@ export default function RefPage() {
     query: { enabled: !!address },
   });
 
-  const refIsRegistered = refStats && (refStats as any).isRegistered;
+  type StatsResult = readonly [string, boolean, readonly boolean[], boolean, bigint, bigint, bigint];
+  const refIsRegistered = refStats && (refStats as StatsResult)[1];
 
   // Save referrer to localStorage so dashboard can use it later
   useEffect(() => {
@@ -57,14 +57,14 @@ export default function RefPage() {
       toast.success("Добро пожаловать в рой! 🐝");
       setTimeout(() => router.push("/dashboard"), 2000);
     }
-  }, [isSuccess]);
+  }, [isSuccess, router]);
 
   useEffect(() => {
-    // If already registered — redirect to dashboard
-    if (myStats && (myStats as any).isRegistered) {
+    type StatsResult = readonly [string, boolean, readonly boolean[], boolean, bigint, bigint, bigint];
+    if (myStats && (myStats as StatsResult)[1]) {
       router.push("/dashboard");
     }
-  }, [myStats]);
+  }, [myStats, router]);
 
   return (
     <div className="min-h-screen bg-bg honeycomb-bg flex flex-col items-center justify-center px-4 py-12">
@@ -117,9 +117,9 @@ export default function RefPage() {
               Добро пожаловать в рой!
             </div>
           )}
-          {regError && (
+          {regError && regError !== "cancelled" && (
             <div className="text-center text-white/70 bg-white/10 rounded-xl py-3 text-sm">
-              {regError}
+              Transaction failed. Please try again.
             </div>
           )}
 
@@ -144,11 +144,7 @@ export default function RefPage() {
               <button
                 className="w-full rounded-2xl py-4 flex items-center justify-center gap-3"
                 style={{ background: "rgba(245,166,35,0.15)", border: "1px solid rgba(245,166,35,0.4)" }}
-                onClick={async () => {
-                  setRegError(null);
-                  try { await register(refAddr); }
-                  catch (e: any) { setRegError(e?.shortMessage ?? e?.message ?? "Ошибка"); }
-                }}
+                onClick={() => register(refAddr)}
               >
                 <ArrowRight className="w-5 h-5 text-white" />
                 <span className="text-xl font-black text-white">Вступить в рой</span>

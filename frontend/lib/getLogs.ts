@@ -1,7 +1,10 @@
 import type { PublicClient } from "viem";
 
-const CHUNK = 9000n; // official Polygon Amoy RPC supports up to 10k blocks
-const CACHE_TTL = 5 * 60_000;
+const CHUNK = 9_000n; // publicnode supports up to ~10k blocks
+const BATCH_SIZE = 4;  // parallel requests per batch (was 10 — too aggressive)
+const BATCH_DELAY = 250; // ms between batches to avoid rate-limit
+const MAX_SPLIT_DEPTH = 2; // cap recursion depth to prevent exponential explosion on rate-limit
+const CACHE_TTL = 5 * 60_000; // 5 minutes
 
 const cache = new Map<string, { data: any[]; expiresAt: number }>();
 
@@ -13,7 +16,8 @@ async function fetchChunk(
   publicClient: PublicClient,
   params: { address: `0x${string}`; event: any; args?: Record<string, any> },
   from: bigint,
-  to: bigint
+  to: bigint,
+  depth = 0
 ): Promise<any[]> {
   try {
     return await publicClient.getLogs({
@@ -24,11 +28,12 @@ async function fetchChunk(
       toBlock: to,
     });
   } catch {
-    if (to - from < 100n) return [];
+    // Stop splitting if range is tiny or depth limit reached (prevents exponential explosion on rate-limit)
+    if (depth >= MAX_SPLIT_DEPTH || to - from < 500n) return [];
     const mid = from + (to - from) / 2n;
     const [a, b] = await Promise.all([
-      fetchChunk(publicClient, params, from, mid),
-      fetchChunk(publicClient, params, mid + 1n, to),
+      fetchChunk(publicClient, params, from, mid, depth + 1),
+      fetchChunk(publicClient, params, mid + 1n, to, depth + 1),
     ]);
     return [...a, ...b];
   }
@@ -48,21 +53,25 @@ export async function getLogsAll(
   if (cached && Date.now() < cached.expiresAt) return cached.data;
 
   const toBlock = await publicClient.getBlockNumber();
-  const results: any[] = [];
 
-  // Parallel batches of 10 chunks
+  // Build chunk ranges
   const ranges: [bigint, bigint][] = [];
   for (let from = params.fromBlock; from <= toBlock; from += CHUNK) {
     const to = from + CHUNK - 1n < toBlock ? from + CHUNK - 1n : toBlock;
     ranges.push([from, to]);
   }
 
-  for (let i = 0; i < ranges.length; i += 10) {
-    const batch = ranges.slice(i, i + 10);
+  // Fetch in parallel batches with delay to avoid rate-limiting
+  const results: any[] = [];
+  for (let i = 0; i < ranges.length; i += BATCH_SIZE) {
+    const batch = ranges.slice(i, i + BATCH_SIZE);
     const batchLogs = await Promise.all(
       batch.map(([from, to]) => fetchChunk(publicClient, params, from, to))
     );
     results.push(...batchLogs.flat());
+    if (i + BATCH_SIZE < ranges.length) {
+      await new Promise<void>((r) => setTimeout(r, BATCH_DELAY));
+    }
   }
 
   cache.set(key, { data: results, expiresAt: Date.now() + CACHE_TTL });

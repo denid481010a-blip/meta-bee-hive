@@ -1,5 +1,5 @@
 "use client";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAccount } from "wagmi";
 import { ConnectButton } from "@/components/wallet/ConnectButton";
@@ -45,11 +45,17 @@ function OrbitalPreview({ color, slots }: { color: string; slots: number }) {
 
 export default function LandingPage() {
   const router = useRouter();
-  const { address, isConnected } = useAccount();
+  const { address, isConnected, status } = useAccount();
+  const [hydrated, setHydrated] = useState(false);
+
+  useEffect(() => { setHydrated(true); }, []);
 
   useEffect(() => {
-    if (isConnected && address) router.push("/dashboard");
-  }, [isConnected, address]);
+    // Wait for wagmi to finish reconnecting before redirecting
+    if (hydrated && status === "connected" && address) {
+      router.push("/dashboard");
+    }
+  }, [hydrated, status, address]);
 
   return (
     <div className="min-h-screen bg-bg text-white overflow-x-hidden">

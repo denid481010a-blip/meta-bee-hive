@@ -32,7 +32,7 @@ export function useBuyLevel() {
         args: [address, CONTRACT_ADDRESS],
       }) as bigint;
 
-      // Если allowance меньше цены — делаем approve на максимум (один раз навсегда)
+      // Approve если нужно (wagmi автоматически роутит через Smart Wallet + paymaster для Privy)
       if (allowance < price) {
         setStep("approving");
         const approveTxHash = await writeContractAsync({
@@ -65,7 +65,7 @@ export function useBuyLevel() {
         reset();
         return;
       }
-      setError(msg.slice(0, 100) || "Ошибка транзакции");
+      setError(msg.slice(0, 120) || "Ошибка транзакции");
       setStep("error");
     }
   }, [address, publicClient, writeContractAsync]);

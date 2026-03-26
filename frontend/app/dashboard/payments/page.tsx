@@ -1,83 +1,41 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useAccount, usePublicClient } from "wagmi";
-import { formatDAI, shortAddress, formatDate } from "@/lib/formatters";
-import { LEVEL_COLORS, CONTRACT_ADDRESS, DEPLOY_BLOCK } from "@/lib/constants";
-import { BHS_ABI } from "@/lib/contract";
-import { getLogsAll } from "@/lib/getLogs";
+import { formatDAI, shortAddress } from "@/lib/formatters";
+import { LEVEL_COLORS } from "@/lib/constants";
 import { useT } from "@/lib/i18n/LanguageContext";
 import { Loader2, ArrowDownLeft, ArrowUpRight } from "lucide-react";
 import { clsx } from "clsx";
-import { formatUnits } from "viem";
-
-interface Payment {
-  type:      "income" | "expense";
-  level:     number;
-  amount:    bigint;
-  from:      string;
-  to:        string;
-  txHash:    string;
-  blockNumber: bigint;
-}
+import { getPayments, type Payment } from "@/lib/paymentsCache";
 
 export default function PaymentsPage() {
   const { address } = useAccount();
   const publicClient = usePublicClient();
   const [payments, setPayments]   = useState<Payment[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isSyncing, setIsSyncing] = useState(false);
   const [filter, setFilter]       = useState<"all" | "income" | "expense">("all");
   const { t } = useT();
 
   useEffect(() => {
     if (!address || !publicClient) return;
     setIsLoading(true);
+    setIsSyncing(false);
 
-    Promise.all([
-      // Входящие: PaymentSent where to = address
-      getLogsAll(publicClient as any, {
-        address: CONTRACT_ADDRESS,
-        event: BHS_ABI.find((e) => e.name === "PaymentSent") as any,
-        args: { to: address },
-        fromBlock: DEPLOY_BLOCK,
-      }),
-      // Расходы: HiveBought where user = address
-      getLogsAll(publicClient as any, {
-        address: CONTRACT_ADDRESS,
-        event: BHS_ABI.find((e) => e.name === "HiveBought") as any,
-        args: { user: address },
-        fromBlock: DEPLOY_BLOCK,
-      }),
-    ]).then(([incomeLogs, expenseLogs]) => {
-      const income: Payment[] = incomeLogs.map((log: any) => ({
-        type: "income",
-        level: Number(log.args.level),
-        amount: log.args.amount,
-        from: log.args.from,
-        to: log.args.to,
-        txHash: log.transactionHash,
-        blockNumber: log.blockNumber,
-      }));
-
-      const expenses: Payment[] = expenseLogs.map((log: any) => ({
-        type: "expense",
-        level: Number(log.args.level),
-        amount: log.args.price,
-        from: address,
-        to: CONTRACT_ADDRESS,
-        txHash: log.transactionHash,
-        blockNumber: log.blockNumber,
-      }));
-
-      const all = [...income, ...expenses].sort((a, b) =>
-        Number(b.blockNumber - a.blockNumber)
-      );
-      setPayments(all);
-    }).catch(() => setPayments([]))
-      .finally(() => setIsLoading(false));
+    getPayments(address.toLowerCase(), publicClient as any, (fresh) => {
+      setPayments(fresh);
+      setIsSyncing(false);
+    })
+      .then((cached) => {
+        setPayments(cached);
+        setIsLoading(false);
+        // If no cached data — blockchain scan is running in background
+        if (cached.length === 0) setIsSyncing(true);
+      })
+      .catch(() => { setIsLoading(false); setIsSyncing(false); });
   }, [address, publicClient]);
 
-  const filtered = filter === "all" ? payments : payments.filter((p) => p.type === filter);
-
+  const filtered     = filter === "all" ? payments : payments.filter((p) => p.type === filter);
   const totalIncome  = payments.filter((p) => p.type === "income").reduce((s, p) => s + p.amount, 0n);
   const totalExpense = payments.filter((p) => p.type === "expense").reduce((s, p) => s + p.amount, 0n);
 
@@ -123,10 +81,17 @@ export default function PaymentsPage() {
           <Loader2 className="w-8 h-8 animate-spin text-gold" />
         </div>
       ) : filtered.length === 0 ? (
-        <div className="text-center py-12 text-white/30">
-          <div className="text-4xl mb-3">📭</div>
-          <p>{t.payments.empty}</p>
-        </div>
+        isSyncing ? (
+          <div className="flex flex-col items-center justify-center py-12 gap-3">
+            <Loader2 className="w-7 h-7 animate-spin text-gold" />
+            <p className="text-white/40 text-sm">Синхронизация с блокчейном…</p>
+          </div>
+        ) : (
+          <div className="text-center py-12 text-white/30">
+            <div className="text-4xl mb-3">📭</div>
+            <p>{t.payments.empty}</p>
+          </div>
+        )
       ) : (
         <div className="bg-navy rounded-2xl border border-white/10 overflow-hidden">
           {filtered.map((p, i) => {
@@ -152,7 +117,7 @@ export default function PaymentsPage() {
                       H{p.level}
                     </span>
                     <span className="text-white/60 text-sm truncate">
-                      {p.type === "income" ? `${t.payments.from} ${shortAddress(p.from as any)}` : t.payments.buyHive}
+                      {p.type === "income" ? `${t.payments.from} ${shortAddress(p.from)}` : t.payments.buyHive}
                     </span>
                   </div>
                 </div>
@@ -162,7 +127,7 @@ export default function PaymentsPage() {
                     {p.type === "income" ? "+" : "−"}{formatDAI(p.amount)}
                   </p>
                   <a
-                    href={`https://amoy.polygonscan.com/tx/${p.txHash}`}
+                    href={`https://polygonscan.com/tx/${p.txHash}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-white/20 text-xs hover:text-white/50 transition-colors"

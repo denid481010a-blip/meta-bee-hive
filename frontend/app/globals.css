@@ -63,6 +63,12 @@ body {
 ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
 ::-webkit-scrollbar-thumb:hover { background: rgba(245,166,35,0.4); }
 
+/* ── Telegram Mini App safe areas ──────────────────────────────── */
+.tg-safe-area {
+  padding-top:    env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
 /* ── Utility classes ───────────────────────────────────────────── */
 .bg-grid {
   background-image:

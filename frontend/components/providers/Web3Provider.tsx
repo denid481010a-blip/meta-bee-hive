@@ -1,7 +1,10 @@
 "use client";
-import { WagmiProvider } from "wagmi";
+import { WagmiProvider } from "@privy-io/wagmi";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { SmartWalletsProvider } from "@privy-io/react-auth/smart-wallets";
 import { wagmiConfig } from "@/lib/wagmiConfig";
+import { TelegramProvider } from "./TelegramProvider";
+import { PrivyAuthProvider } from "./PrivyAuthProvider";
 import { useState } from "react";
 
 export function Web3Provider({ children }: { children: React.ReactNode }) {
@@ -12,10 +15,16 @@ export function Web3Provider({ children }: { children: React.ReactNode }) {
   }));
 
   return (
-    <WagmiProvider config={wagmiConfig}>
+    <PrivyAuthProvider>
       <QueryClientProvider client={queryClient}>
-        {children}
+        <SmartWalletsProvider>
+          <TelegramProvider>
+            <WagmiProvider config={wagmiConfig} reconnectOnMount={false}>
+              {children}
+            </WagmiProvider>
+          </TelegramProvider>
+        </SmartWalletsProvider>
       </QueryClientProvider>
-    </WagmiProvider>
+    </PrivyAuthProvider>
   );
 }
