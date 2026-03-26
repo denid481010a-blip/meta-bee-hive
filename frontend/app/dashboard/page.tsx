@@ -14,9 +14,6 @@ import { useT } from "@/lib/i18n/LanguageContext";
 import { LanguageSwitcher } from "@/components/dashboard/LanguageSwitcher";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { useFundWallet } from "@privy-io/react-auth";
-import { polygon } from "wagmi/chains";
-import { DAI_ADDRESS } from "@/lib/constants";
 
 
 function RegisterBlock({ onSuccess }: { onSuccess: () => void }) {
@@ -97,7 +94,6 @@ export default function DashboardPage() {
   const { address } = useAccount();
   const { stats, isLoading, refetch } = useStats(address);
   const { t } = useT();
-  const { fundWallet } = useFundWallet();
   const [polling, setPolling] = useState(false);
 
   useEffect(() => {

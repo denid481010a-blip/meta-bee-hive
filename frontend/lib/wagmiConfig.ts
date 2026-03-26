@@ -2,6 +2,7 @@
 import { createConfig, http, fallback } from "wagmi";
 import { polygon } from "wagmi/chains";
 import { injected, walletConnect, coinbaseWallet } from "wagmi/connectors";
+import { openfortConnector } from "./openfortConnector";
 
 const WC_PROJECT_ID =
   process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID ??
@@ -15,6 +16,7 @@ export const wagmiConfig = createConfig({
     injected({ target: "metaMask" }),
     walletConnect({ projectId: WC_PROJECT_ID }),
     coinbaseWallet({ appName: "Meta Bee Hive" }),
+    openfortConnector,
   ],
   transports: {
     [polygon.id]: fallback([

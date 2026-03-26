@@ -1,12 +1,12 @@
 "use client";
 import { useAccount, useConnect, useDisconnect, useSwitchChain } from "wagmi";
-import { usePrivy } from "@privy-io/react-auth";
 import { injected } from "wagmi/connectors";
 import { useState, useEffect } from "react";
-import { Wallet, ChevronDown, LogOut, AlertTriangle, X, KeyRound } from "lucide-react";
+import { Wallet, ChevronDown, LogOut, AlertTriangle, X, KeyRound, Mail, Loader2 } from "lucide-react";
 import { shortAddress } from "@/lib/formatters";
 import { CHAIN_ID } from "@/lib/constants";
 import { clsx } from "clsx";
+import { useOpenfortContext } from "@/components/providers/OpenfortContext";
 
 const SITE = "metabeehive.com";
 
@@ -31,14 +31,80 @@ function openDeepLink(url: string) {
   else window.open(url, "_blank");
 }
 
+/** Email OTP modal for Openfort login */
+function EmailOTPModal({ onClose }: { onClose: () => void }) {
+  const { loginWithEmail, verifyEmailOTP, isLoading, otpSent } = useOpenfortContext();
+  const [email, setEmail] = useState("");
+  const [otp, setOtp] = useState("");
+
+  return (
+    <>
+      <div className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm" onClick={onClose} />
+      <div
+        className="fixed z-50 left-1/2 -translate-x-1/2 bottom-6 w-[calc(100%-2rem)] max-w-sm rounded-3xl p-5 space-y-3"
+        style={{ background: "#10101e", border: "1px solid rgba(255,255,255,0.08)" }}
+      >
+        <div className="flex items-center justify-between mb-1">
+          <p className="text-white font-bold text-sm">
+            {otpSent ? "Введите код из письма" : "Войти по email"}
+          </p>
+          <button onClick={onClose} className="text-white/30 hover:text-white">
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+
+        {!otpSent ? (
+          <>
+            <input
+              type="email"
+              placeholder="your@email.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full px-4 py-3 rounded-xl text-sm text-white bg-white/5 border border-white/10 outline-none"
+            />
+            <button
+              onClick={() => loginWithEmail(email)}
+              disabled={isLoading || !email}
+              className="w-full py-3 rounded-xl text-sm font-bold disabled:opacity-50"
+              style={{ background: "rgba(245,166,35,0.15)", border: "1px solid rgba(245,166,35,0.3)", color: "#fff" }}
+            >
+              {isLoading ? <Loader2 className="w-4 h-4 animate-spin mx-auto" /> : "Отправить код"}
+            </button>
+          </>
+        ) : (
+          <>
+            <input
+              type="text"
+              placeholder="Код из письма"
+              value={otp}
+              onChange={(e) => setOtp(e.target.value)}
+              className="w-full px-4 py-3 rounded-xl text-sm text-white bg-white/5 border border-white/10 outline-none"
+            />
+            <button
+              onClick={() => verifyEmailOTP(email, otp)}
+              disabled={isLoading || !otp}
+              className="w-full py-3 rounded-xl text-sm font-bold disabled:opacity-50"
+              style={{ background: "rgba(245,166,35,0.15)", border: "1px solid rgba(245,166,35,0.3)", color: "#fff" }}
+            >
+              {isLoading ? <Loader2 className="w-4 h-4 animate-spin mx-auto" /> : "Подтвердить"}
+            </button>
+          </>
+        )}
+      </div>
+    </>
+  );
+}
+
 export function ConnectButton() {
   const { address, isConnected, chainId } = useAccount();
   const { connect }     = useConnect();
   const { disconnect }  = useDisconnect();
   const { switchChain } = useSwitchChain();
-  const { ready, login, logout, authenticated, exportWallet } = usePrivy();
+  const { isAuthenticated, isLoading: openfortLoading, loginWithTelegram, logout: openfortLogout } = useOpenfortContext();
+
   const [open, setOpen]           = useState(false);
   const [modal, setModal]         = useState(false);
+  const [emailModal, setEmailModal] = useState(false);
   const [hasInjected, setHasInjected] = useState(false);
   const [isTelegram, setIsTelegram]   = useState(false);
 
@@ -56,36 +122,77 @@ export function ConnectButton() {
   };
 
   if (!isConnected) {
-    // Telegram WebApp — use Privy (embedded wallet / Telegram auth)
+    // Telegram — используем Openfort (embedded wallet + газ)
     if (isTelegram) {
       return (
         <button
-          onClick={() => login()}
-          disabled={!ready}
+          onClick={loginWithTelegram}
+          disabled={openfortLoading}
           className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold transition-all disabled:opacity-50"
           style={btnStyle}
         >
-          <Wallet className="w-4 h-4" />
+          {openfortLoading
+            ? <Loader2 className="w-4 h-4 animate-spin" />
+            : <Wallet className="w-4 h-4" />
+          }
           Connect
         </button>
       );
     }
 
-    // If wallet detected — connect immediately on click, no modal
+    // Browser с кошельком — инжектед
     if (hasInjected) {
       return (
-        <button
-          onClick={() => connect({ connector: injected() })}
-          className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold transition-all"
-          style={btnStyle}
-        >
-          <Wallet className="w-4 h-4" />
-          Connect
-        </button>
+        <>
+          <button
+            onClick={() => setModal(true)}
+            className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold transition-all"
+            style={btnStyle}
+          >
+            <Wallet className="w-4 h-4" />
+            Connect
+          </button>
+
+          {modal && (
+            <>
+              <div className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm" onClick={() => setModal(false)} />
+              <div
+                className="fixed z-50 left-1/2 -translate-x-1/2 bottom-6 w-[calc(100%-2rem)] max-w-sm rounded-3xl p-5 space-y-3"
+                style={{ background: "#10101e", border: "1px solid rgba(255,255,255,0.08)" }}
+              >
+                <div className="flex items-center justify-between mb-1">
+                  <p className="text-white font-bold text-sm">Connect Wallet</p>
+                  <button onClick={() => setModal(false)} className="text-white/30 hover:text-white">
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+                <button
+                  onClick={() => { connect({ connector: injected() }); setModal(false); }}
+                  className="w-full flex items-center gap-4 px-4 py-3 rounded-2xl transition-all hover:opacity-80"
+                  style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)" }}
+                >
+                  <span className="text-2xl">🦊</span>
+                  <span className="text-white font-semibold text-sm">MetaMask / Browser Wallet</span>
+                </button>
+                <button
+                  onClick={() => { setModal(false); setEmailModal(true); }}
+                  className="w-full flex items-center gap-4 px-4 py-3 rounded-2xl transition-all hover:opacity-80"
+                  style={{ background: "rgba(245,166,35,0.08)", border: "1px solid rgba(245,166,35,0.15)" }}
+                >
+                  <Mail className="w-5 h-5 text-gold" />
+                  <span className="text-white font-semibold text-sm">Email (Gasless Wallet)</span>
+                </button>
+                <p className="text-white/20 text-xs text-center pt-1">Polygon · DAI</p>
+              </div>
+            </>
+          )}
+
+          {emailModal && <EmailOTPModal onClose={() => setEmailModal(false)} />}
+        </>
       );
     }
 
-    // No wallet — show deep links modal
+    // Нет кошелька — deeplinks + email
     return (
       <>
         <button
@@ -123,10 +230,21 @@ export function ConnectButton() {
                 </button>
               ))}
 
+              <button
+                onClick={() => { setModal(false); setEmailModal(true); }}
+                className="w-full flex items-center gap-4 px-4 py-3 rounded-2xl transition-all hover:opacity-80"
+                style={{ background: "rgba(245,166,35,0.08)", border: "1px solid rgba(245,166,35,0.15)" }}
+              >
+                <Mail className="w-5 h-5 text-gold" />
+                <span className="text-white font-semibold text-sm">Email (Gasless Wallet)</span>
+              </button>
+
               <p className="text-white/20 text-xs text-center pt-1">Polygon · DAI</p>
             </div>
           </>
         )}
+
+        {emailModal && <EmailOTPModal onClose={() => setEmailModal(false)} />}
       </>
     );
   }
@@ -165,12 +283,12 @@ export function ConnectButton() {
         <>
           <div className="fixed inset-0 z-10" onClick={() => setOpen(false)} />
           <div
-            className="absolute right-0 top-11 z-20 w-44 rounded-xl overflow-hidden"
+            className="absolute right-0 top-11 z-20 w-52 rounded-xl overflow-hidden"
             style={{ background: "#10101e", border: "1px solid rgba(255,255,255,0.08)" }}
           >
-            {authenticated && (
+            {isAuthenticated && (
               <button
-                onClick={() => { exportWallet(); setOpen(false); }}
+                onClick={() => { setOpen(false); setEmailModal(true); }}
                 className="w-full flex items-center gap-2.5 px-4 py-3 text-sm text-white/60 hover:text-white hover:bg-white/5 transition-all border-b border-white/5"
               >
                 <KeyRound className="w-3.5 h-3.5" />
@@ -178,7 +296,11 @@ export function ConnectButton() {
               </button>
             )}
             <button
-              onClick={() => { disconnect(); if (authenticated) logout(); setOpen(false); }}
+              onClick={() => {
+                disconnect();
+                if (isAuthenticated) openfortLogout();
+                setOpen(false);
+              }}
               className="w-full flex items-center gap-2.5 px-4 py-3 text-sm text-white/60 hover:text-white hover:bg-white/5 transition-all"
             >
               <LogOut className="w-3.5 h-3.5" />
