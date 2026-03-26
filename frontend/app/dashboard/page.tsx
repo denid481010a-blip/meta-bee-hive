@@ -152,14 +152,19 @@ export default function DashboardPage() {
         <div className="md:col-span-2 space-y-3">
           {/* Купить DAI */}
           <button
-            onClick={() => address && fundWallet({ address, options: { chain: polygon, asset: { erc20: DAI_ADDRESS } } })}
+            onClick={() => {
+              const url = `https://app.uniswap.org/swap?outputCurrency=0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063&chain=polygon`;
+              const tg = (window as any).Telegram?.WebApp;
+              if (tg) tg.openLink(url);
+              else window.open(url, "_blank");
+            }}
             className="w-full flex items-center gap-3 px-5 py-3 rounded-2xl transition-all hover:opacity-80"
             style={{ background: "rgba(41,182,246,0.08)", border: "1px solid rgba(41,182,246,0.2)" }}
           >
-            <span className="text-2xl">💳</span>
+            <span className="text-2xl">💱</span>
             <div className="text-left">
               <p className="text-white text-sm font-bold">Купить DAI</p>
-              <p className="text-white/40 text-xs">Оплата картой → DAI на Polygon</p>
+              <p className="text-white/40 text-xs">Uniswap → DAI на Polygon</p>
             </div>
           </button>
           <ReferralLink address={address ?? ""} />
