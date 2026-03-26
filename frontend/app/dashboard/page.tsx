@@ -155,8 +155,17 @@ export default function DashboardPage() {
             onClick={() => {
               const url = `https://app.uniswap.org/swap?outputCurrency=0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063&chain=polygon`;
               const tg = (window as any).Telegram?.WebApp;
-              if (tg) tg.openLink(url);
-              else window.open(url, "_blank");
+              if (tg) {
+                tg.openLink(url);
+              } else {
+                const a = document.createElement("a");
+                a.href = url;
+                a.target = "_blank";
+                a.rel = "noreferrer";
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+              }
             }}
             className="w-full flex items-center gap-3 px-5 py-3 rounded-2xl transition-all hover:opacity-80"
             style={{ background: "rgba(41,182,246,0.08)", border: "1px solid rgba(41,182,246,0.2)" }}
