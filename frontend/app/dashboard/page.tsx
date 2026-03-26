@@ -152,7 +152,7 @@ export default function DashboardPage() {
         <div className="md:col-span-2 space-y-3">
           {/* Купить DAI */}
           <button
-            onClick={() => address && fundWallet({ address, chain: polygon, asset: { erc20: DAI_ADDRESS } })}
+            onClick={() => address && fundWallet({ address, options: { chain: polygon, asset: { erc20: DAI_ADDRESS } } })}
             className="w-full flex items-center gap-3 px-5 py-3 rounded-2xl transition-all hover:opacity-80"
             style={{ background: "rgba(41,182,246,0.08)", border: "1px solid rgba(41,182,246,0.2)" }}
           >
