@@ -92,19 +92,24 @@ export default function LandingPage() {
             </p>
           </div>
         ) : (
-          <button
-            onClick={() => {
-              setIsLoggingIn(true);
-              loginWithTelegram().finally(() => setIsLoggingIn(false));
-            }}
-            className="flex items-center gap-3 px-8 py-4 rounded-2xl text-base font-bold w-full max-w-xs justify-center"
-            style={{ background: "#2AABEE", color: "#fff", boxShadow: "0 0 24px rgba(42,171,238,0.35)" }}
-          >
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L8.32 13.617l-2.96-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.828.942z"/>
-            </svg>
-            Войти через Telegram
-          </button>
+          <div className="w-full max-w-xs space-y-3">
+            <button
+              onClick={() => {
+                setIsLoggingIn(true);
+                loginWithTelegram().finally(() => setIsLoggingIn(false));
+              }}
+              className="flex items-center gap-3 px-8 py-4 rounded-2xl text-base font-bold w-full justify-center"
+              style={{ background: "#2AABEE", color: "#fff", boxShadow: "0 0 24px rgba(42,171,238,0.35)" }}
+            >
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L8.32 13.617l-2.96-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.828.942z"/>
+              </svg>
+              Войти через Telegram
+            </button>
+            <p className="text-white/30 text-xs text-center">
+              Появится диалог — нажмите «Да» для входа
+            </p>
+          </div>
         )}
       </div>
     );

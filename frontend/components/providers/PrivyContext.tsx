@@ -10,6 +10,7 @@ import {
   PrivyProvider,
   usePrivy,
   useWallets,
+  useLoginWithTelegram,
   useSendTransaction,
 } from "@privy-io/react-auth";
 import { polygon, polygonAmoy } from "viem/chains";
@@ -38,24 +39,32 @@ function PrivyAuthInner({ children }: { children: ReactNode }) {
   const { sendTransaction: privySendTx } = useSendTransaction();
   const [error, setError] = useState<string | null>(null);
 
+  const { login: loginTg } = useLoginWithTelegram({
+    onComplete: () => { setError(null); },
+    onError: (err) => {
+      const msg = typeof err === "string" ? err : (err as any)?.message ?? "Ошибка входа";
+      setError(msg);
+      toast.error(msg, { duration: 6000 });
+    },
+  });
+
   const embeddedWallet = wallets.find((w) => w.walletClientType === "privy");
   const address = embeddedWallet?.address;
 
   const loginWithTelegram = useCallback(async () => {
     setError(null);
     if (!ready) {
-      toast.error("Приложение ещё загружается");
+      toast.error("Приложение ещё загружается, подождите...");
       return;
     }
     try {
-      // login() from usePrivy auto-detects Telegram Mini App context via window.Telegram.WebApp.initData
-      login();
+      loginTg();
     } catch (e: any) {
       const msg = e?.message ?? "Ошибка входа";
       setError(msg);
       toast.error(msg, { duration: 6000 });
     }
-  }, [ready, login]);
+  }, [ready, loginTg]);
 
   const logout = useCallback(async () => {
     try {
