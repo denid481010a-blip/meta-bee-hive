@@ -48,7 +48,7 @@ function OrbitalPreview({ color, slots }: { color: string; slots: number }) {
 export default function LandingPage() {
   const router = useRouter();
   const { address, isConnected, status } = useAccount();
-  const { loginWithTelegram, isLoading: privyLoading, isAuthenticated, error: privyError } = usePrivyAuth();
+  const { loginWithTelegram, isLoading: privyLoading, error: privyError } = usePrivyAuth();
   const [hydrated, setHydrated] = useState(false);
   const [isTg, setIsTg] = useState(false);
   const [isLoggingIn, setIsLoggingIn] = useState(false);
@@ -65,10 +65,10 @@ export default function LandingPage() {
   }, [hydrated]);
 
   useEffect(() => {
-    if (hydrated && (isAuthenticated || (status === "connected" && address))) {
+    if (hydrated && status === "connected" && address) {
       router.push("/dashboard");
     }
-  }, [hydrated, isAuthenticated, status, address]);
+  }, [hydrated, status, address]);
 
   // Telegram fullscreen state
   if (isTg && !isConnected) {
