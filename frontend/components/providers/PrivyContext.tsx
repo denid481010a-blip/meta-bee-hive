@@ -59,9 +59,8 @@ function PrivyAuthInner({ children }: { children: ReactNode }) {
     }
     try {
       const tg = (window as any).Telegram?.WebApp;
-      const hasInitData = !!(tg?.initData);
-      toast(`🔐 Вход... ${hasInitData ? "Telegram Mini App" : "Web"}`, { duration: 2000 });
-      if (hasInitData) {
+      if (tg) {
+        // В любом Telegram контексте используем Mini App auth
         loginTg();
       } else {
         login();
