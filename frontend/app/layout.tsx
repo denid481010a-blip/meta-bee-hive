@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { Web3Provider } from "@/components/providers/Web3Provider";
 import { Toaster } from "react-hot-toast";
+import Script from "next/script";
 
 export const dynamic = "force-dynamic";
 
@@ -20,6 +21,9 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="ru" className="h-full">
+      <head>
+        <Script src="https://telegram.org/js/telegram-web-app.js" strategy="beforeInteractive" />
+      </head>
       <body className="min-h-full bg-bg text-white antialiased tg-safe-area">
         <Web3Provider>
           {children}
