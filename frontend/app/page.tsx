@@ -79,8 +79,11 @@ export default function LandingPage() {
     }
   }, [hydrated, status, address, isAuthenticated, privyAddress]);
 
-  // Telegram fullscreen state: show login only when NOT authenticated via either path
-  if (isTg && !isConnected && !isAuthenticated) {
+  // Telegram fullscreen state
+  if (isTg && !isConnected) {
+    // Auto-login in progress (Privy read initData from hash) or manual login
+    const isAuthenticating = privyLoading || isLoggingIn || (isAuthenticated && !privyAddress);
+
     return (
       <div className="min-h-screen bg-bg flex flex-col items-center justify-center gap-6 text-white px-6">
         <div className="text-6xl">🐝</div>
@@ -93,11 +96,11 @@ export default function LandingPage() {
             {privyError}
           </p>
         )}
-        {(privyLoading || isLoggingIn) ? (
+        {isAuthenticating ? (
           <div className="flex flex-col items-center gap-3">
             <Loader2 className="w-8 h-8 animate-spin text-gold" />
             <p className="text-white/40 text-sm">
-              {privyLoading ? "Инициализация..." : "Подключаем кошелёк..."}
+              {privyLoading ? "Входим..." : "Создаём кошелёк..."}
             </p>
           </div>
         ) : (
@@ -115,9 +118,6 @@ export default function LandingPage() {
               </svg>
               Войти через Telegram
             </button>
-            <p className="text-white/30 text-xs text-center">
-              Появится диалог — нажмите «Да» для входа
-            </p>
           </div>
         )}
       </div>
