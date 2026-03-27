@@ -33,13 +33,18 @@ function openDeepLink(url: string) {
 
 /** Email OTP modal for Openfort login */
 function EmailOTPModal({ onClose }: { onClose: () => void }) {
-  const { loginWithEmail, verifyEmailOTP, isLoading, otpSent } = useOpenfortContext();
+  const { loginWithEmail, verifyEmailOTP, isLoading, otpSent, error, resetOtp } = useOpenfortContext();
   const [email, setEmail] = useState("");
   const [otp, setOtp] = useState("");
 
+  function handleClose() {
+    resetOtp();
+    onClose();
+  }
+
   return (
     <>
-      <div className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm" onClick={onClose} />
+      <div className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm" onClick={handleClose} />
       <div
         className="fixed z-50 left-1/2 -translate-x-1/2 bottom-6 w-[calc(100%-2rem)] max-w-sm rounded-3xl p-5 space-y-3"
         style={{ background: "#10101e", border: "1px solid rgba(255,255,255,0.08)" }}
@@ -48,10 +53,14 @@ function EmailOTPModal({ onClose }: { onClose: () => void }) {
           <p className="text-white font-bold text-sm">
             {otpSent ? "Введите код из письма" : "Войти по email"}
           </p>
-          <button onClick={onClose} className="text-white/30 hover:text-white">
+          <button onClick={handleClose} className="text-white/30 hover:text-white">
             <X className="w-4 h-4" />
           </button>
         </div>
+
+        {error && (
+          <p className="text-xs text-red-400 bg-red-500/10 rounded-lg px-3 py-2">{error}</p>
+        )}
 
         {!otpSent ? (
           <>
@@ -73,6 +82,7 @@ function EmailOTPModal({ onClose }: { onClose: () => void }) {
           </>
         ) : (
           <>
+            <p className="text-white/40 text-xs">Код отправлен на {email}</p>
             <input
               type="text"
               placeholder="Код из письма"
@@ -87,6 +97,9 @@ function EmailOTPModal({ onClose }: { onClose: () => void }) {
               style={{ background: "rgba(245,166,35,0.15)", border: "1px solid rgba(245,166,35,0.3)", color: "#fff" }}
             >
               {isLoading ? <Loader2 className="w-4 h-4 animate-spin mx-auto" /> : "Подтвердить"}
+            </button>
+            <button onClick={resetOtp} className="w-full text-xs text-white/30 hover:text-white/50 pt-1">
+              ← Изменить email
             </button>
           </>
         )}

@@ -14,12 +14,14 @@ import { getOpenfort } from "@/lib/openfort";
 interface OpenfortCtx {
   isAuthenticated: boolean;
   isLoading: boolean;
+  error: string | null;
   loginWithTelegram: () => Promise<void>;
   loginWithEmail: (email: string) => Promise<void>;
   verifyEmailOTP: (email: string, otp: string) => Promise<void>;
   loginAsGuest: () => Promise<void>;
   logout: () => Promise<void>;
   otpSent: boolean;
+  resetOtp: () => void;
 }
 
 const Ctx = createContext<OpenfortCtx | null>(null);
@@ -56,6 +58,7 @@ export function OpenfortProvider({ children }: { children: ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [otpSent, setOtpSent] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const { connect } = useConnect();
   const { disconnect } = useDisconnect();
@@ -109,15 +112,22 @@ export function OpenfortProvider({ children }: { children: ReactNode }) {
     }
   }, [finishAuth]);
 
+  const resetOtp = useCallback(() => {
+    setOtpSent(false);
+    setError(null);
+  }, []);
+
   /** Отправка OTP на email */
   const loginWithEmail = useCallback(async (email: string) => {
     setIsLoading(true);
+    setError(null);
     try {
       const openfort = getOpenfort();
       await openfort.auth.requestEmailOtp({ email });
       setOtpSent(true);
-    } catch (e) {
+    } catch (e: any) {
       console.error("OTP send error:", e);
+      setError(e?.message ?? "Не удалось отправить код");
     } finally {
       setIsLoading(false);
     }
@@ -127,13 +137,15 @@ export function OpenfortProvider({ children }: { children: ReactNode }) {
   const verifyEmailOTP = useCallback(
     async (email: string, otp: string) => {
       setIsLoading(true);
+      setError(null);
       try {
         const openfort = getOpenfort();
         await openfort.auth.logInWithEmailOtp({ email, otp });
         await setupWallet(finishAuth);
         setOtpSent(false);
-      } catch (e) {
+      } catch (e: any) {
         console.error("OTP verify error:", e);
+        setError(e?.message ?? "Неверный код");
       } finally {
         setIsLoading(false);
       }
@@ -165,6 +177,7 @@ export function OpenfortProvider({ children }: { children: ReactNode }) {
     disconnect();
     setIsAuthenticated(false);
     setOtpSent(false);
+    setError(null);
   }, [disconnect]);
 
   return (
@@ -172,12 +185,14 @@ export function OpenfortProvider({ children }: { children: ReactNode }) {
       value={{
         isAuthenticated,
         isLoading,
+        error,
         loginWithTelegram,
         loginWithEmail,
         verifyEmailOTP,
         loginAsGuest,
         logout,
         otpSent,
+        resetOtp,
       }}
     >
       {children}
