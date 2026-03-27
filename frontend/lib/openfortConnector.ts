@@ -18,7 +18,7 @@ export const openfortConnector = createConnector((config) => ({
   type: "openfort-embedded" as const,
   icon: "https://openfort.io/favicon.ico",
 
-  async connect(_params?: any) {
+  async connect(_params?: any): Promise<any> {
     if (!_provider) throw new Error("Openfort provider not initialized");
     const accounts = (await _provider.request({
       method: "eth_accounts",
