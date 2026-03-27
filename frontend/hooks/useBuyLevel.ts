@@ -1,6 +1,6 @@
 "use client";
 import { useState, useCallback } from "react";
-import { useAccount, usePublicClient } from "wagmi";
+import { useAccount, usePublicClient, useSendTransaction } from "wagmi";
 import { encodeFunctionData } from "viem";
 import { BHS_ABI, DAI_ABI } from "@/lib/contract";
 import { CONTRACT_ADDRESS, DAI_ADDRESS } from "@/lib/constants";
@@ -18,7 +18,23 @@ export type BuyStep =
 export function useBuyLevel() {
   const { address } = useAccount();
   const publicClient = usePublicClient();
-  const { sendTransaction } = usePrivyAuth();
+  const { sendTransaction: privySendTx, isAuthenticated } = usePrivyAuth();
+  const { sendTransactionAsync: wagmiSendTx } = useSendTransaction();
+
+  const sendTransaction = useCallback(
+    async (to: string, data: string, value: bigint = 0n): Promise<string> => {
+      if (isAuthenticated) {
+        return privySendTx(to, data, value);
+      }
+      // External wallet (MetaMask / mnemonic) — use wagmi directly
+      return wagmiSendTx({
+        to: to as `0x${string}`,
+        data: data as `0x${string}`,
+        value,
+      });
+    },
+    [isAuthenticated, privySendTx, wagmiSendTx],
+  );
 
   const [step, setStep]           = useState<BuyStep>("idle");
   const [error, setError]         = useState<string | null>(null);

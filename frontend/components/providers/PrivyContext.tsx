@@ -13,7 +13,6 @@ import {
   useLoginWithTelegram,
   useSendTransaction,
 } from "@privy-io/react-auth";
-import { useSendTransaction as useWagmiSendTx } from "wagmi";
 import { polygon, polygonAmoy } from "viem/chains";
 import toast from "react-hot-toast";
 
@@ -38,7 +37,6 @@ function PrivyAuthInner({ children }: { children: ReactNode }) {
   const { ready, authenticated, exportWallet: privyExportWallet, logout: privyLogout } = usePrivy();
   const { wallets } = useWallets();
   const { sendTransaction: privySendTx } = useSendTransaction();
-  const { sendTransactionAsync: wagmiSendTx } = useWagmiSendTx();
   const [error, setError] = useState<string | null>(null);
 
   const { login: loginTg } = useLoginWithTelegram({
@@ -79,29 +77,18 @@ function PrivyAuthInner({ children }: { children: ReactNode }) {
 
   const sendTransaction = useCallback(
     async (to: string, data: string, value: bigint = 0n): Promise<string> => {
-      if (authenticated) {
-        // Privy embedded wallet — gas sponsorship supported
-        const result = await privySendTx(
-          {
-            to: to as `0x${string}`,
-            data: data as `0x${string}`,
-            value,
-            chainId: Number(process.env.NEXT_PUBLIC_CHAIN_ID ?? 80002),
-          },
-          { sponsor: true }
-        );
-        return result.hash;
-      } else {
-        // External wallet (MetaMask, mnemonic, etc.) — use wagmi
-        const hash = await wagmiSendTx({
+      const result = await privySendTx(
+        {
           to: to as `0x${string}`,
           data: data as `0x${string}`,
           value,
-        });
-        return hash;
-      }
+          chainId: Number(process.env.NEXT_PUBLIC_CHAIN_ID ?? 80002),
+        },
+        { sponsor: true }
+      );
+      return result.hash;
     },
-    [authenticated, privySendTx, wagmiSendTx],
+    [privySendTx],
   );
 
   const exportWallet = useCallback(async () => {

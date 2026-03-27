@@ -1,13 +1,21 @@
 "use client";
-import { useState } from "react";
-import { useWaitForTransactionReceipt } from "wagmi";
+import { useState, useCallback } from "react";
+import { useWaitForTransactionReceipt, useSendTransaction } from "wagmi";
 import { encodeFunctionData } from "viem";
 import { BHS_ABI } from "@/lib/contract";
 import { CONTRACT_ADDRESS } from "@/lib/constants";
 import { usePrivyAuth } from "@/components/providers/PrivyContext";
 
 export function useRegister() {
-  const { sendTransaction } = usePrivyAuth();
+  const { sendTransaction: privySendTx, isAuthenticated } = usePrivyAuth();
+  const { sendTransactionAsync: wagmiSendTx } = useSendTransaction();
+  const sendTransaction = useCallback(
+    async (to: string, data: string, value: bigint = 0n) => {
+      if (isAuthenticated) return privySendTx(to, data, value);
+      return wagmiSendTx({ to: to as `0x${string}`, data: data as `0x${string}`, value });
+    },
+    [isAuthenticated, privySendTx, wagmiSendTx],
+  );
   const [txHash, setTxHash] = useState<`0x${string}` | undefined>();
   const [error, setError] = useState<string | null>(null);
   const [isSending, setIsSending] = useState(false);
