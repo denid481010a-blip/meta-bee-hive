@@ -2,7 +2,15 @@
 import { useAccount, useConnect, useDisconnect, useSwitchChain } from "wagmi";
 import { injected } from "wagmi/connectors";
 import { useState, useEffect } from "react";
-import { Wallet, ChevronDown, LogOut, AlertTriangle, X, KeyRound, Mail, Loader2 } from "lucide-react";
+import { Wallet, ChevronDown, LogOut, AlertTriangle, X, KeyRound, Loader2 } from "lucide-react";
+
+function TelegramIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L8.32 13.617l-2.96-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.828.942z"/>
+    </svg>
+  );
+}
 import { shortAddress } from "@/lib/formatters";
 import { CHAIN_ID } from "@/lib/constants";
 import { clsx } from "clsx";
@@ -113,11 +121,10 @@ export function ConnectButton() {
   const { connect }     = useConnect();
   const { disconnect }  = useDisconnect();
   const { switchChain } = useSwitchChain();
-  const { isAuthenticated, isLoading: openfortLoading, loginWithTelegram, loginAsGuest, logout: openfortLogout } = useOpenfortContext();
+  const { isAuthenticated, isLoading: openfortLoading, loginWithTelegram, logout: openfortLogout } = useOpenfortContext();
 
   const [open, setOpen]           = useState(false);
   const [modal, setModal]         = useState(false);
-  const [emailModal, setEmailModal] = useState(false);
   const [hasInjected, setHasInjected] = useState(false);
   const [isTelegram, setIsTelegram]   = useState(false);
 
@@ -142,13 +149,10 @@ export function ConnectButton() {
           onClick={loginWithTelegram}
           disabled={openfortLoading}
           className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold transition-all disabled:opacity-50"
-          style={btnStyle}
+          style={{ background: "#2AABEE", color: "#fff", boxShadow: "0 0 20px rgba(42,171,238,0.3)" }}
         >
-          {openfortLoading
-            ? <Loader2 className="w-4 h-4 animate-spin" />
-            : <Wallet className="w-4 h-4" />
-          }
-          Connect
+          {openfortLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <TelegramIcon />}
+          Войти через Telegram
         </button>
       );
     }
@@ -180,6 +184,15 @@ export function ConnectButton() {
                   </button>
                 </div>
                 <button
+                  onClick={() => { setModal(false); loginWithTelegram(); }}
+                  disabled={openfortLoading}
+                  className="w-full flex items-center gap-4 px-4 py-3 rounded-2xl transition-all hover:opacity-80 disabled:opacity-50"
+                  style={{ background: "rgba(42,171,238,0.12)", border: "1px solid rgba(42,171,238,0.3)" }}
+                >
+                  <span className="text-[#2AABEE]"><TelegramIcon /></span>
+                  <span className="text-white font-semibold text-sm">Войти через Telegram</span>
+                </button>
+                <button
                   onClick={() => { connect({ connector: injected() }); setModal(false); }}
                   className="w-full flex items-center gap-4 px-4 py-3 rounded-2xl transition-all hover:opacity-80"
                   style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)" }}
@@ -187,29 +200,10 @@ export function ConnectButton() {
                   <span className="text-2xl">🦊</span>
                   <span className="text-white font-semibold text-sm">MetaMask / Browser Wallet</span>
                 </button>
-                <button
-                  onClick={() => { setModal(false); setEmailModal(true); }}
-                  className="w-full flex items-center gap-4 px-4 py-3 rounded-2xl transition-all hover:opacity-80"
-                  style={{ background: "rgba(245,166,35,0.08)", border: "1px solid rgba(245,166,35,0.15)" }}
-                >
-                  <Mail className="w-5 h-5 text-gold" />
-                  <span className="text-white font-semibold text-sm">Email (Gasless Wallet)</span>
-                </button>
-                <button
-                  onClick={() => { setModal(false); loginAsGuest(); }}
-                  disabled={openfortLoading}
-                  className="w-full flex items-center gap-4 px-4 py-3 rounded-2xl transition-all hover:opacity-80 disabled:opacity-50"
-                  style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" }}
-                >
-                  <span className="text-lg">👤</span>
-                  <span className="text-white/50 font-semibold text-sm">Войти как гость</span>
-                </button>
                 <p className="text-white/20 text-xs text-center pt-1">Polygon · DAI</p>
               </div>
             </>
           )}
-
-          {emailModal && <EmailOTPModal onClose={() => setEmailModal(false)} />}
         </>
       );
     }
@@ -240,6 +234,16 @@ export function ConnectButton() {
                 </button>
               </div>
 
+              <button
+                onClick={() => { setModal(false); loginWithTelegram(); }}
+                disabled={openfortLoading}
+                className="w-full flex items-center gap-4 px-4 py-3 rounded-2xl transition-all hover:opacity-80 disabled:opacity-50"
+                style={{ background: "rgba(42,171,238,0.12)", border: "1px solid rgba(42,171,238,0.3)" }}
+              >
+                <span className="text-[#2AABEE]"><TelegramIcon /></span>
+                <span className="text-white font-semibold text-sm">Войти через Telegram</span>
+              </button>
+
               {WALLETS.map((w) => (
                 <button
                   key={w.id}
@@ -252,30 +256,10 @@ export function ConnectButton() {
                 </button>
               ))}
 
-              <button
-                onClick={() => { setModal(false); setEmailModal(true); }}
-                className="w-full flex items-center gap-4 px-4 py-3 rounded-2xl transition-all hover:opacity-80"
-                style={{ background: "rgba(245,166,35,0.08)", border: "1px solid rgba(245,166,35,0.15)" }}
-              >
-                <Mail className="w-5 h-5 text-gold" />
-                <span className="text-white font-semibold text-sm">Email (Gasless Wallet)</span>
-              </button>
-              <button
-                onClick={() => { setModal(false); loginAsGuest(); }}
-                disabled={openfortLoading}
-                className="w-full flex items-center gap-4 px-4 py-3 rounded-2xl transition-all hover:opacity-80 disabled:opacity-50"
-                style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" }}
-              >
-                <span className="text-lg">👤</span>
-                <span className="text-white/50 font-semibold text-sm">Войти как гость</span>
-              </button>
-
               <p className="text-white/20 text-xs text-center pt-1">Polygon · DAI</p>
             </div>
           </>
         )}
-
-        {emailModal && <EmailOTPModal onClose={() => setEmailModal(false)} />}
       </>
     );
   }
