@@ -4,9 +4,10 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { wagmiConfig } from "@/lib/wagmiConfig";
 import { TelegramProvider } from "./TelegramProvider";
 import { PrivyAuthProvider } from "./PrivyContext";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export function Web3Provider({ children }: { children: React.ReactNode }) {
+  const [mounted, setMounted] = useState(false);
   const [queryClient] = useState(
     () =>
       new QueryClient({
@@ -15,6 +16,14 @@ export function Web3Provider({ children }: { children: React.ReactNode }) {
         },
       })
   );
+
+  // Privy and wagmi access browser APIs (window, crypto, localStorage)
+  // during initialization — skip SSR entirely to avoid 500 errors.
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) return null;
 
   return (
     <PrivyAuthProvider>
