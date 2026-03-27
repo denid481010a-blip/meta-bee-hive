@@ -113,7 +113,7 @@ export function ConnectButton() {
   const { connect }     = useConnect();
   const { disconnect }  = useDisconnect();
   const { switchChain } = useSwitchChain();
-  const { isAuthenticated, isLoading: openfortLoading, loginWithTelegram, logout: openfortLogout } = useOpenfortContext();
+  const { isAuthenticated, isLoading: openfortLoading, loginWithTelegram, loginAsGuest, logout: openfortLogout } = useOpenfortContext();
 
   const [open, setOpen]           = useState(false);
   const [modal, setModal]         = useState(false);
@@ -195,6 +195,15 @@ export function ConnectButton() {
                   <Mail className="w-5 h-5 text-gold" />
                   <span className="text-white font-semibold text-sm">Email (Gasless Wallet)</span>
                 </button>
+                <button
+                  onClick={() => { setModal(false); loginAsGuest(); }}
+                  disabled={openfortLoading}
+                  className="w-full flex items-center gap-4 px-4 py-3 rounded-2xl transition-all hover:opacity-80 disabled:opacity-50"
+                  style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" }}
+                >
+                  <span className="text-lg">👤</span>
+                  <span className="text-white/50 font-semibold text-sm">Войти как гость</span>
+                </button>
                 <p className="text-white/20 text-xs text-center pt-1">Polygon · DAI</p>
               </div>
             </>
@@ -250,6 +259,15 @@ export function ConnectButton() {
               >
                 <Mail className="w-5 h-5 text-gold" />
                 <span className="text-white font-semibold text-sm">Email (Gasless Wallet)</span>
+              </button>
+              <button
+                onClick={() => { setModal(false); loginAsGuest(); }}
+                disabled={openfortLoading}
+                className="w-full flex items-center gap-4 px-4 py-3 rounded-2xl transition-all hover:opacity-80 disabled:opacity-50"
+                style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" }}
+              >
+                <span className="text-lg">👤</span>
+                <span className="text-white/50 font-semibold text-sm">Войти как гость</span>
               </button>
 
               <p className="text-white/20 text-xs text-center pt-1">Polygon · DAI</p>
