@@ -197,12 +197,9 @@ export function OpenfortProvider({ children }: { children: ReactNode }) {
     }
   }, [finishAuth]);
 
-  /** Выход */
+  /** Выход — не уничтожаем сессию Openfort, только отключаем wagmi.
+   *  Это гарантирует что при следующем входе восстановится тот же кошелёк. */
   const logout = useCallback(async () => {
-    try {
-      const openfort = getOpenfort();
-      await openfort.auth.logout();
-    } catch (_) {}
     clearOpenfortEIP1193Provider();
     disconnect();
     setIsAuthenticated(false);
