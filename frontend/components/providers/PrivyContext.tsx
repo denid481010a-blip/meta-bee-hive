@@ -14,6 +14,9 @@ import {
   useSendTransaction,
 } from "@privy-io/react-auth";
 import { polygon, polygonAmoy } from "viem/chains";
+
+const CHAIN_ID = Number(process.env.NEXT_PUBLIC_CHAIN_ID ?? 80002);
+const activeChain = CHAIN_ID === 137 ? polygon : polygonAmoy;
 import toast from "react-hot-toast";
 
 // ── Context interface ──────────────────────────────────────────────────────
@@ -140,7 +143,7 @@ export function PrivyAuthProvider({ children }: { children: ReactNode }) {
           createOnLogin: "users-without-wallets",
           showWalletUIs: false,
         },
-        defaultChain: polygonAmoy,
+        defaultChain: activeChain,
         supportedChains: [polygon, polygonAmoy],
       }}
     >
