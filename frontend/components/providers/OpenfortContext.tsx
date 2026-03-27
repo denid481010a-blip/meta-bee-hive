@@ -207,8 +207,12 @@ export function OpenfortProvider({ children }: { children: ReactNode }) {
     const tid = toast.loading("Создание кошелька...");
     try {
       const openfort = getOpenfort();
-      await openfort.waitForInitialization();
-      await openfort.auth.signUpGuest();
+      await withTimeout(openfort.waitForInitialization(), 15_000, "SDK initialization");
+      // Skip signUpGuest if session already exists
+      const existingToken = await openfort.getAccessToken();
+      if (!existingToken) {
+        await openfort.auth.signUpGuest();
+      }
       await setupWallet(finishAuth);
       toast.success("Кошелёк создан!", { id: tid });
     } catch (e: any) {
