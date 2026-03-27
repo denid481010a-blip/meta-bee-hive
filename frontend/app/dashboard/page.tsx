@@ -47,7 +47,7 @@ function ExportKeyModal({ onClose }: { onClose: () => void }) {
         <div className="flex items-center justify-between">
           <p className="text-white font-bold text-sm flex items-center gap-2">
             <KeyRound className="w-4 h-4 text-gold" />
-            Скопировать секретный ключ кошелька для импорта
+            Секретный ключ
           </p>
           <button onClick={onClose} className="text-white/30 hover:text-white">
             <X className="w-4 h-4" />
@@ -68,7 +68,7 @@ function ExportKeyModal({ onClose }: { onClose: () => void }) {
           className="w-full py-3 rounded-xl text-sm font-bold disabled:opacity-50 flex items-center justify-center gap-2"
           style={{ background: "rgba(245,166,35,0.15)", border: "1px solid rgba(245,166,35,0.3)", color: "#fff" }}
         >
-          {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Экспортировать кошелёк"}
+          {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Скопировать секретный ключ для импорта"}
         </button>
       </div>
     </>
@@ -237,7 +237,7 @@ export default function DashboardPage() {
           >
             <KeyRound className="w-5 h-5 flex-shrink-0" style={{ color: "#F5A623" }} />
             <div className="text-left">
-              <p className="text-white text-sm font-bold">Скопировать секретный ключ кошелька для импорта</p>
+              <p className="text-white text-sm font-bold">Секретный ключ</p>
               <p className="text-white/40 text-xs">Импортировать в MetaMask</p>
             </div>
           </button>
