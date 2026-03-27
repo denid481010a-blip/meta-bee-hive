@@ -16,11 +16,30 @@ interface OpenfortCtx {
   loginWithTelegram: () => Promise<void>;
   loginWithEmail: (email: string) => Promise<void>;
   verifyEmailOTP: (email: string, otp: string) => Promise<void>;
+  loginAsGuest: () => Promise<void>;
   logout: () => Promise<void>;
   otpSent: boolean;
 }
 
 const Ctx = createContext<OpenfortCtx | null>(null);
+
+const POLYGON_CHAIN_ID = 137;
+
+async function setupWallet(finishAuth: () => Promise<void>) {
+  const openfort = getOpenfort();
+
+  // Конфигурируем embedded wallet на Polygon
+  await openfort.embeddedWallet.configure({ chainId: POLYGON_CHAIN_ID });
+
+  // Получаем EIP-1193 провайдер (с gas sponsorship policy если указан)
+  const policyId = process.env.NEXT_PUBLIC_OPENFORT_POLICY_ID;
+  const provider = await openfort.embeddedWallet.getEthereumProvider(
+    policyId ? { feeSponsorship: policyId } : undefined
+  );
+
+  setOpenfortEIP1193Provider(provider as any);
+  await finishAuth();
+}
 
 export function OpenfortProvider({ children }: { children: ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -30,59 +49,56 @@ export function OpenfortProvider({ children }: { children: ReactNode }) {
   const { connect } = useConnect();
   const { disconnect } = useDisconnect();
 
-  /** После успешной авторизации — получаем провайдер и подключаем wagmi */
   const finishAuth = useCallback(async () => {
-    const openfort = getOpenfort();
-    const provider = await openfort.embeddedWallet.getEthereumProvider();
-    setOpenfortEIP1193Provider(provider as any);
     connect({ connector: openfortConnector });
     setIsAuthenticated(true);
   }, [connect]);
 
-  /** Авторизация через Telegram OAuth */
+  /** Авторизация в Telegram Mini App */
   const loginWithTelegram = useCallback(async () => {
     setIsLoading(true);
     try {
       const openfort = getOpenfort();
-      const tg = (window as any).Telegram?.WebApp;
+      await openfort.waitForInitialization();
 
-      if (tg && tg.initData) {
-        // Telegram Mini App — верифицируем initData через backend
-        const res = await fetch("/api/auth/openfort", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ initData: tg.initData }),
-        });
-        if (!res.ok) throw new Error("Auth failed");
-        const { token } = await res.json();
-        await openfort.authenticateWithCustomToken({
-          token,
-          authProvider: "CUSTOM",
-        });
-      } else {
-        // Browser — Telegram OAuth flow
-        await openfort.authenticateWithOAuth({
-          provider: "TELEGRAM" as any,
-          options: {
-            redirectTo: window.location.origin,
-          },
-        });
+      // Проверяем существующую сессию
+      const existingToken = await openfort.getAccessToken();
+
+      if (!existingToken) {
+        const tg = (window as any).Telegram?.WebApp;
+        if (tg?.initData) {
+          // Верифицируем через backend и получаем Openfort token
+          const res = await fetch("/api/auth/openfort", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ initData: tg.initData }),
+          });
+          if (res.ok) {
+            const { token, userId } = await res.json();
+            await openfort.auth.storeCredentials({ token, userId });
+          } else {
+            // Fallback: guest wallet
+            await openfort.auth.signUpGuest();
+          }
+        } else {
+          await openfort.auth.signUpGuest();
+        }
       }
 
-      await finishAuth();
+      await setupWallet(finishAuth);
     } catch (e) {
-      console.error("Openfort login error:", e);
+      console.error("Openfort Telegram login error:", e);
     } finally {
       setIsLoading(false);
     }
   }, [finishAuth]);
 
-  /** Авторизация по email с OTP */
+  /** Отправка OTP на email */
   const loginWithEmail = useCallback(async (email: string) => {
     setIsLoading(true);
     try {
       const openfort = getOpenfort();
-      await openfort.logInWithEmailOTP({ email });
+      await openfort.auth.requestEmailOtp({ email });
       setOtpSent(true);
     } catch (e) {
       console.error("OTP send error:", e);
@@ -97,8 +113,8 @@ export function OpenfortProvider({ children }: { children: ReactNode }) {
       setIsLoading(true);
       try {
         const openfort = getOpenfort();
-        await openfort.verifyEmailOTP({ email, otp });
-        await finishAuth();
+        await openfort.auth.logInWithEmailOtp({ email, otp });
+        await setupWallet(finishAuth);
         setOtpSent(false);
       } catch (e) {
         console.error("OTP verify error:", e);
@@ -109,11 +125,25 @@ export function OpenfortProvider({ children }: { children: ReactNode }) {
     [finishAuth]
   );
 
+  /** Быстрый вход как гость (для тестов) */
+  const loginAsGuest = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      const openfort = getOpenfort();
+      await openfort.auth.signUpGuest();
+      await setupWallet(finishAuth);
+    } catch (e) {
+      console.error("Guest login error:", e);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [finishAuth]);
+
   /** Выход */
   const logout = useCallback(async () => {
     try {
       const openfort = getOpenfort();
-      await openfort.logout();
+      await openfort.auth.logout();
     } catch (_) {}
     clearOpenfortEIP1193Provider();
     disconnect();
@@ -129,6 +159,7 @@ export function OpenfortProvider({ children }: { children: ReactNode }) {
         loginWithTelegram,
         loginWithEmail,
         verifyEmailOTP,
+        loginAsGuest,
         logout,
         otpSent,
       }}
