@@ -26,10 +26,11 @@ export function useRegister() {
       return hash;
     } catch (e: any) {
       const msg = e?.shortMessage ?? e?.message ?? "";
+      console.error("Register tx error:", msg, e);
       if (msg.includes("rejected") || msg.includes("denied") || msg.includes("cancel")) {
         setError("cancelled");
       } else {
-        setError("failed");
+        setError(msg || "failed");
       }
     } finally {
       setIsSending(false);

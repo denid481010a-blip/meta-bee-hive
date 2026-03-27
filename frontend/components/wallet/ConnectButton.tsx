@@ -1,7 +1,8 @@
 "use client";
-import { useAccount, useConnect, useDisconnect, useSwitchChain } from "wagmi";
+import { useAccount, useConnect, useSwitchChain } from "wagmi";
 import { injected } from "wagmi/connectors";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
+import { useRouter } from "next/navigation";
 import { Wallet, ChevronDown, LogOut, AlertTriangle, X, Loader2 } from "lucide-react";
 
 function TelegramIcon() {
@@ -122,11 +123,18 @@ export function ConnectButton() {
   const { disconnect }  = useDisconnect();
   const { switchChain } = useSwitchChain();
   const { isAuthenticated, isLoading: openfortLoading, loginWithTelegram, logout: openfortLogout } = useOpenfortContext();
+  const router = useRouter();
 
   const [open, setOpen]           = useState(false);
   const [modal, setModal]         = useState(false);
   const [hasInjected, setHasInjected] = useState(false);
   const [isTelegram, setIsTelegram]   = useState(false);
+
+  const handleDisconnect = useCallback(() => {
+    openfortLogout();
+    setOpen(false);
+    router.push("/");
+  }, [openfortLogout, router]);
 
   useEffect(() => {
     setHasInjected(!!(window as any).ethereum);
@@ -302,11 +310,7 @@ export function ConnectButton() {
             style={{ background: "#10101e", border: "1px solid rgba(255,255,255,0.08)" }}
           >
             <button
-              onClick={() => {
-                disconnect();
-                if (isAuthenticated) openfortLogout();
-                setOpen(false);
-              }}
+              onClick={handleDisconnect}
               className="w-full flex items-center gap-2.5 px-4 py-3 text-sm text-white/60 hover:text-white hover:bg-white/5 transition-all"
             >
               <LogOut className="w-3.5 h-3.5" />

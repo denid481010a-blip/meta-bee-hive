@@ -62,9 +62,9 @@ function RegisterBlock({ onSuccess }: { onSuccess: () => void }) {
       )}
 
       {error && error !== "cancelled" && (
-        <div className="px-4 py-2 rounded-2xl text-sm"
+        <div className="px-4 py-2 rounded-2xl text-xs max-w-xs break-words"
           style={{ background: "rgba(255,80,80,0.1)", border: "1px solid rgba(255,80,80,0.2)", color: "#ff6060" }}>
-          Transaction failed. Please try again.
+          {error}
         </div>
       )}
 
