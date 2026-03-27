@@ -2,6 +2,7 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAccount } from "wagmi";
+import { usePrivyAuth } from "@/components/providers/PrivyContext";
 import { Header } from "@/components/layout/Header";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { MobileNav } from "@/components/layout/MobileNav";
@@ -10,10 +11,11 @@ import { LanguageProvider } from "@/lib/i18n/LanguageContext";
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const { isConnected } = useAccount();
+  const { isAuthenticated, isLoading } = usePrivyAuth();
 
   useEffect(() => {
-    if (!isConnected) router.push("/");
-  }, [isConnected, router]);
+    if (!isLoading && !isConnected && !isAuthenticated) router.push("/");
+  }, [isConnected, isAuthenticated, isLoading, router]);
 
   return (
     <LanguageProvider>
