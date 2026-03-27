@@ -3,8 +3,10 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAccount } from "wagmi";
 import { ConnectButton } from "@/components/wallet/ConnectButton";
+import { useOpenfortContext } from "@/components/providers/OpenfortContext";
 import { HIVE_PRICES_DAI, LEVEL_COLORS } from "@/lib/constants";
 import { motion } from "framer-motion";
+import { Loader2 } from "lucide-react";
 
 const STEPS = [
   { n: "01", title: "Connect Wallet",    desc: "MetaMask on Polygon. 30 seconds." },
@@ -46,9 +48,28 @@ function OrbitalPreview({ color, slots }: { color: string; slots: number }) {
 export default function LandingPage() {
   const router = useRouter();
   const { address, isConnected, status } = useAccount();
+  const { loginWithTelegram, isLoading: openfortLoading } = useOpenfortContext();
   const [hydrated, setHydrated] = useState(false);
+  const [isTg, setIsTg] = useState(false);
+  const [tgAutoStarted, setTgAutoStarted] = useState(false);
 
   useEffect(() => { setHydrated(true); }, []);
+
+  // Detect Telegram and auto-login
+  useEffect(() => {
+    if (!hydrated) return;
+    const tg = (window as any).Telegram?.WebApp;
+    if (tg && tg.platform && tg.platform !== "unknown") {
+      setIsTg(true);
+    }
+  }, [hydrated]);
+
+  useEffect(() => {
+    if (isTg && !tgAutoStarted && !isConnected && !openfortLoading) {
+      setTgAutoStarted(true);
+      loginWithTelegram();
+    }
+  }, [isTg, tgAutoStarted, isConnected, openfortLoading]);
 
   useEffect(() => {
     // Wait for wagmi to finish reconnecting before redirecting
@@ -56,6 +77,17 @@ export default function LandingPage() {
       router.push("/dashboard");
     }
   }, [hydrated, status, address]);
+
+  // Telegram: show fullscreen loader while auto-login is in progress
+  if (isTg && (openfortLoading || !isConnected)) {
+    return (
+      <div className="min-h-screen bg-bg flex flex-col items-center justify-center gap-6 text-white">
+        <div className="text-6xl animate-float">🐝</div>
+        <Loader2 className="w-8 h-8 animate-spin text-gold" />
+        <p className="text-white/40 text-sm">Connecting wallet...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-bg text-white overflow-x-hidden">
