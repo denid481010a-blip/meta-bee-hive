@@ -91,6 +91,7 @@ export default function LandingPage() {
     const isAuthenticating = privyLoading || isLoggingIn || (isAuthenticated && !privyAddress);
 
     return (
+      <>
       <div className="min-h-screen bg-bg flex flex-col items-center justify-center gap-6 text-white px-6">
         <div className="text-6xl">🐝</div>
         <div className="text-center">
@@ -144,6 +145,7 @@ export default function LandingPage() {
       {showMnemonic && (
         <MnemonicLoginModal onClose={() => setShowMnemonic(false)} />
       )}
+      </>
     );
   }
 
