@@ -28,8 +28,14 @@ const POLYGON_CHAIN_ID = 137;
 async function setupWallet(finishAuth: () => Promise<void>) {
   const openfort = getOpenfort();
 
-  // Конфигурируем embedded wallet на Polygon
-  await openfort.embeddedWallet.configure({ chainId: POLYGON_CHAIN_ID });
+  // Конфигурируем embedded wallet на Polygon с автоматическим восстановлением через Shield
+  await openfort.embeddedWallet.configure({
+    chainId: POLYGON_CHAIN_ID,
+    recoveryParams: {
+      recoveryMethod: "automatic",
+      encryptionKey: process.env.NEXT_PUBLIC_SHIELD_ENCRYPTION_SHARE,
+    },
+  } as any);
 
   // Получаем EIP-1193 провайдер (с gas sponsorship policy если указан)
   const policyId = process.env.NEXT_PUBLIC_OPENFORT_POLICY_ID;
