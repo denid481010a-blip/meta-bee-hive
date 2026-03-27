@@ -9,6 +9,8 @@ import { TitleBadge } from "@/components/achievements/TitleBadge";
 import { shortAddress } from "@/lib/formatters";
 import { Loader2, HelpCircle, KeyRound, X } from "lucide-react";
 import { usePrivyAuth } from "@/components/providers/PrivyContext";
+import { useFundWallet } from "@privy-io/react-auth";
+import { polygon } from "viem/chains";
 import { useRegister } from "@/hooks/useRegister";
 import { CONTRACT_ADDRESS } from "@/lib/constants";
 import { useT } from "@/lib/i18n/LanguageContext";
@@ -152,6 +154,7 @@ export default function DashboardPage() {
   const { address } = useAccount();
   const { stats, isLoading, refetch } = useStats(address);
   const { t } = useT();
+  const { fundWallet } = useFundWallet();
   const [polling, setPolling] = useState(false);
   const [exportOpen, setExportOpen] = useState(false);
 
@@ -209,18 +212,15 @@ export default function DashboardPage() {
           {/* Купить DAI */}
           <button
             onClick={() => {
-              const url = `https://app.uniswap.org/swap?outputCurrency=0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063&chain=polygon`;
-              const tg = (window as any).Telegram?.WebApp;
-              if (tg) {
-                tg.openLink(url);
-              } else {
-                const a = document.createElement("a");
-                a.href = url;
-                a.target = "_blank";
-                a.rel = "noreferrer";
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
+              if (address) {
+                fundWallet({
+                  address,
+                  options: {
+                    chain: polygon,
+                    asset: { erc20: "0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063" }, // DAI on Polygon
+                    amount: "10",
+                  },
+                });
               }
             }}
             className="w-full flex items-center gap-3 px-5 py-3 rounded-2xl transition-all hover:opacity-80"
@@ -229,7 +229,7 @@ export default function DashboardPage() {
             <span className="text-2xl">💱</span>
             <div className="text-left">
               <p className="text-white text-sm font-bold">Купить DAI</p>
-              <p className="text-white/40 text-xs">Uniswap → DAI на Polygon</p>
+              <p className="text-white/40 text-xs">Пополнить кошелёк через Privy</p>
             </div>
           </button>
           <ReferralLink address={address ?? ""} />
