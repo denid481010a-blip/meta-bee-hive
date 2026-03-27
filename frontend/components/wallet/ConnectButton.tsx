@@ -40,7 +40,6 @@ export function ConnectButton() {
   const { switchChain } = useSwitchChain();
   const {
     isAuthenticated,
-    isLoading: privyLoading,
     loginWithTelegram,
     logout: privyLogout,
     exportWallet,
@@ -50,6 +49,7 @@ export function ConnectButton() {
   const [open, setOpen]             = useState(false);
   const [hasInjected, setHasInjected] = useState(false);
   const [isTelegram, setIsTelegram]   = useState(false);
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
 
   const handleDisconnect = useCallback(() => {
     privyLogout();
@@ -72,8 +72,11 @@ export function ConnectButton() {
 
         {/* 1. Telegram via Privy */}
         <button
-          onClick={loginWithTelegram}
-          disabled={privyLoading}
+          onClick={async () => {
+            setIsLoggingIn(true);
+            try { await loginWithTelegram(); } finally { setIsLoggingIn(false); }
+          }}
+          disabled={isLoggingIn}
           className="w-full flex items-center gap-3 px-5 py-3.5 rounded-2xl font-bold text-sm transition-all hover:opacity-90 disabled:opacity-50"
           style={{
             background: "#2AABEE",
@@ -81,7 +84,7 @@ export function ConnectButton() {
             boxShadow: "0 0 24px rgba(42,171,238,0.35)",
           }}
         >
-          {privyLoading ? (
+          {isLoggingIn ? (
             <Loader2 className="w-5 h-5 animate-spin flex-shrink-0" />
           ) : (
             <span className="flex-shrink-0"><TelegramIcon /></span>
