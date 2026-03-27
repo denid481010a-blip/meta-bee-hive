@@ -1,5 +1,5 @@
 "use client";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAccount } from "wagmi";
 import { usePrivyAuth } from "@/components/providers/PrivyContext";
@@ -12,10 +12,17 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const router = useRouter();
   const { isConnected } = useAccount();
   const { isAuthenticated, isLoading } = usePrivyAuth();
+  // Wait for Privy to finish loading before checking auth —
+  // avoids race where isAuthenticated is briefly false on mount.
+  const [privyReady, setPrivyReady] = useState(false);
 
   useEffect(() => {
-    if (!isLoading && !isConnected && !isAuthenticated) router.push("/");
-  }, [isConnected, isAuthenticated, isLoading, router]);
+    if (!isLoading) setPrivyReady(true);
+  }, [isLoading]);
+
+  useEffect(() => {
+    if (privyReady && !isConnected && !isAuthenticated) router.push("/");
+  }, [privyReady, isConnected, isAuthenticated, router]);
 
   return (
     <LanguageProvider>

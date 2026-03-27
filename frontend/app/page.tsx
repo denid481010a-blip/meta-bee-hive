@@ -77,11 +77,12 @@ export default function LandingPage() {
     );
   }, [hydrated, isAuthenticated, privyLoading]);
 
-  // Redirect when connected via wagmi OR authenticated via Privy (seamless Mini App flow)
+  // Redirect when connected via wagmi OR authenticated via Privy (seamless Mini App flow).
+  // Use window.location for a full reload so Privy reads its session cookie fresh on dashboard.
   useEffect(() => {
     if (!hydrated) return;
     if (isAuthenticated || status === "connected") {
-      router.push("/dashboard");
+      window.location.replace("/dashboard");
     }
   }, [hydrated, status, isAuthenticated]);
 
