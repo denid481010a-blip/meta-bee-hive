@@ -79,13 +79,13 @@ export function Web3Provider({ children }: { children: React.ReactNode }) {
 
   return (
     <ProviderErrorBoundary>
-      <PrivyAuthProvider>
-        <WagmiProvider config={wagmiConfig} reconnectOnMount={false}>
-          <QueryClientProvider client={queryClient}>
+      <QueryClientProvider client={queryClient}>
+        <PrivyAuthProvider>
+          <WagmiProvider config={wagmiConfig} reconnectOnMount={false}>
             <TelegramProvider>{children}</TelegramProvider>
-          </QueryClientProvider>
-        </WagmiProvider>
-      </PrivyAuthProvider>
+          </WagmiProvider>
+        </PrivyAuthProvider>
+      </QueryClientProvider>
     </ProviderErrorBoundary>
   );
 }
