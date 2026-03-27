@@ -27,7 +27,8 @@ interface OpenfortCtx {
 
 const Ctx = createContext<OpenfortCtx | null>(null);
 
-const POLYGON_CHAIN_ID = 137;
+// Use testnet (80002) with test API key, mainnet (137) requires production key
+const POLYGON_CHAIN_ID = parseInt(process.env.NEXT_PUBLIC_CHAIN_ID ?? "80002");
 
 // Recovery password — одинаковый для всех guest-аккаунтов в рамках этого приложения
 const RECOVERY_PASSWORD =

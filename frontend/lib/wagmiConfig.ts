@@ -1,6 +1,6 @@
 "use client";
 import { createConfig, http, fallback } from "wagmi";
-import { polygon } from "wagmi/chains";
+import { polygon, polygonAmoy } from "wagmi/chains";
 import { injected, walletConnect, coinbaseWallet } from "wagmi/connectors";
 import { openfortConnector } from "./openfortConnector";
 
@@ -10,7 +10,7 @@ const WC_PROJECT_ID =
   "bee-hive-system-dev";
 
 export const wagmiConfig = createConfig({
-  chains: [polygon],
+  chains: [polygon, polygonAmoy],
   connectors: [
     injected(),
     injected({ target: "metaMask" }),
@@ -24,5 +24,6 @@ export const wagmiConfig = createConfig({
       http("https://polygon.llamarpc.com"),
       http("https://polygon-rpc.com"),
     ]),
+    [polygonAmoy.id]: http("https://rpc-amoy.polygon.technology"),
   },
 });
