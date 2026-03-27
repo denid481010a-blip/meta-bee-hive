@@ -24,6 +24,7 @@ import { shortAddress } from "@/lib/formatters";
 import { CHAIN_ID } from "@/lib/constants";
 import { clsx } from "clsx";
 import { usePrivyAuth } from "@/components/providers/PrivyContext";
+import { MnemonicLoginModal } from "@/components/wallet/MnemonicLoginModal";
 
 const SITE = "metabeehive.com";
 
@@ -50,6 +51,7 @@ export function ConnectButton() {
   const [hasInjected, setHasInjected] = useState(false);
   const [isTelegram, setIsTelegram]   = useState(false);
   const [isLoggingIn, setIsLoggingIn] = useState(false);
+  const [showMnemonic, setShowMnemonic] = useState(false);
 
   // router kept for potential future use
   void router;
@@ -73,6 +75,7 @@ export function ConnectButton() {
   // ── Not connected — show 3 login options inline ──────────────────────────
   if (!isConnected) {
     return (
+      <>
       <div className="flex flex-col gap-3 w-full max-w-xs mx-auto">
 
         {/* 1. Telegram via Privy */}
@@ -135,7 +138,26 @@ export function ConnectButton() {
           <span>Trust Wallet</span>
         </button>
 
+        {/* 4. Secret phrase */}
+        <button
+          onClick={() => setShowMnemonic(true)}
+          className="w-full flex items-center gap-3 px-5 py-3.5 rounded-2xl font-bold text-sm transition-all hover:opacity-90"
+          style={{
+            background: "rgba(255,255,255,0.05)",
+            border: "1px solid rgba(255,255,255,0.1)",
+            color: "#fff",
+          }}
+        >
+          <span className="text-xl flex-shrink-0">🔑</span>
+          <span>Секретная фраза</span>
+        </button>
+
       </div>
+
+      {showMnemonic && (
+        <MnemonicLoginModal onClose={() => setShowMnemonic(false)} />
+      )}
+      </>
     );
   }
 

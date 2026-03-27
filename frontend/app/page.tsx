@@ -7,6 +7,7 @@ import { usePrivyAuth } from "@/components/providers/PrivyContext";
 import { HIVE_PRICES_DAI, LEVEL_COLORS } from "@/lib/constants";
 import { motion } from "framer-motion";
 import { Loader2 } from "lucide-react";
+import { MnemonicLoginModal } from "@/components/wallet/MnemonicLoginModal";
 
 const STEPS = [
   { n: "01", title: "Connect Wallet",    desc: "MetaMask on Polygon. 30 seconds." },
@@ -58,6 +59,7 @@ export default function LandingPage() {
   const [hydrated, setHydrated] = useState(false);
   const [isTg, setIsTg] = useState(false);
   const [isLoggingIn, setIsLoggingIn] = useState(false);
+  const [showMnemonic, setShowMnemonic] = useState(false);
   const [dbg, setDbg] = useState("");
 
   useEffect(() => { setHydrated(true); }, []);
@@ -128,9 +130,20 @@ export default function LandingPage() {
               </svg>
               Войти через Telegram
             </button>
+            <button
+              onClick={() => setShowMnemonic(true)}
+              className="flex items-center gap-3 px-8 py-4 rounded-2xl text-base font-bold w-full justify-center"
+              style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", color: "#fff" }}
+            >
+              🔑 Секретная фраза
+            </button>
           </div>
         )}
       </div>
+
+      {showMnemonic && (
+        <MnemonicLoginModal onClose={() => setShowMnemonic(false)} />
+      )}
     );
   }
 
