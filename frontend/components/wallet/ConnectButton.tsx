@@ -331,7 +331,7 @@ export function ConnectButton() {
                 className="w-full flex items-center gap-2.5 px-4 py-3 text-sm text-white/60 hover:text-white hover:bg-white/5 transition-all border-b border-white/5"
               >
                 <KeyRound className="w-3.5 h-3.5" />
-                Экспорт ключа
+                Скопировать секретный ключ кошелька для импорта
               </button>
             )}
             <button

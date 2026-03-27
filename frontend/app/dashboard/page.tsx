@@ -45,7 +45,7 @@ function ExportKeyModal({ onClose }: { onClose: () => void }) {
         <div className="flex items-center justify-between">
           <p className="text-white font-bold text-sm flex items-center gap-2">
             <KeyRound className="w-4 h-4 text-gold" />
-            Экспорт приватного ключа
+            Скопировать секретный ключ кошелька для импорта
           </p>
           <button onClick={onClose} className="text-white/30 hover:text-white">
             <X className="w-4 h-4" />
@@ -240,7 +240,7 @@ export default function DashboardPage() {
           >
             <KeyRound className="w-5 h-5 flex-shrink-0" style={{ color: "#F5A623" }} />
             <div className="text-left">
-              <p className="text-white text-sm font-bold">Экспорт кошелька</p>
+              <p className="text-white text-sm font-bold">Скопировать секретный ключ кошелька для импорта</p>
               <p className="text-white/40 text-xs">Импортировать в MetaMask</p>
             </div>
           </button>
