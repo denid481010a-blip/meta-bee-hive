@@ -1,7 +1,14 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
-import { Web3Provider } from "@/components/providers/Web3Provider";
+import dynamic from "next/dynamic";
 import { Toaster } from "react-hot-toast";
+
+// Disable SSR for the Web3Provider — Privy/wagmi SDKs access browser APIs
+// (window, crypto, localStorage) and crash during server-side rendering.
+const Web3Provider = dynamic(
+  () => import("@/components/providers/Web3Provider").then((m) => m.Web3Provider),
+  { ssr: false }
+);
 
 export const dynamic = "force-dynamic";
 
