@@ -1,5 +1,5 @@
 "use client";
-import { useAccount, useConnect, useSwitchChain } from "wagmi";
+import { useAccount, useConnect, useDisconnect, useSwitchChain } from "wagmi";
 import { injected } from "wagmi/connectors";
 import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
