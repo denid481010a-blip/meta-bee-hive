@@ -34,12 +34,12 @@ const Ctx = createContext<PrivyAuthCtx | null>(null);
 // ── Inner provider ─────────────────────────────────────────────────────────
 
 function PrivyAuthInner({ children }: { children: ReactNode }) {
-  const { ready, authenticated, exportWallet: privyExportWallet, logout: privyLogout, login, linkTelegram } = usePrivy();
+  const { ready, authenticated, exportWallet: privyExportWallet, logout: privyLogout } = usePrivy();
   const { wallets } = useWallets();
   const { sendTransaction: privySendTx } = useSendTransaction();
   const [error, setError] = useState<string | null>(null);
 
-  const { login: loginTgHeadless } = useLoginWithTelegram({
+  const { login: loginTg } = useLoginWithTelegram({
     onComplete: () => { setError(null); },
     onError: (err) => {
       const msg = typeof err === "string" ? err : (err as any)?.message ?? "Ошибка входа";
@@ -58,32 +58,13 @@ function PrivyAuthInner({ children }: { children: ReactNode }) {
       return;
     }
     try {
-      const tg = (window as any).Telegram?.WebApp;
-      const initDataRaw: string | undefined = tg?.initData;
-
-      if (initDataRaw) {
-        // ── Telegram Mini App ──────────────────────────────────────────
-        // Use linkTelegram with initDataRaw — requires "Telegram Mini App"
-        // seamless auth to be enabled in the Privy Dashboard.
-        // If already authenticated, this links Telegram to the account.
-        // If not, Privy's auto-trigger handles the seamless login flow.
-        try {
-          linkTelegram({ launchParams: { initDataRaw } });
-        } catch {
-          // Seamless auth not enabled in Privy dashboard — fall back to
-          // Privy's built-in login modal which auto-detects Mini App context.
-          login();
-        }
-      } else {
-        // ── Regular browser — headless Telegram OAuth widget ───────────
-        loginTgHeadless();
-      }
+      loginTg();
     } catch (e: any) {
       const msg = e?.message ?? "Ошибка входа";
       setError(msg);
       toast.error(msg, { duration: 6000 });
     }
-  }, [ready, linkTelegram, login, loginTgHeadless]);
+  }, [ready, loginTg]);
 
   const logout = useCallback(async () => {
     try {
