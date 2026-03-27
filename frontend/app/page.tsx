@@ -48,30 +48,21 @@ function OrbitalPreview({ color, slots }: { color: string; slots: number }) {
 export default function LandingPage() {
   const router = useRouter();
   const { address, isConnected, status } = useAccount();
-  const { loginWithTelegram, isLoading: privyLoading, error: privyError } = usePrivyAuth();
+  const { loginWithTelegram, error: privyError } = usePrivyAuth();
   const [hydrated, setHydrated] = useState(false);
   const [isTg, setIsTg] = useState(false);
-  const [tgAutoStarted, setTgAutoStarted] = useState(false);
   const [isLoggingIn, setIsLoggingIn] = useState(false);
 
   useEffect(() => { setHydrated(true); }, []);
 
-  // Detect Telegram and auto-login
+  // Detect Telegram
   useEffect(() => {
     if (!hydrated) return;
     const tg = (window as any).Telegram?.WebApp;
-    if (tg && tg.platform && tg.platform !== "unknown") {
+    if (tg?.initData || tg?.initDataUnsafe?.user) {
       setIsTg(true);
     }
   }, [hydrated]);
-
-  useEffect(() => {
-    if (isTg && !tgAutoStarted && !isConnected && !privyLoading) {
-      setTgAutoStarted(true);
-      setIsLoggingIn(true);
-      loginWithTelegram().finally(() => setIsLoggingIn(false));
-    }
-  }, [isTg, tgAutoStarted, isConnected, privyLoading]);
 
   useEffect(() => {
     if (hydrated && status === "connected" && address) {
@@ -81,15 +72,6 @@ export default function LandingPage() {
 
   // Telegram fullscreen state
   if (isTg && !isConnected) {
-    if (isLoggingIn) {
-      return (
-        <div className="min-h-screen bg-bg flex flex-col items-center justify-center gap-6 text-white">
-          <div className="text-6xl animate-float">🐝</div>
-          <Loader2 className="w-8 h-8 animate-spin text-gold" />
-          <p className="text-white/40 text-sm">Подключаем кошелёк...</p>
-        </div>
-      );
-    }
     return (
       <div className="min-h-screen bg-bg flex flex-col items-center justify-center gap-6 text-white px-6">
         <div className="text-6xl">🐝</div>
@@ -102,14 +84,18 @@ export default function LandingPage() {
             {privyError}
           </p>
         )}
+        {isLoggingIn ? (
+          <div className="flex flex-col items-center gap-3">
+            <Loader2 className="w-8 h-8 animate-spin text-gold" />
+            <p className="text-white/40 text-sm">Подключаем кошелёк...</p>
+          </div>
+        ) : (
         <button
           onClick={async () => {
-            setTgAutoStarted(false);
             setIsLoggingIn(true);
-            try { await loginWithTelegram(); } finally { setIsLoggingIn(false); }
+            try { await loginWithTelegram(); } catch { /* shown via toast */ } finally { setIsLoggingIn(false); }
           }}
-          disabled={isLoggingIn}
-          className="flex items-center gap-3 px-8 py-4 rounded-2xl text-base font-bold disabled:opacity-50 w-full max-w-xs justify-center"
+          className="flex items-center gap-3 px-8 py-4 rounded-2xl text-base font-bold w-full max-w-xs justify-center"
           style={{ background: "#2AABEE", color: "#fff", boxShadow: "0 0 24px rgba(42,171,238,0.35)" }}
         >
           <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
@@ -117,6 +103,7 @@ export default function LandingPage() {
           </svg>
           Войти через Telegram
         </button>
+        )}
       </div>
     );
   }
