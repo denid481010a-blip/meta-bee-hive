@@ -12,6 +12,7 @@ import {
   useWallets,
   useLoginWithTelegram,
 } from "@privy-io/react-auth";
+import { SmartWalletsProvider, useSmartWallets } from "@privy-io/react-auth/smart-wallets";
 import { polygon, polygonAmoy } from "viem/chains";
 import toast from "react-hot-toast";
 
@@ -30,15 +31,14 @@ interface PrivyAuthCtx {
 
 const Ctx = createContext<PrivyAuthCtx | null>(null);
 
-// ── Inner provider — has access to Privy hooks ─────────────────────────────
+// ── Inner provider — has access to Privy + SmartWallet hooks ───────────────
 
 function PrivyAuthInner({ children }: { children: ReactNode }) {
   const { ready, authenticated, exportWallet: privyExportWallet, logout: privyLogout, login } = usePrivy();
   const { wallets } = useWallets();
+  const { client: smartWalletClient } = useSmartWallets();
   const { login: loginTelegram, state: telegramState } = useLoginWithTelegram({
-    onComplete: () => {
-      // wallet auto-created by Privy after login
-    },
+    onComplete: () => {},
     onError: (error) => {
       console.error("Telegram login error:", error);
       const msg = typeof error === "string" ? error : (error as any)?.message ?? "Ошибка входа";
@@ -49,19 +49,17 @@ function PrivyAuthInner({ children }: { children: ReactNode }) {
 
   const [error, setError] = useState<string | null>(null);
 
-  // Embedded wallet (Privy-managed)
   const embeddedWallet = wallets.find((w) => w.walletClientType === "privy");
-  const address = embeddedWallet?.address;
+  // Prefer smart wallet address (gas-sponsored), fallback to embedded wallet
+  const address = (smartWalletClient?.account as any)?.address ?? embeddedWallet?.address;
 
   const loginWithTelegram = useCallback(async () => {
     setError(null);
     try {
       const tg = (window as any).Telegram?.WebApp;
       if (tg?.initData) {
-        // Privy's useLoginWithTelegram reads window.Telegram.WebApp.initData automatically
         await loginTelegram();
       } else {
-        // Fallback for browser testing — open standard Privy login modal
         login();
       }
     } catch (e: any) {
@@ -83,24 +81,32 @@ function PrivyAuthInner({ children }: { children: ReactNode }) {
 
   const sendTransaction = useCallback(
     async (to: string, data: string, value: bigint = 0n): Promise<string> => {
+      // Prefer smart wallet (gas-sponsored via ERC-4337)
+      if (smartWalletClient) {
+        const hash = await smartWalletClient.sendTransaction({
+          to: to as `0x${string}`,
+          data: data as `0x${string}`,
+          value,
+        });
+        return hash as string;
+      }
+      // Fallback: embedded wallet (requires MATIC for gas)
       if (!embeddedWallet) {
         throw new Error("Wallet not initialized. Please login first.");
       }
       const provider = await embeddedWallet.getEthereumProvider();
       const hash = await provider.request({
         method: "eth_sendTransaction",
-        params: [
-          {
-            from: embeddedWallet.address,
-            to,
-            data,
-            value: value === 0n ? "0x0" : `0x${value.toString(16)}`,
-          },
-        ],
+        params: [{
+          from: embeddedWallet.address,
+          to,
+          data,
+          value: value === 0n ? "0x0" : `0x${value.toString(16)}`,
+        }],
       });
       return hash as string;
     },
-    [embeddedWallet],
+    [smartWalletClient, embeddedWallet],
   );
 
   const exportWallet = useCallback(async () => {
@@ -116,10 +122,7 @@ function PrivyAuthInner({ children }: { children: ReactNode }) {
     }
   }, [privyExportWallet, embeddedWallet?.address]);
 
-  // isLoading: Privy not yet ready, or Telegram auth in progress
-  const isLoading =
-    !ready ||
-    telegramState.status === "loading";
+  const isLoading = !ready || telegramState.status === "loading";
 
   return (
     <Ctx.Provider
@@ -139,7 +142,7 @@ function PrivyAuthInner({ children }: { children: ReactNode }) {
   );
 }
 
-// ── Public provider component — wraps PrivyProvider ────────────────────────
+// ── Public provider component ──────────────────────────────────────────────
 
 export function PrivyAuthProvider({ children }: { children: ReactNode }) {
   return (
@@ -159,7 +162,9 @@ export function PrivyAuthProvider({ children }: { children: ReactNode }) {
         supportedChains: [polygon, polygonAmoy],
       }}
     >
-      <PrivyAuthInner>{children}</PrivyAuthInner>
+      <SmartWalletsProvider>
+        <PrivyAuthInner>{children}</PrivyAuthInner>
+      </SmartWalletsProvider>
     </PrivyProvider>
   );
 }
