@@ -3,7 +3,7 @@ import { useAccount, useConnect, useDisconnect, useSwitchChain } from "wagmi";
 import { injected } from "wagmi/connectors";
 import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { Wallet, ChevronDown, LogOut, AlertTriangle, X, Loader2 } from "lucide-react";
+import { Wallet, ChevronDown, LogOut, AlertTriangle, X, Loader2, KeyRound, Copy, Check } from "lucide-react";
 
 function TelegramIcon() {
   return (
@@ -117,6 +117,89 @@ function EmailOTPModal({ onClose }: { onClose: () => void }) {
   );
 }
 
+function ExportKeyModal({ onClose }: { onClose: () => void }) {
+  const [privateKey, setPrivateKey] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
+
+  async function handleExport() {
+    setLoading(true);
+    setError(null);
+    try {
+      const { getOpenfort } = await import("@/lib/openfort");
+      const openfort = getOpenfort();
+      const key = await openfort.embeddedWallet.exportPrivateKey();
+      setPrivateKey(key);
+    } catch (e: any) {
+      setError(e?.message ?? "Не удалось экспортировать ключ");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  function handleCopy() {
+    if (!privateKey) return;
+    navigator.clipboard.writeText(privateKey);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  }
+
+  return (
+    <>
+      <div className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm" onClick={onClose} />
+      <div
+        className="fixed z-50 left-1/2 -translate-x-1/2 bottom-6 w-[calc(100%-2rem)] max-w-sm rounded-3xl p-5 space-y-3"
+        style={{ background: "#10101e", border: "1px solid rgba(255,255,255,0.08)" }}
+      >
+        <div className="flex items-center justify-between">
+          <p className="text-white font-bold text-sm flex items-center gap-2">
+            <KeyRound className="w-4 h-4 text-gold" />
+            Экспорт приватного ключа
+          </p>
+          <button onClick={onClose} className="text-white/30 hover:text-white">
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+
+        {!privateKey ? (
+          <>
+            <p className="text-white/40 text-xs leading-relaxed">
+              Приватный ключ даёт полный доступ к кошельку. Никому не показывай его и храни в безопасном месте.
+            </p>
+            {error && <p className="text-red-400 text-xs bg-red-500/10 rounded-lg px-3 py-2">{error}</p>}
+            <button
+              onClick={handleExport}
+              disabled={loading}
+              className="w-full py-3 rounded-xl text-sm font-bold disabled:opacity-50 flex items-center justify-center gap-2"
+              style={{ background: "rgba(245,166,35,0.15)", border: "1px solid rgba(245,166,35,0.3)", color: "#fff" }}
+            >
+              {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Показать ключ"}
+            </button>
+          </>
+        ) : (
+          <>
+            <p className="text-white/40 text-xs">Вставь этот ключ в MetaMask → Import Account</p>
+            <div
+              className="rounded-xl px-3 py-3 text-xs font-mono break-all text-white/70 select-all"
+              style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }}
+            >
+              {privateKey}
+            </div>
+            <button
+              onClick={handleCopy}
+              className="w-full py-3 rounded-xl text-sm font-bold flex items-center justify-center gap-2"
+              style={{ background: copied ? "rgba(39,174,96,0.15)" : "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.1)", color: "#fff" }}
+            >
+              {copied ? <><Check className="w-4 h-4" /> Скопировано!</> : <><Copy className="w-4 h-4" /> Копировать</>}
+            </button>
+          </>
+        )}
+      </div>
+    </>
+  );
+}
+
 export function ConnectButton() {
   const { address, isConnected, chainId } = useAccount();
   const { connect }     = useConnect();
@@ -127,6 +210,7 @@ export function ConnectButton() {
 
   const [open, setOpen]           = useState(false);
   const [modal, setModal]         = useState(false);
+  const [exportModal, setExportModal] = useState(false);
   const [hasInjected, setHasInjected] = useState(false);
   const [isTelegram, setIsTelegram]   = useState(false);
 
@@ -302,6 +386,8 @@ export function ConnectButton() {
         <ChevronDown className={clsx("w-3.5 h-3.5 text-white/40 transition-transform", open && "rotate-180")} />
       </button>
 
+      {exportModal && <ExportKeyModal onClose={() => setExportModal(false)} />}
+
       {open && (
         <>
           <div className="fixed inset-0 z-10" onClick={() => setOpen(false)} />
@@ -309,6 +395,15 @@ export function ConnectButton() {
             className="absolute right-0 top-11 z-20 w-52 rounded-xl overflow-hidden"
             style={{ background: "#10101e", border: "1px solid rgba(255,255,255,0.08)" }}
           >
+            {isAuthenticated && (
+              <button
+                onClick={() => { setOpen(false); setExportModal(true); }}
+                className="w-full flex items-center gap-2.5 px-4 py-3 text-sm text-white/60 hover:text-white hover:bg-white/5 transition-all border-b border-white/5"
+              >
+                <KeyRound className="w-3.5 h-3.5" />
+                Экспорт ключа
+              </button>
+            )}
             <button
               onClick={handleDisconnect}
               className="w-full flex items-center gap-2.5 px-4 py-3 text-sm text-white/60 hover:text-white hover:bg-white/5 transition-all"
