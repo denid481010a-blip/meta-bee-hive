@@ -18,11 +18,11 @@ export const openfortConnector = createConnector((config) => ({
   type: "openfort-embedded" as const,
   icon: "https://openfort.io/favicon.ico",
 
-  async connect() {
+  async connect(_params?: any) {
     if (!_provider) throw new Error("Openfort provider not initialized");
     const accounts = (await _provider.request({
       method: "eth_accounts",
-    })) as `0x${string}`[];
+    })) as readonly `0x${string}`[];
     const chainIdHex = (await _provider.request({
       method: "eth_chainId",
     })) as string;
@@ -38,8 +38,8 @@ export const openfortConnector = createConnector((config) => ({
   },
 
   async getAccounts() {
-    if (!_provider) return [];
-    return _provider.request({ method: "eth_accounts" }) as Promise<`0x${string}`[]>;
+    if (!_provider) return [] as readonly `0x${string}`[];
+    return _provider.request({ method: "eth_accounts" }) as Promise<readonly `0x${string}`[]>;
   },
 
   async getChainId() {
@@ -53,7 +53,7 @@ export const openfortConnector = createConnector((config) => ({
   },
 
   async isAuthorized() {
-    return false; // never auto-reconnect; user must log in each session
+    return false;
   },
 
   onAccountsChanged(accounts) {
