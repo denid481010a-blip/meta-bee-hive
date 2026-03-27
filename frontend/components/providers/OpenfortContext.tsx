@@ -8,6 +8,7 @@ import {
 } from "react";
 import { useConnect, useDisconnect } from "wagmi";
 import { RecoveryMethod } from "@openfort/openfort-js";
+import toast from "react-hot-toast";
 import { openfortConnector, setOpenfortEIP1193Provider, clearOpenfortEIP1193Provider } from "@/lib/openfortConnector";
 import { getOpenfort } from "@/lib/openfort";
 
@@ -140,7 +141,9 @@ export function OpenfortProvider({ children }: { children: ReactNode }) {
       await setupWallet(finishAuth);
     } catch (e: any) {
       console.error("Openfort Telegram login error:", e);
-      setError(e?.message ?? "Ошибка входа");
+      const msg = e?.message ?? "Ошибка входа";
+      setError(msg);
+      toast.error(msg, { duration: 6000 });
     } finally {
       setIsLoading(false);
     }
@@ -191,13 +194,18 @@ export function OpenfortProvider({ children }: { children: ReactNode }) {
   const loginAsGuest = useCallback(async () => {
     setIsLoading(true);
     setError(null);
+    const tid = toast.loading("Создание кошелька...");
     try {
       const openfort = getOpenfort();
+      await openfort.waitForInitialization();
       await openfort.auth.signUpGuest();
       await setupWallet(finishAuth);
+      toast.success("Кошелёк создан!", { id: tid });
     } catch (e: any) {
       console.error("Guest login error:", e);
-      setError(e?.message ?? "Ошибка входа");
+      const msg = e?.message ?? "Ошибка входа";
+      setError(msg);
+      toast.error(msg, { id: tid });
     } finally {
       setIsLoading(false);
     }
