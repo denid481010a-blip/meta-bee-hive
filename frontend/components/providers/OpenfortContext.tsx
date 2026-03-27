@@ -7,6 +7,7 @@ import {
   type ReactNode,
 } from "react";
 import { useConnect, useDisconnect } from "wagmi";
+import { RecoveryMethod } from "@openfort/openfort-js";
 import { openfortConnector, setOpenfortEIP1193Provider, clearOpenfortEIP1193Provider } from "@/lib/openfortConnector";
 import { getOpenfort } from "@/lib/openfort";
 
@@ -25,17 +26,21 @@ const Ctx = createContext<OpenfortCtx | null>(null);
 
 const POLYGON_CHAIN_ID = 137;
 
+// Recovery password — одинаковый для всех guest-аккаунтов в рамках этого приложения
+const RECOVERY_PASSWORD =
+  process.env.NEXT_PUBLIC_SHIELD_ENCRYPTION_SHARE ?? "metabee-recovery-2025";
+
 async function setupWallet(finishAuth: () => Promise<void>) {
   const openfort = getOpenfort();
 
-  // Конфигурируем embedded wallet на Polygon с автоматическим восстановлением через Shield
+  // Конфигурируем embedded wallet на Polygon с password recovery
   await openfort.embeddedWallet.configure({
     chainId: POLYGON_CHAIN_ID,
     recoveryParams: {
-      recoveryMethod: "automatic",
-      encryptionKey: process.env.NEXT_PUBLIC_SHIELD_ENCRYPTION_SHARE,
+      recoveryMethod: RecoveryMethod.PASSWORD,
+      password: RECOVERY_PASSWORD,
     },
-  } as any);
+  });
 
   // Получаем EIP-1193 провайдер (с gas sponsorship policy если указан)
   const policyId = process.env.NEXT_PUBLIC_OPENFORT_POLICY_ID;
@@ -81,7 +86,12 @@ export function OpenfortProvider({ children }: { children: ReactNode }) {
           });
           if (res.ok) {
             const { token, userId } = await res.json();
-            await openfort.auth.storeCredentials({ token, userId });
+            if (token && userId) {
+              await openfort.auth.storeCredentials({ token, userId });
+            } else {
+              // token null — fallback to guest
+              await openfort.auth.signUpGuest();
+            }
           } else {
             // Fallback: guest wallet
             await openfort.auth.signUpGuest();
