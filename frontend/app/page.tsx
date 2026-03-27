@@ -48,7 +48,7 @@ function OrbitalPreview({ color, slots }: { color: string; slots: number }) {
 export default function LandingPage() {
   const router = useRouter();
   const { address, isConnected, status } = useAccount();
-  const { loginWithTelegram, isLoading: openfortLoading } = useOpenfortContext();
+  const { loginWithTelegram, loginAsGuest, isLoading: openfortLoading, error: openfortError } = useOpenfortContext();
   const [hydrated, setHydrated] = useState(false);
   const [isTg, setIsTg] = useState(false);
   const [tgAutoStarted, setTgAutoStarted] = useState(false);
@@ -72,19 +72,45 @@ export default function LandingPage() {
   }, [isTg, tgAutoStarted, isConnected, openfortLoading]);
 
   useEffect(() => {
-    // Wait for wagmi to finish reconnecting before redirecting
     if (hydrated && status === "connected" && address) {
       router.push("/dashboard");
     }
   }, [hydrated, status, address]);
 
-  // Telegram: show fullscreen loader while auto-login is in progress
-  if (isTg && (openfortLoading || !isConnected)) {
+  // Telegram fullscreen state
+  if (isTg && !isConnected) {
+    if (openfortLoading) {
+      return (
+        <div className="min-h-screen bg-bg flex flex-col items-center justify-center gap-6 text-white">
+          <div className="text-6xl animate-float">🐝</div>
+          <Loader2 className="w-8 h-8 animate-spin text-gold" />
+          <p className="text-white/40 text-sm">Connecting wallet...</p>
+        </div>
+      );
+    }
+    // Error or failed — show retry
     return (
-      <div className="min-h-screen bg-bg flex flex-col items-center justify-center gap-6 text-white">
-        <div className="text-6xl animate-float">🐝</div>
-        <Loader2 className="w-8 h-8 animate-spin text-gold" />
-        <p className="text-white/40 text-sm">Connecting wallet...</p>
+      <div className="min-h-screen bg-bg flex flex-col items-center justify-center gap-5 text-white px-6">
+        <div className="text-6xl">🐝</div>
+        <p className="text-white font-bold text-lg">Meta Bee Hive</p>
+        {openfortError && (
+          <p className="text-red-400 text-xs text-center bg-red-500/10 rounded-xl px-4 py-2 max-w-xs">
+            {openfortError}
+          </p>
+        )}
+        <button
+          onClick={() => { setTgAutoStarted(false); }}
+          className="px-6 py-3 rounded-xl text-sm font-bold"
+          style={{ background: "linear-gradient(135deg,#F5A623,#FF8C00)", color: "#000" }}
+        >
+          Попробовать снова
+        </button>
+        <button
+          onClick={loginAsGuest}
+          className="text-white/40 text-xs underline"
+        >
+          Войти как гость
+        </button>
       </div>
     );
   }

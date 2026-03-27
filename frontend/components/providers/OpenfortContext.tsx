@@ -71,6 +71,7 @@ export function OpenfortProvider({ children }: { children: ReactNode }) {
   /** Авторизация в Telegram Mini App */
   const loginWithTelegram = useCallback(async () => {
     setIsLoading(true);
+    setError(null);
     try {
       const openfort = getOpenfort();
       await openfort.waitForInitialization();
@@ -92,11 +93,9 @@ export function OpenfortProvider({ children }: { children: ReactNode }) {
             if (token && userId) {
               await openfort.auth.storeCredentials({ token, userId });
             } else {
-              // token null — fallback to guest
               await openfort.auth.signUpGuest();
             }
           } else {
-            // Fallback: guest wallet
             await openfort.auth.signUpGuest();
           }
         } else {
@@ -105,8 +104,9 @@ export function OpenfortProvider({ children }: { children: ReactNode }) {
       }
 
       await setupWallet(finishAuth);
-    } catch (e) {
+    } catch (e: any) {
       console.error("Openfort Telegram login error:", e);
+      setError(e?.message ?? "Ошибка входа");
     } finally {
       setIsLoading(false);
     }
@@ -153,15 +153,17 @@ export function OpenfortProvider({ children }: { children: ReactNode }) {
     [finishAuth]
   );
 
-  /** Быстрый вход как гость (для тестов) */
+  /** Быстрый вход как гость */
   const loginAsGuest = useCallback(async () => {
     setIsLoading(true);
+    setError(null);
     try {
       const openfort = getOpenfort();
       await openfort.auth.signUpGuest();
       await setupWallet(finishAuth);
-    } catch (e) {
+    } catch (e: any) {
       console.error("Guest login error:", e);
+      setError(e?.message ?? "Ошибка входа");
     } finally {
       setIsLoading(false);
     }
