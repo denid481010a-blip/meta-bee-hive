@@ -78,11 +78,10 @@ export default function LandingPage() {
   // Redirect when connected via wagmi OR authenticated via Privy (seamless Mini App flow)
   useEffect(() => {
     if (!hydrated) return;
-    const walletAddr = address || privyAddress;
-    if ((status === "connected" || isAuthenticated) && walletAddr) {
+    if (isAuthenticated || status === "connected") {
       router.push("/dashboard");
     }
-  }, [hydrated, status, address, isAuthenticated, privyAddress]);
+  }, [hydrated, status, isAuthenticated]);
 
   // Telegram fullscreen state
   if (isTg && !isConnected) {
