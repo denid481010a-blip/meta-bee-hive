@@ -1,9 +1,9 @@
 "use client";
-import { WagmiProvider } from "wagmi";
+import { WagmiProvider } from "@privy-io/wagmi";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { wagmiConfig } from "@/lib/wagmiConfig";
 import { TelegramProvider } from "./TelegramProvider";
-import { OpenfortProvider } from "./OpenfortContext";
+import { PrivyAuthProvider } from "./PrivyContext";
 import { useState } from "react";
 
 export function Web3Provider({ children }: { children: React.ReactNode }) {
@@ -17,12 +17,12 @@ export function Web3Provider({ children }: { children: React.ReactNode }) {
   );
 
   return (
-    <QueryClientProvider client={queryClient}>
+    <PrivyAuthProvider>
       <WagmiProvider config={wagmiConfig} reconnectOnMount={false}>
-        <OpenfortProvider>
+        <QueryClientProvider client={queryClient}>
           <TelegramProvider>{children}</TelegramProvider>
-        </OpenfortProvider>
+        </QueryClientProvider>
       </WagmiProvider>
-    </QueryClientProvider>
+    </PrivyAuthProvider>
   );
 }

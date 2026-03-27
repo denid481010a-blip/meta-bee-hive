@@ -7,7 +7,8 @@ import { AutoBuyToggle } from "@/components/dashboard/AutoBuyToggle";
 import { PendingBalance } from "@/components/dashboard/PendingBalance";
 import { TitleBadge } from "@/components/achievements/TitleBadge";
 import { shortAddress } from "@/lib/formatters";
-import { Loader2, HelpCircle, KeyRound, Copy, Check, X } from "lucide-react";
+import { Loader2, HelpCircle, KeyRound, X } from "lucide-react";
+import { usePrivyAuth } from "@/components/providers/PrivyContext";
 import { useRegister } from "@/hooks/useRegister";
 import { CONTRACT_ADDRESS } from "@/lib/constants";
 import { useT } from "@/lib/i18n/LanguageContext";
@@ -16,31 +17,21 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 
 function ExportKeyModal({ onClose }: { onClose: () => void }) {
-  const [privateKey, setPrivateKey] = useState<string | null>(null);
+  const { exportWallet } = usePrivyAuth();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [copied, setCopied] = useState(false);
 
   async function handleExport() {
     setLoading(true);
     setError(null);
     try {
-      const { getOpenfort } = await import("@/lib/openfort");
-      const openfort = getOpenfort();
-      const key = await openfort.embeddedWallet.exportPrivateKey();
-      setPrivateKey(key);
+      await exportWallet();
+      onClose();
     } catch (e: any) {
-      setError(e?.message ?? "Не удалось экспортировать ключ");
+      setError(e?.message ?? "Не удалось экспортировать кошелёк");
     } finally {
       setLoading(false);
     }
-  }
-
-  function handleCopy() {
-    if (!privateKey) return;
-    navigator.clipboard.writeText(privateKey);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
   }
 
   return (
@@ -61,39 +52,22 @@ function ExportKeyModal({ onClose }: { onClose: () => void }) {
           </button>
         </div>
 
-        {!privateKey ? (
-          <>
-            <p className="text-white/40 text-xs leading-relaxed">
-              Ключ даёт полный доступ к кошельку. Вставь его в MetaMask → Import Account чтобы использовать в другом приложении.
-            </p>
-            {error && <p className="text-red-400 text-xs bg-red-500/10 rounded-lg px-3 py-2">{error}</p>}
-            <button
-              onClick={handleExport}
-              disabled={loading}
-              className="w-full py-3 rounded-xl text-sm font-bold disabled:opacity-50 flex items-center justify-center gap-2"
-              style={{ background: "rgba(245,166,35,0.15)", border: "1px solid rgba(245,166,35,0.3)", color: "#fff" }}
-            >
-              {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Показать ключ"}
-            </button>
-          </>
-        ) : (
-          <>
-            <p className="text-white/40 text-xs">Скопируй и вставь в MetaMask → Import Account</p>
-            <div
-              className="rounded-xl px-3 py-3 text-xs font-mono break-all text-white/70 select-all"
-              style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }}
-            >
-              {privateKey}
-            </div>
-            <button
-              onClick={handleCopy}
-              className="w-full py-3 rounded-xl text-sm font-bold flex items-center justify-center gap-2 transition-all"
-              style={{ background: copied ? "rgba(39,174,96,0.2)" : "rgba(255,255,255,0.07)", border: `1px solid ${copied ? "rgba(39,174,96,0.4)" : "rgba(255,255,255,0.1)"}`, color: "#fff" }}
-            >
-              {copied ? <><Check className="w-4 h-4" /> Скопировано!</> : <><Copy className="w-4 h-4" /> Копировать</>}
-            </button>
-          </>
+        <p className="text-white/40 text-xs leading-relaxed">
+          Приватный ключ даёт полный доступ к кошельку. Никому не показывай его и храни в безопасном месте.
+        </p>
+
+        {error && (
+          <p className="text-red-400 text-xs bg-red-500/10 rounded-lg px-3 py-2">{error}</p>
         )}
+
+        <button
+          onClick={handleExport}
+          disabled={loading}
+          className="w-full py-3 rounded-xl text-sm font-bold disabled:opacity-50 flex items-center justify-center gap-2"
+          style={{ background: "rgba(245,166,35,0.15)", border: "1px solid rgba(245,166,35,0.3)", color: "#fff" }}
+        >
+          {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Экспортировать кошелёк"}
+        </button>
       </div>
     </>
   );

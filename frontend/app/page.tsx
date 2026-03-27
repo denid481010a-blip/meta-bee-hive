@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAccount } from "wagmi";
 import { ConnectButton } from "@/components/wallet/ConnectButton";
-import { useOpenfortContext } from "@/components/providers/OpenfortContext";
+import { usePrivyAuth } from "@/components/providers/PrivyContext";
 import { HIVE_PRICES_DAI, LEVEL_COLORS } from "@/lib/constants";
 import { motion } from "framer-motion";
 import { Loader2 } from "lucide-react";
@@ -48,7 +48,7 @@ function OrbitalPreview({ color, slots }: { color: string; slots: number }) {
 export default function LandingPage() {
   const router = useRouter();
   const { address, isConnected, status } = useAccount();
-  const { loginWithTelegram, isLoading: openfortLoading, error: openfortError } = useOpenfortContext();
+  const { loginWithTelegram, isLoading: privyLoading, error: privyError } = usePrivyAuth();
   const [hydrated, setHydrated] = useState(false);
   const [isTg, setIsTg] = useState(false);
   const [tgAutoStarted, setTgAutoStarted] = useState(false);
@@ -65,11 +65,11 @@ export default function LandingPage() {
   }, [hydrated]);
 
   useEffect(() => {
-    if (isTg && !tgAutoStarted && !isConnected && !openfortLoading) {
+    if (isTg && !tgAutoStarted && !isConnected && !privyLoading) {
       setTgAutoStarted(true);
       loginWithTelegram();
     }
-  }, [isTg, tgAutoStarted, isConnected, openfortLoading]);
+  }, [isTg, tgAutoStarted, isConnected, privyLoading]);
 
   useEffect(() => {
     if (hydrated && status === "connected" && address) {
@@ -79,7 +79,7 @@ export default function LandingPage() {
 
   // Telegram fullscreen state
   if (isTg && !isConnected) {
-    if (openfortLoading) {
+    if (privyLoading) {
       return (
         <div className="min-h-screen bg-bg flex flex-col items-center justify-center gap-6 text-white">
           <div className="text-6xl animate-float">🐝</div>
@@ -95,14 +95,14 @@ export default function LandingPage() {
           <p className="text-white font-black text-2xl mb-1">Meta Bee Hive</p>
           <p className="text-white/40 text-sm">Decentralized S4 Matrix</p>
         </div>
-        {openfortError && (
+        {privyError && (
           <p className="text-red-400 text-xs text-center bg-red-500/10 rounded-xl px-4 py-2 max-w-xs">
-            {openfortError}
+            {privyError}
           </p>
         )}
         <button
           onClick={() => { setTgAutoStarted(false); loginWithTelegram(); }}
-          disabled={openfortLoading}
+          disabled={privyLoading}
           className="flex items-center gap-3 px-8 py-4 rounded-2xl text-base font-bold disabled:opacity-50 w-full max-w-xs justify-center"
           style={{ background: "#2AABEE", color: "#fff", boxShadow: "0 0 24px rgba(42,171,238,0.35)" }}
         >
