@@ -34,22 +34,6 @@ const POLYGON_CHAIN_ID = parseInt(process.env.NEXT_PUBLIC_CHAIN_ID ?? "80002");
 const RECOVERY_PASSWORD =
   process.env.NEXT_PUBLIC_SHIELD_ENCRYPTION_SHARE ?? "metabee-recovery-2025";
 
-async function fetchEncryptionSession(accessToken: string | null): Promise<string | null> {
-  try {
-    const res = await fetch("/api/shield/session", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
-      },
-    });
-    if (!res.ok) return null;
-    const data = await res.json();
-    return data.encryptionSession ?? data.session ?? null;
-  } catch {
-    return null;
-  }
-}
 
 function withTimeout<T>(promise: Promise<T>, ms: number, label: string): Promise<T> {
   return Promise.race([
@@ -66,27 +50,14 @@ async function setupWallet(finishAuth: () => Promise<void>) {
   // Wait for Openfort iframe to load (15s timeout)
   await withTimeout(openfort.waitForInitialization(), 15_000, "SDK initialization");
 
-  // Try AUTOMATIC recovery via Shield backend; fallback to PASSWORD
-  const accessToken = await openfort.getAccessToken();
-  const encryptionSession = await fetchEncryptionSession(accessToken);
-
-  if (encryptionSession) {
-    await withTimeout(
-      openfort.embeddedWallet.configure({
-        chainId: POLYGON_CHAIN_ID,
-        recoveryParams: { recoveryMethod: RecoveryMethod.AUTOMATIC, encryptionSession },
-      }),
-      20_000, "configure (automatic)"
-    );
-  } else {
-    await withTimeout(
-      openfort.embeddedWallet.configure({
-        chainId: POLYGON_CHAIN_ID,
-        recoveryParams: { recoveryMethod: RecoveryMethod.PASSWORD, password: RECOVERY_PASSWORD },
-      }),
-      20_000, "configure (password)"
-    );
-  }
+  // Always use PASSWORD recovery — ensures same user always gets same wallet
+  await withTimeout(
+    openfort.embeddedWallet.configure({
+      chainId: POLYGON_CHAIN_ID,
+      recoveryParams: { recoveryMethod: RecoveryMethod.PASSWORD, password: RECOVERY_PASSWORD },
+    }),
+    20_000, "configure (password)"
+  );
 
   const policyId = process.env.NEXT_PUBLIC_OPENFORT_POLICY_ID;
   const provider = await withTimeout(
