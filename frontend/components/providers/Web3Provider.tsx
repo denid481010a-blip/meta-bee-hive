@@ -72,6 +72,15 @@ export function Web3Provider({ children }: { children: React.ReactNode }) {
   // Privy and wagmi access browser APIs (window, crypto, localStorage)
   // during initialization — skip SSR entirely to avoid 500 errors.
   useEffect(() => {
+    // Inject Telegram initData into location.hash BEFORE Privy mounts.
+    // Privy detects #tgWebAppData= and auto-authenticates seamlessly.
+    // Must run here (before setMounted) so Privy reads the hash on first mount.
+    try {
+      const tg = (window as any).Telegram?.WebApp;
+      if (tg?.initData && !window.location.hash.includes("tgWebAppData")) {
+        window.location.hash = "tgWebAppData=" + tg.initData;
+      }
+    } catch (_) {}
     setMounted(true);
   }, []);
 

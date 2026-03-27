@@ -22,12 +22,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="ru" className="h-full">
       <head>
-        {/* Load Telegram Mini App SDK first */}
         <Script src="https://telegram.org/js/telegram-web-app.js" strategy="beforeInteractive" />
-        {/* Inject initData into location.hash so Privy's seamless auth auto-triggers */}
-        <Script id="tg-seamless-init" strategy="beforeInteractive">{`
-(function(){try{var tg=window.Telegram&&window.Telegram.WebApp;if(tg&&tg.initData&&window.location.hash.indexOf('tgWebAppData')<0){window.location.hash='tgWebAppData='+tg.initData;}}catch(e){}}());
-        `}</Script>
       </head>
       <body className="min-h-full bg-bg text-white antialiased tg-safe-area">
         <Web3Provider>
