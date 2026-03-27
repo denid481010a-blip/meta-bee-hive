@@ -11,8 +11,8 @@ import {
   usePrivy,
   useWallets,
   useLoginWithTelegram,
+  useSendTransaction,
 } from "@privy-io/react-auth";
-import { SmartWalletsProvider, useSmartWallets } from "@privy-io/react-auth/smart-wallets";
 import { polygon, polygonAmoy } from "viem/chains";
 import toast from "react-hot-toast";
 
@@ -31,12 +31,12 @@ interface PrivyAuthCtx {
 
 const Ctx = createContext<PrivyAuthCtx | null>(null);
 
-// ── Inner provider — has access to Privy + SmartWallet hooks ───────────────
+// ── Inner provider ─────────────────────────────────────────────────────────
 
 function PrivyAuthInner({ children }: { children: ReactNode }) {
   const { ready, authenticated, exportWallet: privyExportWallet, logout: privyLogout, login } = usePrivy();
   const { wallets } = useWallets();
-  const { client: smartWalletClient } = useSmartWallets();
+  const { sendTransaction: privySendTx } = useSendTransaction();
   const { login: loginTelegram, state: telegramState } = useLoginWithTelegram({
     onComplete: () => {},
     onError: (error) => {
@@ -50,8 +50,7 @@ function PrivyAuthInner({ children }: { children: ReactNode }) {
   const [error, setError] = useState<string | null>(null);
 
   const embeddedWallet = wallets.find((w) => w.walletClientType === "privy");
-  // Prefer smart wallet address (gas-sponsored), fallback to embedded wallet
-  const address = (smartWalletClient?.account as any)?.address ?? embeddedWallet?.address;
+  const address = embeddedWallet?.address;
 
   const loginWithTelegram = useCallback(async () => {
     setError(null);
@@ -81,32 +80,19 @@ function PrivyAuthInner({ children }: { children: ReactNode }) {
 
   const sendTransaction = useCallback(
     async (to: string, data: string, value: bigint = 0n): Promise<string> => {
-      // Prefer smart wallet (gas-sponsored via ERC-4337)
-      if (smartWalletClient) {
-        const hash = await smartWalletClient.sendTransaction({
+      // Use Privy's built-in sendTransaction with gas sponsorship
+      const result = await privySendTx(
+        {
           to: to as `0x${string}`,
           data: data as `0x${string}`,
           value,
-        });
-        return hash as string;
-      }
-      // Fallback: embedded wallet (requires MATIC for gas)
-      if (!embeddedWallet) {
-        throw new Error("Wallet not initialized. Please login first.");
-      }
-      const provider = await embeddedWallet.getEthereumProvider();
-      const hash = await provider.request({
-        method: "eth_sendTransaction",
-        params: [{
-          from: embeddedWallet.address,
-          to,
-          data,
-          value: value === 0n ? "0x0" : `0x${value.toString(16)}`,
-        }],
-      });
-      return hash as string;
+          chainId: Number(process.env.NEXT_PUBLIC_CHAIN_ID ?? 80002),
+        },
+        { sponsor: true }
+      );
+      return result.hash;
     },
-    [smartWalletClient, embeddedWallet],
+    [privySendTx],
   );
 
   const exportWallet = useCallback(async () => {
@@ -142,7 +128,7 @@ function PrivyAuthInner({ children }: { children: ReactNode }) {
   );
 }
 
-// ── Public provider component ──────────────────────────────────────────────
+// ── Public provider ────────────────────────────────────────────────────────
 
 export function PrivyAuthProvider({ children }: { children: ReactNode }) {
   return (
@@ -162,9 +148,7 @@ export function PrivyAuthProvider({ children }: { children: ReactNode }) {
         supportedChains: [polygon, polygonAmoy],
       }}
     >
-      <SmartWalletsProvider>
-        <PrivyAuthInner>{children}</PrivyAuthInner>
-      </SmartWalletsProvider>
+      <PrivyAuthInner>{children}</PrivyAuthInner>
     </PrivyProvider>
   );
 }
