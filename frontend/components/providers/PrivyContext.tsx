@@ -63,7 +63,9 @@ function PrivyAuthInner({ children }: { children: ReactNode }) {
       return;
     }
     try {
-      if (tg) {
+      if (tg?.initData) {
+        loginTg({ initData: tg.initData });
+      } else if (tg) {
         loginTg();
       } else {
         login();
