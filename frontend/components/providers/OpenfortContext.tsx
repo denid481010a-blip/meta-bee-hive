@@ -50,39 +50,49 @@ async function fetchEncryptionSession(accessToken: string | null): Promise<strin
   }
 }
 
+function withTimeout<T>(promise: Promise<T>, ms: number, label: string): Promise<T> {
+  return Promise.race([
+    promise,
+    new Promise<T>((_, reject) =>
+      setTimeout(() => reject(new Error(`Timeout: ${label} (${ms / 1000}s)`)), ms)
+    ),
+  ]);
+}
+
 async function setupWallet(finishAuth: () => Promise<void>) {
   const openfort = getOpenfort();
 
-  // Ensure SDK is initialized
-  await openfort.waitForInitialization();
+  // Wait for Openfort iframe to load (15s timeout)
+  await withTimeout(openfort.waitForInitialization(), 15_000, "SDK initialization");
 
   // Try AUTOMATIC recovery via Shield backend; fallback to PASSWORD
   const accessToken = await openfort.getAccessToken();
   const encryptionSession = await fetchEncryptionSession(accessToken);
 
   if (encryptionSession) {
-    await openfort.embeddedWallet.configure({
-      chainId: POLYGON_CHAIN_ID,
-      recoveryParams: {
-        recoveryMethod: RecoveryMethod.AUTOMATIC,
-        encryptionSession,
-      },
-    });
+    await withTimeout(
+      openfort.embeddedWallet.configure({
+        chainId: POLYGON_CHAIN_ID,
+        recoveryParams: { recoveryMethod: RecoveryMethod.AUTOMATIC, encryptionSession },
+      }),
+      20_000, "configure (automatic)"
+    );
   } else {
-    // Fallback: password recovery with shared app secret
-    await openfort.embeddedWallet.configure({
-      chainId: POLYGON_CHAIN_ID,
-      recoveryParams: {
-        recoveryMethod: RecoveryMethod.PASSWORD,
-        password: RECOVERY_PASSWORD,
-      },
-    });
+    await withTimeout(
+      openfort.embeddedWallet.configure({
+        chainId: POLYGON_CHAIN_ID,
+        recoveryParams: { recoveryMethod: RecoveryMethod.PASSWORD, password: RECOVERY_PASSWORD },
+      }),
+      20_000, "configure (password)"
+    );
   }
 
-  // Получаем EIP-1193 провайдер (с gas sponsorship policy если указан)
   const policyId = process.env.NEXT_PUBLIC_OPENFORT_POLICY_ID;
-  const provider = await openfort.embeddedWallet.getEthereumProvider(
-    policyId ? { feeSponsorship: policyId } : undefined
+  const provider = await withTimeout(
+    openfort.embeddedWallet.getEthereumProvider(
+      policyId ? { feeSponsorship: policyId } : undefined
+    ),
+    15_000, "getEthereumProvider"
   );
 
   setOpenfortEIP1193Provider(provider as any);
