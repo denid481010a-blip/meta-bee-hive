@@ -1,5 +1,5 @@
 "use client";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, type CSSProperties } from "react";
 import { useConnect } from "wagmi";
 import { createMnemonicConnector } from "@/lib/mnemonicConnector";
 import { Loader2, X, Eye, EyeOff } from "lucide-react";
@@ -113,8 +113,7 @@ export function MnemonicLoginModal({ onClose }: Props) {
             style={{
               background: "rgba(255,255,255,0.05)",
               border: "1px solid rgba(255,255,255,0.1)",
-              fontFamily: showPhrase ? "inherit" : "text-security-disc",
-              WebkitTextSecurity: showPhrase ? "none" : ("disc" as any),
+              ...(showPhrase ? {} : { WebkitTextSecurity: "disc" } as CSSProperties),
             }}
             spellCheck={false}
             autoCorrect="off"
