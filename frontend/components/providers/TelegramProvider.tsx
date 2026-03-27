@@ -1,18 +1,20 @@
 "use client";
 import { useEffect, type ReactNode } from "react";
 
-const APP_VERSION = "5";
+const APP_VERSION = "6";
+const STORAGE_KEY = "mbh_app_ver";
 
 export function TelegramProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const tg = (window as any).Telegram?.WebApp;
     if (!tg) return;
 
-    // Force cache-bust: reload with version param if not already on latest
-    const url = new URL(window.location.href);
-    if (url.searchParams.get("_v") !== APP_VERSION) {
-      url.searchParams.set("_v", APP_VERSION);
-      window.location.replace(url.toString());
+    // Force cache-bust via localStorage — more reliable than URL params
+    const stored = localStorage.getItem(STORAGE_KEY);
+    if (stored !== APP_VERSION) {
+      localStorage.setItem(STORAGE_KEY, APP_VERSION);
+      // Hard reload ignoring cache
+      window.location.reload();
       return;
     }
 
