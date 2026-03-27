@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, type ReactNode } from "react";
 
-const APP_VERSION = "4";
+const APP_VERSION = "5";
 
 export function TelegramProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
