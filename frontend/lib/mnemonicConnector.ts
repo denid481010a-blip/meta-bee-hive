@@ -1,6 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { createConnector } from "wagmi";
 import { mnemonicToAccount } from "viem/accounts";
-import type { Address } from "viem";
 
 export function createMnemonicConnector(mnemonic: string) {
   const account = mnemonicToAccount(mnemonic.trim());
@@ -16,24 +16,18 @@ export function createMnemonicConnector(mnemonic: string) {
 
       async setup() {},
 
-      async connect(_params?: { chainId?: number }) {
-        const cid = _params?.chainId ?? chainId;
-        emitter.emit("connect", {
-          accounts: [account.address] as readonly Address[],
-          chainId: cid,
-        });
-        return {
-          accounts: [account.address] as readonly Address[],
-          chainId: cid,
-        };
+      async connect(params?: any) {
+        const cid: number = params?.chainId ?? chainId;
+        emitter.emit("connect", { accounts: [account.address], chainId: cid });
+        return { accounts: [account.address] as any, chainId: cid };
       },
 
       async disconnect() {
         emitter.emit("disconnect");
       },
 
-      async getAccounts(): Promise<readonly Address[]> {
-        return [account.address];
+      async getAccounts() {
+        return [account.address] as any;
       },
 
       async getChainId() {
@@ -46,15 +40,9 @@ export function createMnemonicConnector(mnemonic: string) {
 
       async getProvider() {
         return {
-          on: (_event: string, _listener: (...args: unknown[]) => void) => {},
-          removeListener: (_event: string, _listener: (...args: unknown[]) => void) => {},
-          request: async ({
-            method,
-            params: p,
-          }: {
-            method: string;
-            params?: readonly unknown[];
-          }): Promise<unknown> => {
+          on: (_e: string, _l: any) => {},
+          removeListener: (_e: string, _l: any) => {},
+          request: async ({ method, params: p }: { method: string; params?: readonly unknown[] }): Promise<unknown> => {
             switch (method) {
               case "eth_accounts":
                 return [account.address];
@@ -62,32 +50,23 @@ export function createMnemonicConnector(mnemonic: string) {
                 return `0x${chainId.toString(16)}`;
               case "personal_sign": {
                 const [message] = (p as [string, string]) ?? [];
-                return account.signMessage({
-                  message: { raw: message as `0x${string}` },
-                });
+                return account.signMessage({ message: { raw: message as `0x${string}` } });
               }
               case "eth_signTypedData_v4": {
                 const [, typedDataStr] = (p as [string, string]) ?? [];
-                const parsed = JSON.parse(typedDataStr);
-                const { domain, types, primaryType, message: msg } = parsed;
-                // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                const { EIP712Domain: _removed, ...restTypes } = types;
-                return account.signTypedData({
-                  domain,
-                  types: restTypes,
-                  primaryType,
-                  message: msg,
-                });
+                const { domain, types, primaryType, message: msg } = JSON.parse(typedDataStr);
+                const { EIP712Domain: _, ...restTypes } = types;
+                return account.signTypedData({ domain, types: restTypes, primaryType, message: msg });
               }
               case "eth_sendTransaction": {
                 const [tx] = (p as [{ to: string; data?: string; value?: string }]) ?? [];
                 const { createPublicClient, createWalletClient, http, parseGwei } = await import("viem");
                 const chain = config.chains[0];
-                const publicClient = createPublicClient({ chain, transport: http() });
-                const walletClient = createWalletClient({ account, chain, transport: http() });
-                const nonce = await publicClient.getTransactionCount({ address: account.address });
-                const gasPrice = await publicClient.getGasPrice();
-                return walletClient.sendTransaction({
+                const pub = createPublicClient({ chain, transport: http() });
+                const wal = createWalletClient({ account, chain, transport: http() });
+                const nonce = await pub.getTransactionCount({ address: account.address });
+                const gasPrice = await pub.getGasPrice();
+                return wal.sendTransaction({
                   to: tx.to as `0x${string}`,
                   data: (tx.data ?? "0x") as `0x${string}`,
                   value: tx.value ? BigInt(tx.value) : 0n,
@@ -106,5 +85,5 @@ export function createMnemonicConnector(mnemonic: string) {
       onChainChanged() {},
       onDisconnect() {},
     };
-  });
+  }) as any;
 }
