@@ -48,7 +48,7 @@ function OrbitalPreview({ color, slots }: { color: string; slots: number }) {
 export default function LandingPage() {
   const router = useRouter();
   const { address, isConnected, status } = useAccount();
-  const { loginWithTelegram, loginAsGuest, isLoading: openfortLoading, error: openfortError } = useOpenfortContext();
+  const { loginWithTelegram, isLoading: openfortLoading, error: openfortError } = useOpenfortContext();
   const [hydrated, setHydrated] = useState(false);
   const [isTg, setIsTg] = useState(false);
   const [tgAutoStarted, setTgAutoStarted] = useState(false);
@@ -84,32 +84,32 @@ export default function LandingPage() {
         <div className="min-h-screen bg-bg flex flex-col items-center justify-center gap-6 text-white">
           <div className="text-6xl animate-float">🐝</div>
           <Loader2 className="w-8 h-8 animate-spin text-gold" />
-          <p className="text-white/40 text-sm">Connecting wallet...</p>
+          <p className="text-white/40 text-sm">Подключаем кошелёк...</p>
         </div>
       );
     }
-    // Error or failed — show retry
     return (
-      <div className="min-h-screen bg-bg flex flex-col items-center justify-center gap-5 text-white px-6">
+      <div className="min-h-screen bg-bg flex flex-col items-center justify-center gap-6 text-white px-6">
         <div className="text-6xl">🐝</div>
-        <p className="text-white font-bold text-lg">Meta Bee Hive</p>
+        <div className="text-center">
+          <p className="text-white font-black text-2xl mb-1">Meta Bee Hive</p>
+          <p className="text-white/40 text-sm">Decentralized S4 Matrix</p>
+        </div>
         {openfortError && (
           <p className="text-red-400 text-xs text-center bg-red-500/10 rounded-xl px-4 py-2 max-w-xs">
             {openfortError}
           </p>
         )}
         <button
-          onClick={() => { setTgAutoStarted(false); }}
-          className="px-6 py-3 rounded-xl text-sm font-bold"
-          style={{ background: "linear-gradient(135deg,#F5A623,#FF8C00)", color: "#000" }}
+          onClick={() => { setTgAutoStarted(false); loginWithTelegram(); }}
+          disabled={openfortLoading}
+          className="flex items-center gap-3 px-8 py-4 rounded-2xl text-base font-bold disabled:opacity-50 w-full max-w-xs justify-center"
+          style={{ background: "#2AABEE", color: "#fff", boxShadow: "0 0 24px rgba(42,171,238,0.35)" }}
         >
-          Попробовать снова
-        </button>
-        <button
-          onClick={loginAsGuest}
-          className="text-white/40 text-xs underline"
-        >
-          Войти как гость
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L8.32 13.617l-2.96-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.828.942z"/>
+          </svg>
+          Войти через Telegram
         </button>
       </div>
     );
