@@ -51,12 +51,17 @@ export function ConnectButton() {
   const [isTelegram, setIsTelegram]   = useState(false);
   const [isLoggingIn, setIsLoggingIn] = useState(false);
 
-  const handleDisconnect = useCallback(() => {
-    privyLogout();
-    disconnect();
+  // router kept for potential future use
+  void router;
+
+  const handleDisconnect = useCallback(async () => {
     setOpen(false);
-    router.push("/");
-  }, [privyLogout, disconnect, router]);
+    await privyLogout();
+    disconnect();
+    // Full page reload so beforeInteractive scripts re-run and Privy
+    // re-reads fresh Telegram initData for seamless re-authentication.
+    window.location.replace("/");
+  }, [privyLogout, disconnect]);
 
   useEffect(() => {
     setHasInjected(!!(window as any).ethereum);
