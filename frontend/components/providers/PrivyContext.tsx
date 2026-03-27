@@ -12,7 +12,6 @@ import {
   useWallets,
   useLoginWithTelegram,
 } from "@privy-io/react-auth";
-import { SmartWalletsProvider, useSmartWallets } from "@privy-io/react-auth/smart-wallets";
 import { polygon, polygonAmoy } from "viem/chains";
 import toast from "react-hot-toast";
 
@@ -36,7 +35,6 @@ const Ctx = createContext<PrivyAuthCtx | null>(null);
 function PrivyAuthInner({ children }: { children: ReactNode }) {
   const { ready, authenticated, exportWallet: privyExportWallet, logout: privyLogout, login } = usePrivy();
   const { wallets } = useWallets();
-  const { client: smartWalletClient } = useSmartWallets();
   const { login: loginTelegram, state: telegramState } = useLoginWithTelegram({
     onComplete: () => {
       // wallet auto-created by Privy after login
@@ -51,10 +49,9 @@ function PrivyAuthInner({ children }: { children: ReactNode }) {
 
   const [error, setError] = useState<string | null>(null);
 
-  // Derive the address — prefer smart wallet account, then embedded wallet
+  // Embedded wallet (Privy-managed)
   const embeddedWallet = wallets.find((w) => w.walletClientType === "privy");
-  const address =
-    (smartWalletClient?.account as any)?.address ?? embeddedWallet?.address;
+  const address = embeddedWallet?.address;
 
   const loginWithTelegram = useCallback(async () => {
     setError(null);
@@ -86,17 +83,24 @@ function PrivyAuthInner({ children }: { children: ReactNode }) {
 
   const sendTransaction = useCallback(
     async (to: string, data: string, value: bigint = 0n): Promise<string> => {
-      if (!smartWalletClient) {
-        throw new Error("Smart wallet not initialized. Please login first.");
+      if (!embeddedWallet) {
+        throw new Error("Wallet not initialized. Please login first.");
       }
-      const hash = await smartWalletClient.sendTransaction({
-        to: to as `0x${string}`,
-        data: data as `0x${string}`,
-        value,
+      const provider = await embeddedWallet.getEthereumProvider();
+      const hash = await provider.request({
+        method: "eth_sendTransaction",
+        params: [
+          {
+            from: embeddedWallet.address,
+            to,
+            data,
+            value: value === 0n ? "0x0" : `0x${value.toString(16)}`,
+          },
+        ],
       });
       return hash as string;
     },
-    [smartWalletClient],
+    [embeddedWallet],
   );
 
   const exportWallet = useCallback(async () => {
@@ -155,9 +159,7 @@ export function PrivyAuthProvider({ children }: { children: ReactNode }) {
         supportedChains: [polygon, polygonAmoy],
       }}
     >
-      <SmartWalletsProvider>
-        <PrivyAuthInner>{children}</PrivyAuthInner>
-      </SmartWalletsProvider>
+      <PrivyAuthInner>{children}</PrivyAuthInner>
     </PrivyProvider>
   );
 }
