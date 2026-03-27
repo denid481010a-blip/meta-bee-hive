@@ -1,19 +1,16 @@
 "use client";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import { useAccount } from "wagmi";
 import { ConnectButton } from "@/components/wallet/ConnectButton";
 import { usePrivyAuth } from "@/components/providers/PrivyContext";
 import { HIVE_PRICES_DAI, LEVEL_COLORS } from "@/lib/constants";
 import { motion } from "framer-motion";
-import { Loader2 } from "lucide-react";
-import { MnemonicLoginModal } from "@/components/wallet/MnemonicLoginModal";
 
 const STEPS = [
-  { n: "01", title: "Connect Wallet",    desc: "MetaMask on Polygon. 30 seconds." },
-  { n: "02", title: "Register",          desc: "Use a referral link and join the swarm." },
-  { n: "03", title: "Buy First Hive",    desc: "H1 is only 5 DAI — start in one click." },
-  { n: "04", title: "Earn DAI",          desc: "Slots fill up → payouts automatically." },
+  { n: "01", title: "Connect Wallet",  desc: "MetaMask on Polygon. 30 seconds." },
+  { n: "02", title: "Register",        desc: "Use a referral link and join the swarm." },
+  { n: "03", title: "Buy First Hive",  desc: "H1 is only 5 DAI — start in one click." },
+  { n: "04", title: "Earn DAI",        desc: "Slots fill up → payouts automatically." },
 ];
 
 function OrbitalPreview({ color, slots }: { color: string; slots: number }) {
@@ -47,38 +44,13 @@ function OrbitalPreview({ color, slots }: { color: string; slots: number }) {
 }
 
 export default function LandingPage() {
-  const router = useRouter();
-  const { address, isConnected, status } = useAccount();
-  const {
-    loginWithTelegram,
-    isLoading: privyLoading,
-    error: privyError,
-    isAuthenticated,
-    address: privyAddress,
-  } = usePrivyAuth();
+  const { status } = useAccount();
+  const { isAuthenticated } = usePrivyAuth();
   const [hydrated, setHydrated] = useState(false);
-  const [isTg, setIsTg] = useState(false);
-  const [isLoggingIn, setIsLoggingIn] = useState(false);
-  const [showMnemonic, setShowMnemonic] = useState(false);
-  const [dbg, setDbg] = useState("");
 
   useEffect(() => { setHydrated(true); }, []);
 
-  // Detect Telegram + collect debug info
-  useEffect(() => {
-    if (!hydrated) return;
-    const tg = (window as any).Telegram?.WebApp;
-    if (tg?.initData || tg?.initDataUnsafe?.user) setIsTg(true);
-    const hash = window.location.hash;
-    setDbg(
-      `tg:${!!tg} id:${tg?.initData?.length ?? 0}ch ` +
-      `hash:${hash.startsWith("#tgWeb") ? hash.slice(0,20)+"…" : hash.slice(0,10)||"empty"} ` +
-      `auth:${isAuthenticated} load:${privyLoading}`
-    );
-  }, [hydrated, isAuthenticated, privyLoading]);
-
-  // Redirect when connected via wagmi OR authenticated via Privy (seamless Mini App flow).
-  // Use window.location for a full reload so Privy reads its session cookie fresh on dashboard.
+  // Redirect to dashboard when authenticated (Privy seamless or wallet connect)
   useEffect(() => {
     if (!hydrated) return;
     if (isAuthenticated || status === "connected") {
@@ -86,80 +58,14 @@ export default function LandingPage() {
     }
   }, [hydrated, status, isAuthenticated]);
 
-  // Telegram fullscreen state
-  if (isTg && !isConnected) {
-    // Auto-login in progress (Privy read initData from hash) or manual login
-    const isAuthenticating = privyLoading || isLoggingIn || (isAuthenticated && !privyAddress);
-
-    return (
-      <>
-      <div className="min-h-screen bg-bg flex flex-col items-center justify-center gap-6 text-white px-6">
-        <div className="text-6xl">🐝</div>
-        <div className="text-center">
-          <p className="text-white font-black text-2xl mb-1">Meta Bee Hive</p>
-          <p className="text-white/40 text-sm">Decentralized S4 Matrix</p>
-        </div>
-        {/* DEBUG — remove after fix */}
-        {dbg && (
-          <p className="text-yellow-400/70 text-[10px] text-center font-mono bg-black/30 rounded px-3 py-1 max-w-xs break-all">
-            {dbg}
-          </p>
-        )}
-        {privyError && (
-          <p className="text-red-400 text-xs text-center bg-red-500/10 rounded-xl px-4 py-2 max-w-xs">
-            {privyError}
-          </p>
-        )}
-        {isAuthenticating ? (
-          <div className="flex flex-col items-center gap-3">
-            <Loader2 className="w-8 h-8 animate-spin text-gold" />
-            <p className="text-white/40 text-sm">
-              {privyLoading ? "Входим..." : "Создаём кошелёк..."}
-            </p>
-          </div>
-        ) : (
-          <div className="w-full max-w-xs space-y-3">
-            <button
-              onClick={() => {
-                setIsLoggingIn(true);
-                loginWithTelegram().finally(() => setIsLoggingIn(false));
-              }}
-              className="flex items-center gap-3 px-8 py-4 rounded-2xl text-base font-bold w-full justify-center"
-              style={{ background: "#2AABEE", color: "#fff", boxShadow: "0 0 24px rgba(42,171,238,0.35)" }}
-            >
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L8.32 13.617l-2.96-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.828.942z"/>
-              </svg>
-              Войти через Telegram
-            </button>
-            <button
-              onClick={() => setShowMnemonic(true)}
-              className="flex items-center gap-3 px-8 py-4 rounded-2xl text-base font-bold w-full justify-center"
-              style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", color: "#fff" }}
-            >
-              🔑 Секретная фраза
-            </button>
-          </div>
-        )}
-      </div>
-
-      {showMnemonic && (
-        <MnemonicLoginModal onClose={() => setShowMnemonic(false)} />
-      )}
-      </>
-    );
-  }
-
   return (
     <div className="min-h-screen bg-bg text-white overflow-x-hidden">
       {/* ── Hero ───────────────────────────────────────────────── */}
       <section className="relative flex flex-col items-center justify-center min-h-screen text-center px-4 py-24">
-        {/* Backgrounds */}
         <div className="absolute inset-0 bg-grid opacity-100 pointer-events-none" />
         <div className="absolute inset-0 bg-radial-gold pointer-events-none" />
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-blue/8 blur-[100px] rounded-full pointer-events-none" />
 
-        {/* Floating bees */}
         <div className="absolute top-20 left-[8%] text-2xl opacity-20 animate-float" style={{ animationDelay: "0s" }}>🐝</div>
         <div className="absolute top-[35%] right-[6%] text-xl opacity-15 animate-float" style={{ animationDelay: "1.2s" }}>🐝</div>
         <div className="absolute bottom-[28%] left-[12%] text-lg opacity-10 animate-float" style={{ animationDelay: "2.1s" }}>🐝</div>
@@ -170,14 +76,12 @@ export default function LandingPage() {
           transition={{ duration: 0.7 }}
           className="relative z-10 max-w-2xl mx-auto"
         >
-          {/* Badge */}
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium mb-8"
             style={{ background: "rgba(245,166,35,0.1)", border: "1px solid rgba(245,166,35,0.2)", color: "#F5A623" }}>
             <span className="w-1.5 h-1.5 rounded-full bg-gold animate-pulse" />
             Powered by Polygon · DAI
           </div>
 
-          {/* Title */}
           <h1 className="text-5xl md:text-7xl font-black tracking-tight mb-4 leading-[1.05]">
             <span className="text-white">META </span>
             <span className="shimmer-text">BEE</span>
@@ -213,7 +117,6 @@ export default function LandingPage() {
           <h2 className="text-3xl font-black text-white mb-3">How It Works</h2>
           <p className="text-white/35 text-sm">4 steps to your first DAI</p>
         </motion.div>
-
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {STEPS.map((s, i) => (
             <motion.div
@@ -244,11 +147,10 @@ export default function LandingPage() {
           <h2 className="text-3xl font-black text-white mb-3">10 Hive Levels</h2>
           <p className="text-white/35 text-sm">Each next level ×1.8 — higher potential</p>
         </motion.div>
-
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
           {HIVE_PRICES_DAI.map((price, i) => {
-            const level  = i + 1;
-            const color  = LEVEL_COLORS[level] ?? "#F5A623";
+            const level = i + 1;
+            const color = LEVEL_COLORS[level] ?? "#F5A623";
             const income = +(price * 3 * 0.9).toFixed(1);
             return (
               <motion.div
@@ -258,11 +160,7 @@ export default function LandingPage() {
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.04 }}
                 className="rounded-2xl p-4 flex flex-col items-center gap-3 text-center"
-                style={{
-                  background: "rgba(16,16,30,0.7)",
-                  border: `1px solid ${color}20`,
-                  boxShadow: `0 0 20px ${color}08`,
-                }}
+                style={{ background: "rgba(16,16,30,0.7)", border: `1px solid ${color}20`, boxShadow: `0 0 20px ${color}08` }}
               >
                 <OrbitalPreview color={color} slots={2} />
                 <div>
@@ -292,8 +190,8 @@ export default function LandingPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-0">
             {[
               { icon: "🐝", label: "Slots 1–3 of 4", desc: "3 out of 4 slots go to you. 10% fee per payment — the rest goes straight to your wallet.", color: "#F5A623" },
-              { icon: "♻️", label: "Slot 4",    desc: "Cycle complete — level restarts, you're back in the matrix", color: "#7C4DFF" },
-              { icon: "⬆️", label: "Overflow",  desc: "No level at referrer — payment flows up the chain to the upline", color: "#4C8FFF" },
+              { icon: "♻️", label: "Slot 4",   desc: "Cycle complete — level restarts, you're back in the matrix", color: "#7C4DFF" },
+              { icon: "⬆️", label: "Overflow", desc: "No level at referrer — payment flows up the chain to the upline", color: "#4C8FFF" },
             ].map((item, i) => (
               <div key={i} className={`px-6 py-8 text-center ${i < 2 ? "md:border-r border-white/5" : ""}`}>
                 <div className="text-3xl mb-4">{item.icon}</div>
@@ -322,7 +220,6 @@ export default function LandingPage() {
         </motion.div>
       </section>
 
-      {/* Footer */}
       <footer className="py-8 px-4 text-center text-white/15 text-xs border-t border-white/5">
         META BEE HIVE · Smart contract on Polygon · No admin
       </footer>
