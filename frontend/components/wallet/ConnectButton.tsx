@@ -2,7 +2,7 @@
 import { useAccount, useConnect, useDisconnect, useSwitchChain } from "wagmi";
 import { injected } from "wagmi/connectors";
 import { useState, useEffect } from "react";
-import { Wallet, ChevronDown, LogOut, AlertTriangle, X, KeyRound, Loader2 } from "lucide-react";
+import { Wallet, ChevronDown, LogOut, AlertTriangle, X, Loader2 } from "lucide-react";
 
 function TelegramIcon() {
   return (
@@ -301,15 +301,6 @@ export function ConnectButton() {
             className="absolute right-0 top-11 z-20 w-52 rounded-xl overflow-hidden"
             style={{ background: "#10101e", border: "1px solid rgba(255,255,255,0.08)" }}
           >
-            {isAuthenticated && (
-              <button
-                onClick={() => { setOpen(false); setEmailModal(true); }}
-                className="w-full flex items-center gap-2.5 px-4 py-3 text-sm text-white/60 hover:text-white hover:bg-white/5 transition-all border-b border-white/5"
-              >
-                <KeyRound className="w-3.5 h-3.5" />
-                Ключ импорта в другой кошелёк
-              </button>
-            )}
             <button
               onClick={() => {
                 disconnect();
