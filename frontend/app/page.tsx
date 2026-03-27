@@ -58,17 +58,22 @@ export default function LandingPage() {
   const [hydrated, setHydrated] = useState(false);
   const [isTg, setIsTg] = useState(false);
   const [isLoggingIn, setIsLoggingIn] = useState(false);
+  const [dbg, setDbg] = useState("");
 
   useEffect(() => { setHydrated(true); }, []);
 
-  // Detect Telegram
+  // Detect Telegram + collect debug info
   useEffect(() => {
     if (!hydrated) return;
     const tg = (window as any).Telegram?.WebApp;
-    if (tg?.initData || tg?.initDataUnsafe?.user) {
-      setIsTg(true);
-    }
-  }, [hydrated]);
+    if (tg?.initData || tg?.initDataUnsafe?.user) setIsTg(true);
+    const hash = window.location.hash;
+    setDbg(
+      `tg:${!!tg} id:${tg?.initData?.length ?? 0}ch ` +
+      `hash:${hash.startsWith("#tgWeb") ? hash.slice(0,20)+"…" : hash.slice(0,10)||"empty"} ` +
+      `auth:${isAuthenticated} load:${privyLoading}`
+    );
+  }, [hydrated, isAuthenticated, privyLoading]);
 
   // Redirect when connected via wagmi OR authenticated via Privy (seamless Mini App flow)
   useEffect(() => {
@@ -91,6 +96,12 @@ export default function LandingPage() {
           <p className="text-white font-black text-2xl mb-1">Meta Bee Hive</p>
           <p className="text-white/40 text-sm">Decentralized S4 Matrix</p>
         </div>
+        {/* DEBUG — remove after fix */}
+        {dbg && (
+          <p className="text-yellow-400/70 text-[10px] text-center font-mono bg-black/30 rounded px-3 py-1 max-w-xs break-all">
+            {dbg}
+          </p>
+        )}
         {privyError && (
           <p className="text-red-400 text-xs text-center bg-red-500/10 rounded-xl px-4 py-2 max-w-xs">
             {privyError}
