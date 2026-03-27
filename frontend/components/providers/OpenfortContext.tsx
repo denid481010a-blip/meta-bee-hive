@@ -32,17 +32,51 @@ const POLYGON_CHAIN_ID = 137;
 const RECOVERY_PASSWORD =
   process.env.NEXT_PUBLIC_SHIELD_ENCRYPTION_SHARE ?? "metabee-recovery-2025";
 
+async function fetchEncryptionSession(accessToken: string | null): Promise<string | null> {
+  try {
+    const res = await fetch("/api/shield/session", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+      },
+    });
+    if (!res.ok) return null;
+    const data = await res.json();
+    return data.encryptionSession ?? data.session ?? null;
+  } catch {
+    return null;
+  }
+}
+
 async function setupWallet(finishAuth: () => Promise<void>) {
   const openfort = getOpenfort();
 
-  // Конфигурируем embedded wallet на Polygon с password recovery
-  await openfort.embeddedWallet.configure({
-    chainId: POLYGON_CHAIN_ID,
-    recoveryParams: {
-      recoveryMethod: RecoveryMethod.PASSWORD,
-      password: RECOVERY_PASSWORD,
-    },
-  });
+  // Ensure SDK is initialized
+  await openfort.waitForInitialization();
+
+  // Try AUTOMATIC recovery via Shield backend; fallback to PASSWORD
+  const accessToken = await openfort.getAccessToken();
+  const encryptionSession = await fetchEncryptionSession(accessToken);
+
+  if (encryptionSession) {
+    await openfort.embeddedWallet.configure({
+      chainId: POLYGON_CHAIN_ID,
+      recoveryParams: {
+        recoveryMethod: RecoveryMethod.AUTOMATIC,
+        encryptionSession,
+      },
+    });
+  } else {
+    // Fallback: password recovery with shared app secret
+    await openfort.embeddedWallet.configure({
+      chainId: POLYGON_CHAIN_ID,
+      recoveryParams: {
+        recoveryMethod: RecoveryMethod.PASSWORD,
+        password: RECOVERY_PASSWORD,
+      },
+    });
+  }
 
   // Получаем EIP-1193 провайдер (с gas sponsorship policy если указан)
   const policyId = process.env.NEXT_PUBLIC_OPENFORT_POLICY_ID;
