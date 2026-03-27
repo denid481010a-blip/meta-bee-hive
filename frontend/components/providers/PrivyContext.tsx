@@ -10,7 +10,6 @@ import {
   PrivyProvider,
   usePrivy,
   useWallets,
-  useLoginWithTelegram,
   useSendTransaction,
 } from "@privy-io/react-auth";
 import { polygon, polygonAmoy } from "viem/chains";
@@ -37,15 +36,6 @@ function PrivyAuthInner({ children }: { children: ReactNode }) {
   const { ready, authenticated, exportWallet: privyExportWallet, logout: privyLogout, login } = usePrivy();
   const { wallets } = useWallets();
   const { sendTransaction: privySendTx } = useSendTransaction();
-  const { login: loginTelegram, state: telegramState } = useLoginWithTelegram({
-    onComplete: () => {},
-    onError: (error) => {
-      console.error("Telegram login error:", error);
-      const msg = typeof error === "string" ? error : (error as any)?.message ?? "Ошибка входа";
-      setError(msg);
-      toast.error(msg, { duration: 6000 });
-    },
-  });
 
   const [error, setError] = useState<string | null>(null);
 
@@ -55,19 +45,14 @@ function PrivyAuthInner({ children }: { children: ReactNode }) {
   const loginWithTelegram = useCallback(async () => {
     setError(null);
     try {
-      const tg = (window as any).Telegram?.WebApp;
-      if (tg?.initData) {
-        await loginTelegram();
-      } else {
-        login();
-      }
+      login();
     } catch (e: any) {
-      console.error("Privy Telegram login error:", e);
+      console.error("Privy login error:", e);
       const msg = e?.message ?? "Ошибка входа";
       setError(msg);
       toast.error(msg, { duration: 6000 });
     }
-  }, [loginTelegram, login]);
+  }, [login]);
 
   const logout = useCallback(async () => {
     try {
@@ -108,7 +93,7 @@ function PrivyAuthInner({ children }: { children: ReactNode }) {
     }
   }, [privyExportWallet, embeddedWallet?.address]);
 
-  const isLoading = !ready || telegramState.status === "loading";
+  const isLoading = !ready;
 
   return (
     <Ctx.Provider
