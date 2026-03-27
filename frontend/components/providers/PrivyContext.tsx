@@ -53,14 +53,17 @@ function PrivyAuthInner({ children }: { children: ReactNode }) {
 
   const loginWithTelegram = useCallback(async () => {
     setError(null);
+    const tg = (window as any).Telegram?.WebApp;
+    const initDataLen = tg?.initData?.length ?? 0;
+    const hasUser = !!tg?.initDataUnsafe?.user;
+    const platform = tg?.platform ?? "none";
+    toast(`ready:${ready} tg:${!!tg} initData:${initDataLen}ch user:${hasUser} platform:${platform}`, { duration: 8000 });
     if (!ready) {
-      toast.error("Приложение ещё загружается, подождите...");
+      toast.error("Приложение ещё загружается");
       return;
     }
     try {
-      const tg = (window as any).Telegram?.WebApp;
       if (tg) {
-        // В любом Telegram контексте используем Mini App auth
         loginTg();
       } else {
         login();
