@@ -5,7 +5,7 @@ import { mnemonicToAccount } from "viem/accounts";
 export function createMnemonicConnector(mnemonic: string) {
   const account = mnemonicToAccount(mnemonic.trim());
 
-  return createConnector((config) => {
+  return createConnector((config: any) => {
     const emitter = config.emitter;
     const chainId = config.chains[0]?.id ?? 137;
 
@@ -72,7 +72,8 @@ export function createMnemonicConnector(mnemonic: string) {
                   value: tx.value ? BigInt(tx.value) : 0n,
                   nonce,
                   gasPrice: gasPrice + parseGwei("5"),
-                });
+                  chain,
+                } as any);
               }
               default:
                 throw new Error(`Method ${method} not supported`);
