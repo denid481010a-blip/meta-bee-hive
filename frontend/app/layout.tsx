@@ -3,6 +3,8 @@ import "./globals.css";
 import { Web3Provider } from "@/components/providers/Web3Provider";
 import { Toaster } from "react-hot-toast";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "META BEE HIVE — Децентрализованная реферальная матрица",
   description: "Зарабатывай вместе с роем. Матрица S4 на Polygon + DAI.",
