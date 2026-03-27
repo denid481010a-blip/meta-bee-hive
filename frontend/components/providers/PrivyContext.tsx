@@ -10,6 +10,7 @@ import {
   PrivyProvider,
   usePrivy,
   useWallets,
+  useLoginWithTelegram,
   useSendTransaction,
 } from "@privy-io/react-auth";
 import { polygon, polygonAmoy } from "viem/chains";
@@ -36,23 +37,41 @@ function PrivyAuthInner({ children }: { children: ReactNode }) {
   const { ready, authenticated, exportWallet: privyExportWallet, logout: privyLogout, login } = usePrivy();
   const { wallets } = useWallets();
   const { sendTransaction: privySendTx } = useSendTransaction();
-
   const [error, setError] = useState<string | null>(null);
+
+  const { login: loginTg } = useLoginWithTelegram({
+    onComplete: () => { setError(null); },
+    onError: (err) => {
+      const msg = typeof err === "string" ? err : (err as any)?.message ?? "Ошибка входа";
+      setError(msg);
+      toast.error(msg, { duration: 6000 });
+    },
+  });
 
   const embeddedWallet = wallets.find((w) => w.walletClientType === "privy");
   const address = embeddedWallet?.address;
 
   const loginWithTelegram = useCallback(async () => {
     setError(null);
+    if (!ready) {
+      toast.error("Приложение ещё загружается, подождите...");
+      return;
+    }
     try {
-      login();
+      const tg = (window as any).Telegram?.WebApp;
+      const hasInitData = !!(tg?.initData);
+      toast(`🔐 Вход... ${hasInitData ? "Telegram Mini App" : "Web"}`, { duration: 2000 });
+      if (hasInitData) {
+        loginTg();
+      } else {
+        login();
+      }
     } catch (e: any) {
-      console.error("Privy login error:", e);
       const msg = e?.message ?? "Ошибка входа";
       setError(msg);
       toast.error(msg, { duration: 6000 });
     }
-  }, [login]);
+  }, [ready, loginTg, login]);
 
   const logout = useCallback(async () => {
     try {

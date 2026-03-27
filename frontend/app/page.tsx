@@ -48,7 +48,7 @@ function OrbitalPreview({ color, slots }: { color: string; slots: number }) {
 export default function LandingPage() {
   const router = useRouter();
   const { address, isConnected, status } = useAccount();
-  const { loginWithTelegram, error: privyError } = usePrivyAuth();
+  const { loginWithTelegram, isLoading: privyLoading, isAuthenticated, error: privyError } = usePrivyAuth();
   const [hydrated, setHydrated] = useState(false);
   const [isTg, setIsTg] = useState(false);
   const [isLoggingIn, setIsLoggingIn] = useState(false);
@@ -65,10 +65,10 @@ export default function LandingPage() {
   }, [hydrated]);
 
   useEffect(() => {
-    if (hydrated && status === "connected" && address) {
+    if (hydrated && (isAuthenticated || (status === "connected" && address))) {
       router.push("/dashboard");
     }
-  }, [hydrated, status, address]);
+  }, [hydrated, isAuthenticated, status, address]);
 
   // Telegram fullscreen state
   if (isTg && !isConnected) {
@@ -84,25 +84,27 @@ export default function LandingPage() {
             {privyError}
           </p>
         )}
-        {isLoggingIn ? (
+        {(privyLoading || isLoggingIn) ? (
           <div className="flex flex-col items-center gap-3">
             <Loader2 className="w-8 h-8 animate-spin text-gold" />
-            <p className="text-white/40 text-sm">Подключаем кошелёк...</p>
+            <p className="text-white/40 text-sm">
+              {privyLoading ? "Инициализация..." : "Подключаем кошелёк..."}
+            </p>
           </div>
         ) : (
-        <button
-          onClick={async () => {
-            setIsLoggingIn(true);
-            try { await loginWithTelegram(); } catch { /* shown via toast */ } finally { setIsLoggingIn(false); }
-          }}
-          className="flex items-center gap-3 px-8 py-4 rounded-2xl text-base font-bold w-full max-w-xs justify-center"
-          style={{ background: "#2AABEE", color: "#fff", boxShadow: "0 0 24px rgba(42,171,238,0.35)" }}
-        >
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L8.32 13.617l-2.96-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.828.942z"/>
-          </svg>
-          Войти через Telegram
-        </button>
+          <button
+            onClick={() => {
+              setIsLoggingIn(true);
+              loginWithTelegram().finally(() => setIsLoggingIn(false));
+            }}
+            className="flex items-center gap-3 px-8 py-4 rounded-2xl text-base font-bold w-full max-w-xs justify-center"
+            style={{ background: "#2AABEE", color: "#fff", boxShadow: "0 0 24px rgba(42,171,238,0.35)" }}
+          >
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L8.32 13.617l-2.96-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.828.942z"/>
+            </svg>
+            Войти через Telegram
+          </button>
         )}
       </div>
     );

@@ -9,14 +9,8 @@ export function TelegramProvider({ children }: { children: ReactNode }) {
     const tg = (window as any).Telegram?.WebApp;
     if (!tg) return;
 
-    // Force cache-bust via localStorage — more reliable than URL params
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored !== APP_VERSION) {
-      localStorage.setItem(STORAGE_KEY, APP_VERSION);
-      // Hard reload ignoring cache
-      window.location.reload();
-      return;
-    }
+    // Update stored version (no reload — causes init race conditions)
+    localStorage.setItem(STORAGE_KEY, APP_VERSION);
 
     // Tell Telegram the app is ready (hides loading screen)
     tg.ready();
