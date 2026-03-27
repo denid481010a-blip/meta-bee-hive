@@ -8,7 +8,6 @@ import {
   ChevronDown,
   LogOut,
   AlertTriangle,
-  X,
   Loader2,
   KeyRound,
 } from "lucide-react";
@@ -27,21 +26,6 @@ import { clsx } from "clsx";
 import { usePrivyAuth } from "@/components/providers/PrivyContext";
 
 const SITE = "metabeehive.com";
-
-const WALLETS = [
-  {
-    id: "metaMask",
-    icon: "🦊",
-    name: "MetaMask",
-    url: `https://metamask.app.link/dapp/${SITE}`,
-  },
-  {
-    id: "trust",
-    icon: "🛡️",
-    name: "Trust Wallet",
-    url: `https://link.trustwallet.com/open_url?coin_id=966&url=https://${SITE}`,
-  },
-];
 
 function openDeepLink(url: string) {
   const tg = (window as any).Telegram?.WebApp;
@@ -63,8 +47,7 @@ export function ConnectButton() {
   } = usePrivyAuth();
   const router = useRouter();
 
-  const [open, setOpen]           = useState(false);
-  const [modal, setModal]         = useState(false);
+  const [open, setOpen]             = useState(false);
   const [hasInjected, setHasInjected] = useState(false);
   const [isTelegram, setIsTelegram]   = useState(false);
 
@@ -82,198 +65,73 @@ export function ConnectButton() {
 
   const wrongNetwork = isConnected && chainId !== CHAIN_ID;
 
-  const btnStyle = {
-    background: "linear-gradient(135deg, #F5A623, #FF8C00)",
-    color: "#000",
-    boxShadow: "0 0 20px rgba(245,166,35,0.3)",
-  };
-
+  // ── Not connected — show 3 login options inline ──────────────────────────
   if (!isConnected) {
-    // Telegram — use Privy embedded wallet
-    if (isTelegram) {
-      return (
+    return (
+      <div className="flex flex-col gap-3 w-full max-w-xs mx-auto">
+
+        {/* 1. Telegram via Privy */}
         <button
           onClick={loginWithTelegram}
           disabled={privyLoading}
-          className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold transition-all disabled:opacity-50"
+          className="w-full flex items-center gap-3 px-5 py-3.5 rounded-2xl font-bold text-sm transition-all hover:opacity-90 disabled:opacity-50"
           style={{
             background: "#2AABEE",
             color: "#fff",
-            boxShadow: "0 0 20px rgba(42,171,238,0.3)",
+            boxShadow: "0 0 24px rgba(42,171,238,0.35)",
           }}
         >
           {privyLoading ? (
-            <Loader2 className="w-4 h-4 animate-spin" />
+            <Loader2 className="w-5 h-5 animate-spin flex-shrink-0" />
           ) : (
-            <TelegramIcon />
+            <span className="flex-shrink-0"><TelegramIcon /></span>
           )}
-          Войти через Telegram
+          <span>Войти через Telegram</span>
         </button>
-      );
-    }
 
-    // Browser with injected wallet
-    if (hasInjected) {
-      return (
-        <>
-          <button
-            onClick={() => setModal(true)}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold transition-all"
-            style={btnStyle}
-          >
-            <Wallet className="w-4 h-4" />
-            Connect
-          </button>
-
-          {modal && (
-            <>
-              <div
-                className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm"
-                onClick={() => setModal(false)}
-              />
-              <div
-                className="fixed z-50 left-1/2 -translate-x-1/2 bottom-6 w-[calc(100%-2rem)] max-w-sm rounded-3xl p-5 space-y-3"
-                style={{
-                  background: "#10101e",
-                  border: "1px solid rgba(255,255,255,0.08)",
-                }}
-              >
-                <div className="flex items-center justify-between mb-1">
-                  <p className="text-white font-bold text-sm">Connect Wallet</p>
-                  <button
-                    onClick={() => setModal(false)}
-                    className="text-white/30 hover:text-white"
-                  >
-                    <X className="w-4 h-4" />
-                  </button>
-                </div>
-                <button
-                  onClick={() => {
-                    setModal(false);
-                    loginWithTelegram();
-                  }}
-                  disabled={privyLoading}
-                  className="w-full flex items-center gap-4 px-4 py-3 rounded-2xl transition-all hover:opacity-80 disabled:opacity-50"
-                  style={{
-                    background: "rgba(42,171,238,0.12)",
-                    border: "1px solid rgba(42,171,238,0.3)",
-                  }}
-                >
-                  <span className="text-[#2AABEE]">
-                    <TelegramIcon />
-                  </span>
-                  <span className="text-white font-semibold text-sm">
-                    Войти через Telegram
-                  </span>
-                </button>
-                <button
-                  onClick={() => {
-                    connect({ connector: injected() });
-                    setModal(false);
-                  }}
-                  className="w-full flex items-center gap-4 px-4 py-3 rounded-2xl transition-all hover:opacity-80"
-                  style={{
-                    background: "rgba(255,255,255,0.05)",
-                    border: "1px solid rgba(255,255,255,0.08)",
-                  }}
-                >
-                  <span className="text-2xl">🦊</span>
-                  <span className="text-white font-semibold text-sm">
-                    MetaMask / Browser Wallet
-                  </span>
-                </button>
-                <p className="text-white/20 text-xs text-center pt-1">
-                  Polygon · DAI
-                </p>
-              </div>
-            </>
-          )}
-        </>
-      );
-    }
-
-    // No wallet — deeplinks
-    return (
-      <>
+        {/* 2. MetaMask / Browser wallet */}
         <button
-          onClick={() => setModal(true)}
-          className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold transition-all"
-          style={btnStyle}
+          onClick={() => {
+            if (hasInjected) {
+              connect({ connector: injected() });
+            } else {
+              openDeepLink(`https://metamask.app.link/dapp/${SITE}`);
+            }
+          }}
+          className="w-full flex items-center gap-3 px-5 py-3.5 rounded-2xl font-bold text-sm transition-all hover:opacity-90"
+          style={{
+            background: "rgba(255,255,255,0.05)",
+            border: "1px solid rgba(255,255,255,0.1)",
+            color: "#fff",
+          }}
         >
-          <Wallet className="w-4 h-4" />
-          Connect
+          <span className="text-xl flex-shrink-0">🦊</span>
+          <span>MetaMask</span>
         </button>
 
-        {modal && (
-          <>
-            <div
-              className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm"
-              onClick={() => setModal(false)}
-            />
-            <div
-              className="fixed z-50 left-1/2 -translate-x-1/2 bottom-6 w-[calc(100%-2rem)] max-w-sm rounded-3xl p-5 space-y-3"
-              style={{
-                background: "#10101e",
-                border: "1px solid rgba(255,255,255,0.08)",
-              }}
-            >
-              <div className="flex items-center justify-between mb-1">
-                <p className="text-white font-bold text-sm">Connect Wallet</p>
-                <button
-                  onClick={() => setModal(false)}
-                  className="text-white/30 hover:text-white"
-                >
-                  <X className="w-4 h-4" />
-                </button>
-              </div>
+        {/* 3. Trust Wallet */}
+        <button
+          onClick={() =>
+            openDeepLink(
+              `https://link.trustwallet.com/open_url?coin_id=966&url=https://${SITE}`
+            )
+          }
+          className="w-full flex items-center gap-3 px-5 py-3.5 rounded-2xl font-bold text-sm transition-all hover:opacity-90"
+          style={{
+            background: "rgba(255,255,255,0.05)",
+            border: "1px solid rgba(255,255,255,0.1)",
+            color: "#fff",
+          }}
+        >
+          <span className="text-xl flex-shrink-0">🛡️</span>
+          <span>Trust Wallet</span>
+        </button>
 
-              <button
-                onClick={() => {
-                  setModal(false);
-                  loginWithTelegram();
-                }}
-                disabled={privyLoading}
-                className="w-full flex items-center gap-4 px-4 py-3 rounded-2xl transition-all hover:opacity-80 disabled:opacity-50"
-                style={{
-                  background: "rgba(42,171,238,0.12)",
-                  border: "1px solid rgba(42,171,238,0.3)",
-                }}
-              >
-                <span className="text-[#2AABEE]">
-                  <TelegramIcon />
-                </span>
-                <span className="text-white font-semibold text-sm">
-                  Войти через Telegram
-                </span>
-              </button>
-
-              {WALLETS.map((w) => (
-                <button
-                  key={w.id}
-                  onClick={() => openDeepLink(w.url)}
-                  className="w-full flex items-center gap-4 px-4 py-3 rounded-2xl transition-all hover:opacity-80"
-                  style={{
-                    background: "rgba(255,255,255,0.05)",
-                    border: "1px solid rgba(255,255,255,0.08)",
-                  }}
-                >
-                  <span className="text-2xl">{w.icon}</span>
-                  <span className="text-white font-semibold text-sm">
-                    {w.name}
-                  </span>
-                </button>
-              ))}
-
-              <p className="text-white/20 text-xs text-center pt-1">
-                Polygon · DAI
-              </p>
-            </div>
-          </>
-        )}
-      </>
+      </div>
     );
   }
 
+  // ── Wrong network ────────────────────────────────────────────────────────
   if (wrongNetwork) {
     return (
       <button
@@ -286,6 +144,7 @@ export function ConnectButton() {
     );
   }
 
+  // ── Connected ────────────────────────────────────────────────────────────
   return (
     <div className="relative">
       <button
@@ -311,10 +170,7 @@ export function ConnectButton() {
 
       {open && (
         <>
-          <div
-            className="fixed inset-0 z-10"
-            onClick={() => setOpen(false)}
-          />
+          <div className="fixed inset-0 z-10" onClick={() => setOpen(false)} />
           <div
             className="absolute right-0 top-11 z-20 w-52 rounded-xl overflow-hidden"
             style={{
@@ -324,10 +180,7 @@ export function ConnectButton() {
           >
             {isAuthenticated && (
               <button
-                onClick={() => {
-                  setOpen(false);
-                  exportWallet();
-                }}
+                onClick={() => { setOpen(false); exportWallet(); }}
                 className="w-full flex items-center gap-2.5 px-4 py-3 text-sm text-white/60 hover:text-white hover:bg-white/5 transition-all border-b border-white/5"
               >
                 <KeyRound className="w-3.5 h-3.5" />
