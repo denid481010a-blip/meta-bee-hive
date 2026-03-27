@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Copy, Check, Share2 } from "lucide-react";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
@@ -13,16 +13,11 @@ interface ReferralLinkProps {
 
 export function ReferralLink({ address }: ReferralLinkProps) {
   const [copied, setCopied] = useState(false);
-  const [isTelegram, setIsTelegram] = useState(false);
   const { t } = useT();
 
-  useEffect(() => {
-    setIsTelegram(!!(window as any).Telegram?.WebApp);
-  }, []);
-
-  const webLink = `${typeof window !== "undefined" ? window.location.origin : "https://metabeehive.com"}/ref/${address}`;
-  const tgLink  = TG_BOT ? `https://t.me/${TG_BOT}?startapp=${address}` : webLink;
-  const link    = isTelegram && TG_BOT ? tgLink : webLink;
+  const webLink = `${typeof window !== "undefined" ? window.location.origin : "https://meta-bee-hive.vercel.app"}/ref/${address}`;
+  // Always use Telegram deep link when bot is configured
+  const link = TG_BOT ? `https://t.me/${TG_BOT}?startapp=${address}` : webLink;
 
   function copy() {
     navigator.clipboard.writeText(link);
