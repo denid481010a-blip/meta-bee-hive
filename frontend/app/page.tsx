@@ -48,7 +48,13 @@ function OrbitalPreview({ color, slots }: { color: string; slots: number }) {
 export default function LandingPage() {
   const router = useRouter();
   const { address, isConnected, status } = useAccount();
-  const { loginWithTelegram, isLoading: privyLoading, error: privyError } = usePrivyAuth();
+  const {
+    loginWithTelegram,
+    isLoading: privyLoading,
+    error: privyError,
+    isAuthenticated,
+    address: privyAddress,
+  } = usePrivyAuth();
   const [hydrated, setHydrated] = useState(false);
   const [isTg, setIsTg] = useState(false);
   const [isLoggingIn, setIsLoggingIn] = useState(false);
@@ -64,14 +70,17 @@ export default function LandingPage() {
     }
   }, [hydrated]);
 
+  // Redirect when connected via wagmi OR authenticated via Privy (seamless Mini App flow)
   useEffect(() => {
-    if (hydrated && status === "connected" && address) {
+    if (!hydrated) return;
+    const walletAddr = address || privyAddress;
+    if ((status === "connected" || isAuthenticated) && walletAddr) {
       router.push("/dashboard");
     }
-  }, [hydrated, status, address]);
+  }, [hydrated, status, address, isAuthenticated, privyAddress]);
 
-  // Telegram fullscreen state
-  if (isTg && !isConnected) {
+  // Telegram fullscreen state: show login only when NOT authenticated via either path
+  if (isTg && !isConnected && !isAuthenticated) {
     return (
       <div className="min-h-screen bg-bg flex flex-col items-center justify-center gap-6 text-white px-6">
         <div className="text-6xl">🐝</div>
