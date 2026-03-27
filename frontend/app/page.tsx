@@ -52,6 +52,7 @@ export default function LandingPage() {
   const [hydrated, setHydrated] = useState(false);
   const [isTg, setIsTg] = useState(false);
   const [tgAutoStarted, setTgAutoStarted] = useState(false);
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
 
   useEffect(() => { setHydrated(true); }, []);
 
@@ -67,7 +68,8 @@ export default function LandingPage() {
   useEffect(() => {
     if (isTg && !tgAutoStarted && !isConnected && !privyLoading) {
       setTgAutoStarted(true);
-      loginWithTelegram();
+      setIsLoggingIn(true);
+      loginWithTelegram().finally(() => setIsLoggingIn(false));
     }
   }, [isTg, tgAutoStarted, isConnected, privyLoading]);
 
@@ -79,7 +81,7 @@ export default function LandingPage() {
 
   // Telegram fullscreen state
   if (isTg && !isConnected) {
-    if (privyLoading) {
+    if (isLoggingIn) {
       return (
         <div className="min-h-screen bg-bg flex flex-col items-center justify-center gap-6 text-white">
           <div className="text-6xl animate-float">🐝</div>
@@ -101,8 +103,12 @@ export default function LandingPage() {
           </p>
         )}
         <button
-          onClick={() => { setTgAutoStarted(false); loginWithTelegram(); }}
-          disabled={privyLoading}
+          onClick={async () => {
+            setTgAutoStarted(false);
+            setIsLoggingIn(true);
+            try { await loginWithTelegram(); } finally { setIsLoggingIn(false); }
+          }}
+          disabled={isLoggingIn}
           className="flex items-center gap-3 px-8 py-4 rounded-2xl text-base font-bold disabled:opacity-50 w-full max-w-xs justify-center"
           style={{ background: "#2AABEE", color: "#fff", boxShadow: "0 0 24px rgba(42,171,238,0.35)" }}
         >
