@@ -24,7 +24,7 @@ import { shortAddress } from "@/lib/formatters";
 import { CHAIN_ID } from "@/lib/constants";
 import { clsx } from "clsx";
 import { usePrivyAuth } from "@/components/providers/PrivyContext";
-import { MnemonicLoginModal } from "@/components/wallet/MnemonicLoginModal";
+import { isTelegram as checkIsTelegram } from "@/components/providers/TelegramProvider";
 
 const SITE = "metabeehive.com";
 
@@ -34,7 +34,7 @@ function openDeepLink(url: string) {
   else window.open(url, "_blank");
 }
 
-export function ConnectButton() {
+export function ConnectButton({ compact = false }: { compact?: boolean }) {
   const { address, isConnected, chainId } = useAccount();
   const { connect }     = useConnect();
   const { disconnect }  = useDisconnect();
@@ -51,34 +51,59 @@ export function ConnectButton() {
   const [hasInjected, setHasInjected] = useState(false);
   const [isTelegram, setIsTelegram]   = useState(false);
   const [isLoggingIn, setIsLoggingIn] = useState(false);
-  const [showMnemonic, setShowMnemonic] = useState(false);
-
-  // router kept for potential future use
-  void router;
-
   const handleDisconnect = useCallback(async () => {
     setOpen(false);
     await privyLogout();
     disconnect();
-    // Full page reload so beforeInteractive scripts re-run and Privy
-    // re-reads fresh Telegram initData for seamless re-authentication.
-    window.location.replace("/");
-  }, [privyLogout, disconnect]);
+    // Telegram needs full reload so Privy re-reads initData for seamless re-auth
+    if ((window as any).Telegram?.WebApp) {
+      window.location.replace("/");
+    } else {
+      router.replace("/");
+    }
+  }, [privyLogout, disconnect, router]);
 
   useEffect(() => {
     setHasInjected(!!(window as any).ethereum);
-    setIsTelegram(!!(window as any).Telegram?.WebApp);
+    setIsTelegram(checkIsTelegram());
   }, []);
 
   const wrongNetwork = isConnected && chainId !== CHAIN_ID;
 
-  // ── Not connected — show 3 login options inline ──────────────────────────
-  if (!isConnected) {
+  // ── Not connected — compact mode (in Header) ─────────────────────────────
+  if (!isConnected && compact) {
+    // In Telegram: show Telegram login button
+    if (isTelegram) {
+      return (
+        <button
+          onClick={async () => {
+            setIsLoggingIn(true);
+            try { await loginWithTelegram(); } finally { setIsLoggingIn(false); }
+          }}
+          disabled={isLoggingIn}
+          className="flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-bold transition-all"
+          style={{ background: "#2AABEE", color: "#fff" }}
+        >
+          {isLoggingIn ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <><TelegramIcon /> Войти</>}
+        </button>
+      );
+    }
+    // In MetaMask/browser: show MetaMask connect button
     return (
-      <>
-      <div className="flex flex-col gap-3 w-full max-w-xs mx-auto">
+      <button
+        onClick={() => connect({ connector: injected() })}
+        className="flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-bold transition-all"
+        style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.15)", color: "#fff" }}
+      >
+        <span>🦊</span> Connect
+      </button>
+    );
+  }
 
-        {/* 1. Telegram via Privy */}
+  // ── Not connected — TELEGRAM: only Telegram login ───────────────────────
+  if (!isConnected && isTelegram) {
+    return (
+      <div className="flex flex-col gap-3 w-full max-w-xs mx-auto">
         <button
           onClick={async () => {
             setIsLoggingIn(true);
@@ -86,78 +111,49 @@ export function ConnectButton() {
           }}
           disabled={isLoggingIn}
           className="w-full flex items-center gap-3 px-5 py-3.5 rounded-2xl font-bold text-sm transition-all hover:opacity-90 disabled:opacity-50"
-          style={{
-            background: "#2AABEE",
-            color: "#fff",
-            boxShadow: "0 0 24px rgba(42,171,238,0.35)",
-          }}
+          style={{ background: "#2AABEE", color: "#fff", boxShadow: "0 0 24px rgba(42,171,238,0.35)" }}
         >
-          {isLoggingIn ? (
-            <Loader2 className="w-5 h-5 animate-spin flex-shrink-0" />
-          ) : (
-            <span className="flex-shrink-0"><TelegramIcon /></span>
-          )}
+          {isLoggingIn
+            ? <Loader2 className="w-5 h-5 animate-spin flex-shrink-0" />
+            : <span className="flex-shrink-0"><TelegramIcon /></span>}
           <span>Войти через Telegram</span>
         </button>
+      </div>
+    );
+  }
 
-        {/* 2. MetaMask / Browser wallet */}
+  // ── Not connected — BROWSER/METAMASK: wallets only, no Telegram ──────────
+  if (!isConnected) {
+    return (
+      <>
+      <div className="flex flex-col gap-3 w-full max-w-xs mx-auto">
+
+        {/* MetaMask */}
         <button
           onClick={() => {
-            if (hasInjected) {
-              connect({ connector: injected() });
-            } else {
-              openDeepLink(`https://metamask.app.link/dapp/${SITE}`);
-            }
+            if (hasInjected) connect({ connector: injected() });
+            else openDeepLink(`https://metamask.app.link/dapp/${SITE}`);
           }}
           className="w-full flex items-center gap-3 px-5 py-3.5 rounded-2xl font-bold text-sm transition-all hover:opacity-90"
-          style={{
-            background: "rgba(255,255,255,0.05)",
-            border: "1px solid rgba(255,255,255,0.1)",
-            color: "#fff",
-          }}
+          style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", color: "#fff" }}
         >
           <span className="text-xl flex-shrink-0">🦊</span>
           <span>MetaMask</span>
         </button>
 
-        {/* 3. Trust Wallet */}
+        {/* Trust Wallet */}
         <button
-          onClick={() =>
-            openDeepLink(
-              `https://link.trustwallet.com/open_url?coin_id=966&url=https://${SITE}`
-            )
-          }
+          onClick={() => openDeepLink(`https://link.trustwallet.com/open_url?coin_id=966&url=https://${SITE}`)}
           className="w-full flex items-center gap-3 px-5 py-3.5 rounded-2xl font-bold text-sm transition-all hover:opacity-90"
-          style={{
-            background: "rgba(255,255,255,0.05)",
-            border: "1px solid rgba(255,255,255,0.1)",
-            color: "#fff",
-          }}
+          style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", color: "#fff" }}
         >
           <span className="text-xl flex-shrink-0">🛡️</span>
           <span>Trust Wallet</span>
         </button>
 
-        {/* 4. Secret phrase */}
-        <button
-          onClick={() => setShowMnemonic(true)}
-          className="w-full flex items-center gap-3 px-5 py-3.5 rounded-2xl font-bold text-sm transition-all hover:opacity-90"
-          style={{
-            background: "rgba(255,255,255,0.05)",
-            border: "1px solid rgba(255,255,255,0.1)",
-            color: "#fff",
-          }}
-        >
-          <span className="text-xl flex-shrink-0">🔑</span>
-          <span>Секретная фраза</span>
-        </button>
 
       </div>
-
-      {showMnemonic && (
-        <MnemonicLoginModal onClose={() => setShowMnemonic(false)} />
-      )}
-      </>
+</>
     );
   }
 

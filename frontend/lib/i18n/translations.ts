@@ -1,4 +1,4 @@
-export type LangCode = "ru" | "uk" | "en" | "tr" | "vi" | "hi" | "zh" | "ko" | "uz" | "ky" | "th" | "ja";
+export type LangCode = "ru" | "uk" | "en" | "tr" | "vi" | "hi" | "zh" | "ko" | "uz" | "ky" | "pl" | "ro";
 
 export const LANGUAGES: { code: LangCode; label: string; flag: string }[] = [
   { code: "en", label: "English",    flag: "🇬🇧" },
@@ -7,12 +7,12 @@ export const LANGUAGES: { code: LangCode; label: string; flag: string }[] = [
   { code: "tr", label: "Türkçe",     flag: "🇹🇷" },
   { code: "vi", label: "Tiếng Việt", flag: "🇻🇳" },
   { code: "hi", label: "हिन्दी",      flag: "🇮🇳" },
-  { code: "zh", label: "中文",        flag: "🇨🇳" },
-  { code: "ko", label: "한국어",       flag: "🇰🇷" },
+  { code: "pl", label: "Polski",     flag: "🇵🇱" },
   { code: "uz", label: "O'zbekcha",  flag: "🇺🇿" },
+  { code: "ko", label: "한국어",       flag: "🇰🇷" },
+  { code: "ro", label: "Română",     flag: "🇷🇴" },
   { code: "ky", label: "Кыргызча",   flag: "🇰🇬" },
-  { code: "th", label: "ภาษาไทย",    flag: "🇹🇭" },
-  { code: "ja", label: "日本語",      flag: "🇯🇵" },
+  { code: "zh", label: "中文",        flag: "🇨🇳" },
 ];
 
 export type Translations = typeof ru;
@@ -26,6 +26,7 @@ const ru = {
     team:         "Моя Пасека",
     achievements: "Достижения",
     language:     "Язык",
+    swap:         "Обмен",
   },
   dashboard: {
     title:        "Мой улей 🐝",
@@ -75,6 +76,16 @@ const ru = {
     personal:     "Личная",
     worker:       "Рабочая",
     type:         "Тип",
+    refresh:      "Обновить",
+    refreshing:   "Обновляю...",
+    syncing:      "Синхронизация с блокчейном…",
+    activeBees:   "Активные пчелы",
+    activeBeesSub:"(купили первый улей)",
+    inactiveBees: "Не активные пчелы",
+    inactiveBeesSub:"(зарегистрировались по реф. ссылке)",
+    active:       "Активная",
+    inactive:     "Не активная",
+    address:      "Адрес",
   },
   levels: {
     title:        "Уровни улиев",
@@ -212,6 +223,19 @@ const ru = {
     btnTitle:       "Как это работает?",
     btnSub:         "Матрица S4, доход, рефералы — полное объяснение",
   },
+  secretKey: {
+    title:    "Секретный ключ",
+    sub:      "Импортировать в MetaMask",
+    desc:     "Приватный ключ даёт полный доступ к кошельку. Никому не показывай его и храни в безопасном месте.",
+    copyBtn:  "Скопировать секретный ключ для импорта",
+  },
+  getDai: {
+    title: "Получить DAI",
+    sub:   "POL, USDT, USDC → DAI",
+  },
+  daiGuide: { title:"Как купить и вывести DAI", sub:"Простая инструкция для новичков", s1Title:"Что такое DAI", s1p1:"DAI — это стабильная криптовалюта (стейблкоин). Её курс всегда равен примерно 1 DAI = 1 USD.", s1p2:"Думайте о ней как о цифровом долларе: её стоимость не прыгает вверх-вниз как у Bitcoin.", s1p3:"В нашем приложении DAI используется для покупки ульев и получения выплат.", s2Title:"Способы получить DAI", s2m1:"Способ 1 — Обменять внутри приложения", s2m1Desc:"Если у вас есть другие токены, обменяйте их прямо здесь:", s2m1Step1:"Перейдите в раздел «Обмен» в нижнем меню", s2m1Step2:"Выберите нужную пару, например POL → DAI", s2m1Step3:"Введите сумму и нажмите «Обменять»", s2m2:"Способ 2 — Купить на бирже", s2m2Desc:"Зарегистрируйтесь на одной из бирж и купите DAI, затем выведите на ваш кошелёк:", s2m2Warning:"⚠️ Важно при выводе с биржи", s2m2WarningDesc:"Обязательно выбирайте сеть Polygon (MATIC) — иначе средства могут потеряться!", s2m3:"Способ 3 — С банковской карты", s2m3Desc:"Через сервисы типа Revolut, Moonpay или обменники:", s2m3Step1:"Купите USDT или POL с карты", s2m3Step2:"Переведите на адрес вашего кошелька в приложении", s2m3Step3:"Обменяйте на DAI через встроенный обменник", s3Title:"Как найти адрес своего кошелька", s3p1:"Чтобы получить DAI от кого-то или с биржи, вам нужен ваш адрес кошелька.", s3Step1:"Нажмите на адрес кошелька в правом верхнем углу (0x6CCE...)", s3Step2:"Ваш адрес — это строчка вида 0x6CCE...AF71. Нажмите «Скопировать».", s3Step3:"Отправьте этот адрес тому, кто хочет вам перевести DAI, USDT, USDC или POL", s3Tip:"💡 Адрес кошелька — это не секрет. Его можно смело показывать для получения средств.", s4Title:"Отправить DAI на другой кошелёк", s4p1:"Вы можете отправить DAI (или USDT, USDC) напрямую на любой кошелёк прямо внутри приложения.", s4Step1:"Перейдите в раздел «Обмен» → вкладка «Отправить»", s4Step2:"Выберите токен: DAI, USDT или USDC", s4Step3:"Вставьте адрес получателя (0x...)", s4Step4:"Введите сумму и нажмите «Отправить»", s4Tip:"✅ Перевод внутри Polygon занимает ~5 секунд и стоит около $0.01", s5Title:"Как вывести средства", s5ToExchange:"На биржу", s5Step1:"Войдите в ваш аккаунт на бирже (Binance, Bybit и др.)", s5Step2:"Найдите адрес для пополнения DAI в сети Polygon", s5Step3:"Отправьте DAI через вкладку «Отправить» в приложении", s5Step4:"На бирже продайте DAI за фиат и выведите на карту", s5ToWallet:"В другой кошелёк", s5WalletDesc:"Просто используйте вкладку «Отправить» — введите адрес нужного кошелька и сумму.", warningTitle:"⚠️ Важно: мы не имеем доступа к вашему кошельку", warningDesc1:"Bee Hive — это децентрализованное приложение. Мы не храним ваши ключи, пароли и средства. Никто из команды не может восстановить доступ к вашему кошельку.", warningDesc2:"Если вы потеряете доступ к Telegram или к кошельку без сохранённого секретного ключа — средства восстановить будет невозможно. Это свойство блокчейна, не ограничение приложения.", saveKeyBadge:"💾 Сохраните секретный ключ прямо сейчас — это ваша страховка", saveKeyDesc:"Запишите его в надёжном месте: заметки на телефоне с паролем, бумага в сейфе, менеджер паролей.", s6Title:"Как сохранить секретный ключ — пошагово", s6Intro:"Секретный ключ (private key) — это единственный способ восстановить доступ к кошельку в любом другом приложении. Сохраните его один раз и храните в безопасном месте.", s6Step1Title:"Шаг 1 — Откройте меню кошелька", s6Step1Desc:"Нажмите на адрес кошелька в правом верхнем углу экрана:", s6Step1Arrow:"↑ Нажмите сюда", s6Step2Title:"Шаг 2 — Выберите «Секретный ключ»", s6Step2Desc:"Откроется меню — нажмите первый пункт:", s6Step2Here:"← тут", s6Step3Title:"Шаг 3 — Подтвердите и скопируйте ключ", s6Step3Desc:"Появится окно с предупреждением и кнопкой. Нажмите кнопку — ключ будет показан или скопирован:", s6Step4Title:"Шаг 4 — Сохраните ключ в надёжном месте", s6SaveOpt1Title:"Заметки с паролем", s6SaveOpt1Desc:"Стандартные «Заметки» на iPhone с Face ID или пароль-менеджер (1Password, Bitwarden)", s6SaveOpt2Title:"Бумага", s6SaveOpt2Desc:"Запишите от руки и положите в сейф или надёжное место. Никогда не фотографируйте.", s6SaveOpt3Title:"Менеджер паролей", s6SaveOpt3Desc:"Keeper, LastPass, Bitwarden — создайте запись с полем «секретный ключ»", s6Step5Title:"Шаг 5 — Импорт в другой кошелёк (при необходимости)", s6Step5Desc:"Если вы потеряли доступ к Telegram — откройте MetaMask или Trust Wallet и импортируйте ключ:", s6MetaMaskSteps:"Меню → Импорт аккаунта → Вставьте ключ", s6TrustSteps:"Настройки → Кошельки → Импорт → Private Key", s6DangerTitle:"❗ НИКОГДА не передавайте ключ другим людям", s6DangerDesc:"Тот, кто знает ваш ключ — имеет полный доступ к средствам. Ни поддержка приложения, ни команда никогда не запрашивает секретный ключ.", s6SafeTitle:"✅ Ваши средства полностью под вашим контролем", s6SafeDesc:"Приложение не хранит ваши деньги и не может их заморозить. Всё находится в блокчейне Polygon — только вы управляете своими активами.", ctaBtn:"💱 Перейти к обмену", walletAddress:"Адрес вашего кошелька", receives:"Polygon (MATIC) · получает DAI, USDT, USDC, POL", swapTitle:"Обменять", swapGive:"Отдаёшь", swapGet:"Получаешь" },
+  swap: {title:"💱 Обмен и отправка", tabSwap:"Обменять", tabSend:"Отправить", youGive:"Отдаёшь", youGet:"Получаешь", calculating:"Считаем курс...", swapping:"Обмен...", swapFooter:"Powered by 0x Protocol · Лучший курс по DEX Polygon", sendTitle:"Отправить токен", recipient:"Адрес получателя", invalidAddress:"Неверный адрес кошелька", amount:"Сумма", sending:"Отправка...", sendFooter:"Транзакция в сети Polygon · Комиссия ~$0.01", txCancelled:"Транзакция отменена", rateFailed:"Не удалось получить курс", reloadApp:"Перезагрузите приложение"},
+
 };
 
 const uk: Translations = {
@@ -223,6 +247,7 @@ const uk: Translations = {
     team:         "Моя Пасіка",
     achievements: "Досягнення",
     language:     "Мова",
+    swap:         "Обмін",
   },
   dashboard: {
     title:        "Мій вулик 🐝",
@@ -272,6 +297,16 @@ const uk: Translations = {
     personal:     "Особиста",
     worker:       "Робоча",
     type:         "Тип",
+    refresh:      "Оновити",
+    refreshing:   "Оновлюю...",
+    syncing:      "Синхронізація з блокчейном…",
+    activeBees:   "Активні бджоли",
+    activeBeesSub:"(купили перший вулик)",
+    inactiveBees: "Неактивні бджоли",
+    inactiveBeesSub:"(зареєструвались за реф. посиланням)",
+    active:       "Активна",
+    inactive:     "Неактивна",
+    address:      "Адреса",
   },
   levels: {
     title:        "Рівні вуликів",
@@ -409,6 +444,11 @@ const uk: Translations = {
     btnTitle:       "Як це працює?",
     btnSub:         "Матриця S4, дохід, реферали — повне пояснення",
   },
+  secretKey: {title:"Секретний ключ", sub:"Імпортувати в MetaMask", desc:"Private Key надає повний доступ до гаманця. Нікому не показуй його та зберігай у безпечному місці.", copyBtn:"Скопіювати секретний ключ для імпорту"},
+  getDai: {title:"Отримати DAI", sub:"POL, USDT, USDC → DAI"},
+  daiGuide: {title:"Як купити та вивести DAI", sub:"Проста інструкція для новачків", s1Title:"Що таке DAI", s1p1:"DAI — це стабільна криптовалюта (стейблкоїн). Її курс завжди приблизно 1 DAI = 1 USD.", s1p2:"Думайте про неї як про цифровий долар: її вартість не стрибає вгору-вниз, як у Bitcoin.", s1p3:"У нашому застосунку DAI використовується для купівлі вуликів та отримання виплат.", s2Title:"Способи отримати DAI", s2m1:"Спосіб 1 — Обміняти всередині застосунку", s2m1Desc:"Якщо у вас є інші токени, обміняйте їх прямо тут:", s2m1Step1:"Перейдіть до розділу «Обмін» у нижньому меню", s2m1Step2:"Виберіть потрібну пару, наприклад POL → DAI", s2m1Step3:"Введіть суму та натисніть «Обміняти»", s2m2:"Спосіб 2 — Купити на біржі", s2m2Desc:"Зареєструйтесь на одній із бірж і купіть DAI, потім виведіть на ваш гаманець:", s2m2Warning:"⚠️ Важливо при виведенні з біржі", s2m2WarningDesc:"Обов'язково вибирайте мережу Polygon (MATIC) — інакше кошти можуть загубитися!", s2m3:"Спосіб 3 — З банківської картки", s2m3Desc:"Через сервіси типу Revolut, Moonpay або обмінники:", s2m3Step1:"Купіть USDT або POL з картки", s2m3Step2:"Переведіть на адресу вашого гаманця в застосунку", s2m3Step3:"Обміняйте на DAI через вбудований обмінник", s3Title:"Як знайти адресу свого гаманця", s3p1:"Щоб отримати DAI від когось або з біржі, вам потрібна адреса вашого гаманця.", s3Step1:"Натисніть на адресу гаманця у правому верхньому куті (0x6CCE...)", s3Step2:"Ваша адреса — це рядок вигляду 0x6CCE...AF71. Натисніть «Скопіювати».", s3Step3:"Надішліть цю адресу тому, хто хоче переказати вам DAI, USDT, USDC або POL", s3Tip:"💡 Адреса гаманця — це не секрет. Її можна сміливо показувати для отримання коштів.", s4Title:"Надіслати DAI на інший гаманець", s4p1:"Ви можете надіслати DAI (або USDT, USDC) напряму на будь-який гаманець прямо всередині застосунку.", s4Step1:"Перейдіть до розділу «Обмін» → вкладка «Надіслати»", s4Step2:"Виберіть токен: DAI, USDT або USDC", s4Step3:"Вставте адресу одержувача (0x...)", s4Step4:"Введіть суму та натисніть «Надіслати»", s4Tip:"✅ Переказ усередині Polygon займає ~5 секунд і коштує близько $0.01", s5Title:"Як вивести кошти", s5ToExchange:"На біржу", s5Step1:"Увійдіть до вашого акаунту на біржі (Binance, Bybit та ін.)", s5Step2:"Знайдіть адресу для поповнення DAI у мережі Polygon", s5Step3:"Надішліть DAI через вкладку «Надіслати» у застосунку", s5Step4:"На біржі продайте DAI за фіат і виведіть на картку", s5ToWallet:"В інший гаманець", s5WalletDesc:"Просто використовуйте вкладку «Надіслати» — введіть адресу потрібного гаманця та суму.", warningTitle:"⚠️ Важливо: ми не маємо доступу до вашого гаманця", warningDesc1:"Bee Hive — це децентралізований застосунок. Ми не зберігаємо ваші ключі, паролі та кошти. Ніхто з команди не може відновити доступ до вашого гаманця.", warningDesc2:"Якщо ви втратите доступ до Telegram або до гаманця без збереженого секретного ключа — кошти відновити буде неможливо. Це властивість блокчейну, а не обмеження застосунку.", saveKeyBadge:"💾 Збережіть секретний ключ прямо зараз — це ваша страховка", saveKeyDesc:"Запишіть його в надійному місці: нотатки на телефоні з паролем, папір у сейфі, менеджер паролів.", s6Title:"Як зберегти секретний ключ — покроково", s6Intro:"Секретний ключ (Private Key) — це єдиний спосіб відновити доступ до гаманця в будь-якому іншому застосунку. Збережіть його один раз і тримайте в безпечному місці.", s6Step1Title:"Крок 1 — Відкрийте меню гаманця", s6Step1Desc:"Натисніть на адресу гаманця у правому верхньому куті екрана:", s6Step1Arrow:"↑ Натисніть тут", s6Step2Title:"Крок 2 — Виберіть «Секретний ключ»", s6Step2Desc:"Відкриється меню — натисніть перший пункт:", s6Step2Here:"← тут", s6Step3Title:"Крок 3 — Підтвердіть і скопіюйте ключ", s6Step3Desc:"З'явиться вікно з попередженням і кнопкою. Натисніть кнопку — ключ буде показано або скопійовано:", s6Step4Title:"Крок 4 — Збережіть ключ у надійному місці", s6SaveOpt1Title:"Нотатки з паролем", s6SaveOpt1Desc:"Стандартні «Нотатки» на iPhone з Face ID або менеджер паролів (1Password, Bitwarden)", s6SaveOpt2Title:"Папір", s6SaveOpt2Desc:"Запишіть від руки та покладіть у сейф або надійне місце. Ніколи не фотографуйте.", s6SaveOpt3Title:"Менеджер паролів", s6SaveOpt3Desc:"Keeper, LastPass, Bitwarden — створіть запис із полем «секретний ключ»", s6Step5Title:"Крок 5 — Імпорт в інший гаманець (за необхідності)", s6Step5Desc:"Якщо ви втратили доступ до Telegram — відкрийте MetaMask або Trust Wallet і імпортуйте ключ:", s6MetaMaskSteps:"Меню → Імпорт акаунту → Вставте ключ", s6TrustSteps:"Налаштування → Гаманці → Імпорт → Private Key", s6DangerTitle:"❗ НІКОЛИ не передавайте ключ іншим людям", s6DangerDesc:"Той, хто знає ваш ключ — має повний доступ до коштів. Ні підтримка застосунку, ні команда ніколи не запитує секретний ключ.", s6SafeTitle:"✅ Ваші кошти повністю під вашим контролем", s6SafeDesc:"Застосунок не зберігає ваші гроші та не може їх заморозити. Все знаходиться в блокчейні Polygon — тільки ви керуєте своїми активами.", ctaBtn:"💱 Перейти до обміну", walletAddress:"Адреса вашого гаманця", receives:"Polygon (MATIC) · отримує DAI, USDT, USDC, POL", swapTitle:"Обмін", swapGive:"Віддаєш", swapGet:"Отримуєш"},
+  swap: {title:"💱 Обмін та відправка", tabSwap:"Обміняти", tabSend:"Відправити", youGive:"Віддаєш", youGet:"Отримуєш", calculating:"Рахуємо курс...", swapping:"Обмін...", swapFooter:"Powered by 0x Protocol · Найкращий курс по DEX Polygon", sendTitle:"Відправити токен", recipient:"Адреса отримувача", invalidAddress:"Невірна адреса гаманця", amount:"Сума", sending:"Відправка...", sendFooter:"Транзакція в мережі Polygon · Комісія ~$0.01", txCancelled:"Транзакцію скасовано", rateFailed:"Не вдалося отримати курс", reloadApp:"Перезавантажте застосунок"},
+
 };
 
 const en: Translations = {
@@ -420,6 +460,7 @@ const en: Translations = {
     team:         "My Apiary",
     achievements: "Achievements",
     language:     "Language",
+    swap:         "Swap",
   },
   dashboard: {
     title:        "My Hive 🐝",
@@ -469,6 +510,16 @@ const en: Translations = {
     personal:     "Personal",
     worker:       "Worker",
     type:         "Type",
+    refresh:      "Refresh",
+    refreshing:   "Refreshing...",
+    syncing:      "Syncing with blockchain…",
+    activeBees:   "Active bees",
+    activeBeesSub:"(bought first hive)",
+    inactiveBees: "Inactive bees",
+    inactiveBeesSub:"(registered via referral link)",
+    active:       "Active",
+    inactive:     "Inactive",
+    address:      "Address",
   },
   levels: {
     title:        "Hive Levels",
@@ -606,6 +657,11 @@ const en: Translations = {
     btnTitle:       "How does it work?",
     btnSub:         "S4 matrix, earnings, referrals — full explanation",
   },
+  secretKey: {title:"Secret Key", sub:"Import into MetaMask", desc:"The Private Key gives full access to the wallet. Never show it to anyone and keep it in a safe place.", copyBtn:"Copy secret key for import"},
+  getDai: {title:"Get DAI", sub:"POL, USDT, USDC → DAI"},
+  daiGuide: {title:"How to Buy and Withdraw DAI", sub:"A simple guide for beginners", s1Title:"What is DAI", s1p1:"DAI is a stable cryptocurrency (stablecoin). Its rate is always approximately 1 DAI = 1 USD.", s1p2:"Think of it as a digital dollar: its value doesn't jump up and down like Bitcoin.", s1p3:"In our app, DAI is used to purchase hives and receive payouts.", s2Title:"Ways to get DAI", s2m1:"Method 1 — Exchange within the app", s2m1Desc:"If you have other tokens, exchange them right here:", s2m1Step1:"Go to the 'Exchange' section in the bottom menu", s2m1Step2:"Select the desired pair, e.g. POL → DAI", s2m1Step3:"Enter the amount and tap 'Exchange'", s2m2:"Method 2 — Buy on an exchange", s2m2Desc:"Register on one of the exchanges and buy DAI, then withdraw to your wallet:", s2m2Warning:"⚠️ Important when withdrawing from an exchange", s2m2WarningDesc:"Always select the Polygon (MATIC) network — otherwise funds may be lost!", s2m3:"Method 3 — From a bank card", s2m3Desc:"Via services like Revolut, Moonpay or exchange services:", s2m3Step1:"Buy USDT or POL with a card", s2m3Step2:"Transfer to your wallet address in the app", s2m3Step3:"Exchange for DAI via the built-in exchanger", s3Title:"How to find your wallet address", s3p1:"To receive DAI from someone or from an exchange, you need your wallet address.", s3Step1:"Tap on the wallet address in the top right corner (0x6CCE...)", s3Step2:"Your address is a string like 0x6CCE...AF71. Tap 'Copy'.", s3Step3:"Send this address to whoever wants to transfer DAI, USDT, USDC or POL to you", s3Tip:"💡 The wallet address is not a secret. You can safely share it to receive funds.", s4Title:"Send DAI to another wallet", s4p1:"You can send DAI (or USDT, USDC) directly to any wallet right within the app.", s4Step1:"Go to the 'Exchange' section → 'Send' tab", s4Step2:"Select token: DAI, USDT or USDC", s4Step3:"Paste the recipient's address (0x...)", s4Step4:"Enter the amount and tap 'Send'", s4Tip:"✅ Transfer within Polygon takes ~5 seconds and costs about $0.01", s5Title:"How to withdraw funds", s5ToExchange:"To an exchange", s5Step1:"Log in to your exchange account (Binance, Bybit, etc.)", s5Step2:"Find the deposit address for DAI on the Polygon network", s5Step3:"Send DAI via the 'Send' tab in the app", s5Step4:"On the exchange, sell DAI for fiat and withdraw to a card", s5ToWallet:"To another wallet", s5WalletDesc:"Just use the 'Send' tab — enter the address of the desired wallet and the amount.", warningTitle:"⚠️ Important: we do not have access to your wallet", warningDesc1:"Bee Hive is a decentralized application. We do not store your keys, passwords or funds. No one from the team can restore access to your wallet.", warningDesc2:"If you lose access to Telegram or the wallet without a saved secret key — funds cannot be recovered. This is a property of the blockchain, not a limitation of the app.", saveKeyBadge:"💾 Save your secret key right now — it's your insurance", saveKeyDesc:"Write it down in a safe place: password-protected phone notes, paper in a safe, password manager.", s6Title:"How to save your secret key — step by step", s6Intro:"The secret key (Private Key) is the only way to restore access to the wallet in any other app. Save it once and keep it in a safe place.", s6Step1Title:"Step 1 — Open the wallet menu", s6Step1Desc:"Tap on the wallet address in the top right corner of the screen:", s6Step1Arrow:"↑ Tap here", s6Step2Title:"Step 2 — Select 'Secret Key'", s6Step2Desc:"A menu will open — tap the first item:", s6Step2Here:"← here", s6Step3Title:"Step 3 — Confirm and copy the key", s6Step3Desc:"A window with a warning and a button will appear. Tap the button — the key will be shown or copied:", s6Step4Title:"Step 4 — Save the key in a safe place", s6SaveOpt1Title:"Password-protected notes", s6SaveOpt1Desc:"Standard 'Notes' on iPhone with Face ID or a password manager (1Password, Bitwarden)", s6SaveOpt2Title:"Paper", s6SaveOpt2Desc:"Write it by hand and put it in a safe or secure place. Never photograph it.", s6SaveOpt3Title:"Password manager", s6SaveOpt3Desc:"Keeper, LastPass, Bitwarden — create a record with a 'secret key' field", s6Step5Title:"Step 5 — Import into another wallet (if needed)", s6Step5Desc:"If you have lost access to Telegram — open MetaMask or Trust Wallet and import the key:", s6MetaMaskSteps:"Menu → Import Account → Paste the key", s6TrustSteps:"Settings → Wallets → Import → Private Key", s6DangerTitle:"❗ NEVER share your key with other people", s6DangerDesc:"Whoever knows your key has full access to the funds. Neither app support nor the team will ever ask for your secret key.", s6SafeTitle:"✅ Your funds are fully under your control", s6SafeDesc:"The app does not store your money and cannot freeze it. Everything is on the Polygon blockchain — only you control your assets.", ctaBtn:"💱 Go to exchange", walletAddress:"Your wallet address", receives:"Polygon (MATIC) · receives DAI, USDT, USDC, POL", swapTitle:"Exchange", swapGive:"You give", swapGet:"You get"},
+  swap: {title:"💱 Swap & Send", tabSwap:"Swap", tabSend:"Send", youGive:"You give", youGet:"You get", calculating:"Fetching rate...", swapping:"Swapping...", swapFooter:"Powered by 0x Protocol · Best rate on DEX Polygon", sendTitle:"Send Token", recipient:"Recipient address", invalidAddress:"Invalid wallet address", amount:"Amount", sending:"Sending...", sendFooter:"Transaction on Polygon network · Fee ~$0.01", txCancelled:"Transaction cancelled", rateFailed:"Failed to fetch rate", reloadApp:"Please reload the app"},
+
 };
 
 const tr: Translations = {
@@ -617,6 +673,7 @@ const tr: Translations = {
     team:         "Arılığım",
     achievements: "Başarılar",
     language:     "Dil",
+    swap:         "Takas",
   },
   dashboard: {
     title:        "Kovanım 🐝",
@@ -666,6 +723,16 @@ const tr: Translations = {
     personal:     "Kişisel",
     worker:       "İşçi",
     type:         "Tür",
+    refresh:      "Yenile",
+    refreshing:   "Yenileniyor...",
+    syncing:      "Blok zinciriyle senkronize ediliyor…",
+    activeBees:   "Aktif arılar",
+    activeBeesSub:"(ilk kovanı satın aldı)",
+    inactiveBees: "Aktif olmayan arılar",
+    inactiveBeesSub:"(referans bağlantısıyla kayıt oldu)",
+    active:       "Aktif",
+    inactive:     "Aktif değil",
+    address:      "Adres",
   },
   levels: {
     title:        "Kovan Seviyeleri",
@@ -803,6 +870,11 @@ const tr: Translations = {
     btnTitle:       "Nasıl çalışır?",
     btnSub:         "S4 matrisi, kazanç, referanslar — tam açıklama",
   },
+  secretKey: {title:"Gizli Anahtar", sub:"MetaMask'a içe aktar", desc:"Private Key, cüzdana tam erişim sağlar. Kimseye gösterme ve güvenli bir yerde sakla.", copyBtn:"İçe aktarmak için gizli anahtarı kopyala"},
+  getDai: {title:"DAI Al", sub:"POL, USDT, USDC → DAI"},
+  daiGuide: {title:"DAI Nasıl Satın Alınır ve Çekilir", sub:"Yeni başlayanlar için basit rehber", s1Title:"DAI Nedir", s1p1:"DAI, istikrarlı bir kripto paradır (stablecoin). Kuru her zaman yaklaşık 1 DAI = 1 USD'dir.", s1p2:"Onu dijital bir dolar olarak düşünün: değeri Bitcoin gibi yukarı aşağı zıplamaz.", s1p3:"Uygulamamızda DAI, kovan satın almak ve ödeme almak için kullanılır.", s2Title:"DAI almanın yolları", s2m1:"Yöntem 1 — Uygulama içinde takas et", s2m1Desc:"Başka tokenlarınız varsa, onları burada takas edin:", s2m1Step1:"Alt menüdeki 'Takas' bölümüne gidin", s2m1Step2:"İstediğiniz çifti seçin, örneğin POL → DAI", s2m1Step3:"Miktarı girin ve 'Takas Et'e dokunun", s2m2:"Yöntem 2 — Borsadan satın al", s2m2Desc:"Borsalardan birine kaydolun ve DAI satın alın, ardından cüzdanınıza çekin:", s2m2Warning:"⚠️ Borsadan çekim yaparken dikkat", s2m2WarningDesc:"Mutlaka Polygon (MATIC) ağını seçin — aksi takdirde fonlar kaybolabilir!", s2m3:"Yöntem 3 — Banka kartıyla", s2m3Desc:"Revolut, Moonpay gibi hizmetler veya döviz büroları aracılığıyla:", s2m3Step1:"Kartla USDT veya POL satın alın", s2m3Step2:"Uygulamadaki cüzdan adresinize transfer edin", s2m3Step3:"Yerleşik döviz bürosu aracılığıyla DAI ile değiştirin", s3Title:"Cüzdan adresinizi nasıl bulursunuz", s3p1:"Birinden veya bir borsadan DAI almak için cüzdan adresinize ihtiyacınız var.", s3Step1:"Sağ üst köşedeki cüzdan adresine dokunun (0x6CCE...)", s3Step2:"Adresiniz 0x6CCE...AF71 şeklinde bir dizedir. 'Kopyala'ya dokunun.", s3Step3:"Bu adresi size DAI, USDT, USDC veya POL göndermek isteyen kişiye iletin", s3Tip:"💡 Cüzdan adresi bir sır değildir. Fon almak için rahatlıkla paylaşabilirsiniz.", s4Title:"DAI'yi başka bir cüzdana gönder", s4p1:"DAI (veya USDT, USDC) gönderisini doğrudan uygulama içinden herhangi bir cüzdana yapabilirsiniz.", s4Step1:"'Takas' bölümüne gidin → 'Gönder' sekmesi", s4Step2:"Token seçin: DAI, USDT veya USDC", s4Step3:"Alıcı adresini yapıştırın (0x...)", s4Step4:"Miktarı girin ve 'Gönder'e dokunun", s4Tip:"✅ Polygon içindeki transfer ~5 saniye sürer ve yaklaşık $0.01 tutarındadır", s5Title:"Fonlar nasıl çekilir", s5ToExchange:"Borsaya", s5Step1:"Borsa hesabınıza giriş yapın (Binance, Bybit vb.)", s5Step2:"Polygon ağında DAI yatırma adresini bulun", s5Step3:"Uygulamadaki 'Gönder' sekmesiyle DAI gönderin", s5Step4:"Borsada DAI'yi fiat karşılığında satın ve karta çekin", s5ToWallet:"Başka bir cüzdana", s5WalletDesc:"Sadece 'Gönder' sekmesini kullanın — istenen cüzdan adresini ve miktarını girin.", warningTitle:"⚠️ Önemli: cüzdanınıza erişimimiz yok", warningDesc1:"Bee Hive merkezi olmayan bir uygulamadır. Anahtarlarınızı, şifrelerinizi ve fonlarınızı saklamıyoruz. Ekipten hiç kimse cüzdanınıza erişimi geri yükleyemez.", warningDesc2:"Telegram'a veya kaydedilmiş gizli anahtar olmadan cüzdana erişiminizi kaybederseniz — fonlar kurtarılamaz. Bu, uygulamanın bir kısıtlaması değil, blok zincirinin bir özelliğidir.", saveKeyBadge:"💾 Gizli anahtarınızı şimdi kaydedin — bu sizin güvenceniz", saveKeyDesc:"Güvenli bir yere yazın: şifreli telefon notları, kasadaki kağıt, şifre yöneticisi.", s6Title:"Gizli anahtar nasıl kaydedilir — adım adım", s6Intro:"Gizli anahtar (Private Key), başka herhangi bir uygulamada cüzdana erişimi geri yüklemenin tek yoludur. Bir kez kaydedin ve güvenli bir yerde saklayın.", s6Step1Title:"Adım 1 — Cüzdan menüsünü açın", s6Step1Desc:"Ekranın sağ üst köşesindeki cüzdan adresine dokunun:", s6Step1Arrow:"↑ Buraya dokunun", s6Step2Title:"Adım 2 — 'Gizli Anahtar'ı seçin", s6Step2Desc:"Bir menü açılacak — ilk öğeye dokunun:", s6Step2Here:"← burası", s6Step3Title:"Adım 3 — Anahtarı onaylayın ve kopyalayın", s6Step3Desc:"Uyarı ve düğme içeren bir pencere görünecek. Düğmeye dokunun — anahtar gösterilecek veya kopyalanacak:", s6Step4Title:"Adım 4 — Anahtarı güvenli bir yere kaydedin", s6SaveOpt1Title:"Şifreli notlar", s6SaveOpt1Desc:"iPhone'da Face ID ile standart 'Notlar' veya şifre yöneticisi (1Password, Bitwarden)", s6SaveOpt2Title:"Kağıt", s6SaveOpt2Desc:"Elle yazın ve kasaya veya güvenli bir yere koyun. Asla fotoğraflamayın.", s6SaveOpt3Title:"Şifre yöneticisi", s6SaveOpt3Desc:"Keeper, LastPass, Bitwarden — 'gizli anahtar' alanıyla bir kayıt oluşturun", s6Step5Title:"Adım 5 — Başka bir cüzdana içe aktar (gerekirse)", s6Step5Desc:"Telegram'a erişiminizi kaybettiyseniz — MetaMask veya Trust Wallet'ı açın ve anahtarı içe aktarın:", s6MetaMaskSteps:"Menü → Hesabı İçe Aktar → Anahtarı yapıştırın", s6TrustSteps:"Ayarlar → Cüzdanlar → İçe Aktar → Private Key", s6DangerTitle:"❗ Anahtarınızı ASLA başkalarıyla paylaşmayın", s6DangerDesc:"Anahtarınızı bilen kişi fonlara tam erişime sahip olur. Uygulama desteği de ekip de asla gizli anahtar istemez.", s6SafeTitle:"✅ Fonlarınız tamamen sizin kontrolünüzde", s6SafeDesc:"Uygulama paranızı saklamaz ve donduramaz. Her şey Polygon blok zincirinde — sadece siz varlıklarınızı yönetirsiniz.", ctaBtn:"💱 Takasa git", walletAddress:"Cüzdan adresiniz", receives:"Polygon (MATIC) · DAI, USDT, USDC, POL alır", swapTitle:"Takas", swapGive:"Veriyorsun", swapGet:"Alıyorsun"},
+  swap: {title:"💱 Takas ve Gönder", tabSwap:"Takas Et", tabSend:"Gönder", youGive:"Veriyorsun", youGet:"Alıyorsun", calculating:"Kur hesaplanıyor...", swapping:"Takas ediliyor...", swapFooter:"Powered by 0x Protocol · DEX Polygon'da en iyi kur", sendTitle:"Token Gönder", recipient:"Alıcı adresi", invalidAddress:"Geçersiz cüzdan adresi", amount:"Miktar", sending:"Gönderiliyor...", sendFooter:"Polygon ağında işlem · Ücret ~$0.01", txCancelled:"İşlem iptal edildi", rateFailed:"Kur alınamadı", reloadApp:"Uygulamayı yeniden başlatın"},
+
 };
 
 const vi: Translations = {
@@ -814,6 +886,7 @@ const vi: Translations = {
     team:         "Trại ong của tôi",
     achievements: "Thành tích",
     language:     "Ngôn ngữ",
+    swap:         "Swap",
   },
   dashboard: {
     title:        "Tổ ong của tôi 🐝",
@@ -863,6 +936,16 @@ const vi: Translations = {
     personal:     "Cá nhân",
     worker:       "Thợ",
     type:         "Loại",
+    refresh:      "Làm mới",
+    refreshing:   "Đang làm mới...",
+    syncing:      "Đang đồng bộ với blockchain…",
+    activeBees:   "Ong hoạt động",
+    activeBeesSub:"(đã mua tổ ong đầu tiên)",
+    inactiveBees: "Ong không hoạt động",
+    inactiveBeesSub:"(đã đăng ký qua liên kết giới thiệu)",
+    active:       "Hoạt động",
+    inactive:     "Không hoạt động",
+    address:      "Địa chỉ",
   },
   levels: {
     title:        "Cấp độ tổ ong",
@@ -1000,6 +1083,11 @@ const vi: Translations = {
     btnTitle:       "Cách hoạt động?",
     btnSub:         "Ma trận S4, thu nhập, giới thiệu — giải thích đầy đủ",
   },
+  secretKey: {title:"Khóa bí mật", sub:"Nhập vào MetaMask", desc:"Private Key cung cấp toàn quyền truy cập vào ví. Đừng bao giờ chia sẻ và hãy lưu ở nơi an toàn.", copyBtn:"Sao chép khóa bí mật để nhập"},
+  getDai: {title:"Nhận DAI", sub:"POL, USDT, USDC → DAI"},
+  daiGuide: {title:"Cách Mua và Rút DAI", sub:"Hướng dẫn đơn giản cho người mới", s1Title:"DAI là gì", s1p1:"DAI là một loại tiền điện tử ổn định (stablecoin). Tỷ giá luôn xấp xỉ 1 DAI = 1 USD.", s1p2:"Hãy nghĩ về nó như một đô la kỹ thuật số: giá trị không tăng giảm như Bitcoin.", s1p3:"Trong ứng dụng của chúng tôi, DAI được dùng để mua tổ ong và nhận thanh toán.", s2Title:"Các cách nhận DAI", s2m1:"Cách 1 — Đổi trong ứng dụng", s2m1Desc:"Nếu bạn có các token khác, hãy đổi chúng ngay tại đây:", s2m1Step1:"Đến phần 'Đổi' trong menu dưới cùng", s2m1Step2:"Chọn cặp mong muốn, ví dụ POL → DAI", s2m1Step3:"Nhập số tiền và nhấn 'Đổi'", s2m2:"Cách 2 — Mua trên sàn giao dịch", s2m2Desc:"Đăng ký trên một trong các sàn và mua DAI, sau đó rút về ví của bạn:", s2m2Warning:"⚠️ Lưu ý khi rút tiền từ sàn", s2m2WarningDesc:"Hãy chắc chắn chọn mạng Polygon (MATIC) — nếu không tiền có thể bị mất!", s2m3:"Cách 3 — Từ thẻ ngân hàng", s2m3Desc:"Qua các dịch vụ như Revolut, Moonpay hoặc sàn đổi tiền:", s2m3Step1:"Mua USDT hoặc POL bằng thẻ", s2m3Step2:"Chuyển đến địa chỉ ví của bạn trong ứng dụng", s2m3Step3:"Đổi sang DAI qua trình đổi tích hợp", s3Title:"Cách tìm địa chỉ ví của bạn", s3p1:"Để nhận DAI từ ai đó hoặc từ sàn giao dịch, bạn cần địa chỉ ví của mình.", s3Step1:"Nhấn vào địa chỉ ví ở góc trên bên phải (0x6CCE...)", s3Step2:"Địa chỉ của bạn là chuỗi dạng 0x6CCE...AF71. Nhấn 'Sao chép'.", s3Step3:"Gửi địa chỉ này cho người muốn chuyển DAI, USDT, USDC hoặc POL cho bạn", s3Tip:"💡 Địa chỉ ví không phải bí mật. Bạn có thể thoải mái chia sẻ để nhận tiền.", s4Title:"Gửi DAI đến ví khác", s4p1:"Bạn có thể gửi DAI (hoặc USDT, USDC) trực tiếp đến bất kỳ ví nào ngay trong ứng dụng.", s4Step1:"Đến phần 'Đổi' → tab 'Gửi'", s4Step2:"Chọn token: DAI, USDT hoặc USDC", s4Step3:"Dán địa chỉ người nhận (0x...)", s4Step4:"Nhập số tiền và nhấn 'Gửi'", s4Tip:"✅ Chuyển khoản trong Polygon mất ~5 giây và tốn khoảng $0.01", s5Title:"Cách rút tiền", s5ToExchange:"Lên sàn giao dịch", s5Step1:"Đăng nhập vào tài khoản sàn của bạn (Binance, Bybit, v.v.)", s5Step2:"Tìm địa chỉ nạp DAI trên mạng Polygon", s5Step3:"Gửi DAI qua tab 'Gửi' trong ứng dụng", s5Step4:"Trên sàn, bán DAI lấy tiền pháp định và rút về thẻ", s5ToWallet:"Đến ví khác", s5WalletDesc:"Chỉ cần dùng tab 'Gửi' — nhập địa chỉ ví mong muốn và số tiền.", warningTitle:"⚠️ Quan trọng: chúng tôi không có quyền truy cập vào ví của bạn", warningDesc1:"Bee Hive là ứng dụng phi tập trung. Chúng tôi không lưu trữ khóa, mật khẩu hay tiền của bạn. Không ai trong nhóm có thể khôi phục quyền truy cập vào ví của bạn.", warningDesc2:"Nếu bạn mất quyền truy cập vào Telegram hoặc ví mà không có khóa bí mật đã lưu — tiền sẽ không thể khôi phục. Đây là đặc tính của blockchain, không phải giới hạn của ứng dụng.", saveKeyBadge:"💾 Lưu khóa bí mật ngay bây giờ — đây là bảo hiểm của bạn", saveKeyDesc:"Ghi lại ở nơi an toàn: ghi chú điện thoại có mật khẩu, giấy trong két, trình quản lý mật khẩu.", s6Title:"Cách lưu khóa bí mật — từng bước", s6Intro:"Khóa bí mật (Private Key) là cách duy nhất để khôi phục quyền truy cập vào ví trong bất kỳ ứng dụng nào khác. Lưu một lần và giữ ở nơi an toàn.", s6Step1Title:"Bước 1 — Mở menu ví", s6Step1Desc:"Nhấn vào địa chỉ ví ở góc trên bên phải màn hình:", s6Step1Arrow:"↑ Nhấn vào đây", s6Step2Title:"Bước 2 — Chọn 'Khóa bí mật'", s6Step2Desc:"Menu sẽ mở — nhấn mục đầu tiên:", s6Step2Here:"← tại đây", s6Step3Title:"Bước 3 — Xác nhận và sao chép khóa", s6Step3Desc:"Cửa sổ cảnh báo và nút sẽ xuất hiện. Nhấn nút — khóa sẽ được hiển thị hoặc sao chép:", s6Step4Title:"Bước 4 — Lưu khóa ở nơi an toàn", s6SaveOpt1Title:"Ghi chú có mật khẩu", s6SaveOpt1Desc:"'Ghi chú' tiêu chuẩn trên iPhone với Face ID hoặc trình quản lý mật khẩu (1Password, Bitwarden)", s6SaveOpt2Title:"Giấy", s6SaveOpt2Desc:"Viết tay và cất vào két hoặc nơi an toàn. Không bao giờ chụp ảnh.", s6SaveOpt3Title:"Trình quản lý mật khẩu", s6SaveOpt3Desc:"Keeper, LastPass, Bitwarden — tạo bản ghi với trường 'khóa bí mật'", s6Step5Title:"Bước 5 — Nhập vào ví khác (nếu cần)", s6Step5Desc:"Nếu bạn mất quyền truy cập Telegram — mở MetaMask hoặc Trust Wallet và nhập khóa:", s6MetaMaskSteps:"Menu → Nhập tài khoản → Dán khóa", s6TrustSteps:"Cài đặt → Ví → Nhập → Private Key", s6DangerTitle:"❗ KHÔNG BAO GIỜ chia sẻ khóa với người khác", s6DangerDesc:"Người biết khóa của bạn sẽ có toàn quyền truy cập vào tiền. Bộ phận hỗ trợ ứng dụng hay nhóm sẽ không bao giờ yêu cầu khóa bí mật.", s6SafeTitle:"✅ Tiền của bạn hoàn toàn dưới sự kiểm soát của bạn", s6SafeDesc:"Ứng dụng không lưu trữ tiền của bạn và không thể đóng băng chúng. Mọi thứ đều trên blockchain Polygon — chỉ bạn quản lý tài sản của mình.", ctaBtn:"💱 Đến trang đổi", walletAddress:"Địa chỉ ví của bạn", receives:"Polygon (MATIC) · nhận DAI, USDT, USDC, POL", swapTitle:"Đổi", swapGive:"Bạn cho", swapGet:"Bạn nhận"},
+  swap: {title:"💱 Hoán đổi & Gửi", tabSwap:"Hoán đổi", tabSend:"Gửi", youGive:"Bạn đưa", youGet:"Bạn nhận", calculating:"Đang tính tỷ giá...", swapping:"Đang hoán đổi...", swapFooter:"Powered by 0x Protocol · Tỷ giá tốt nhất trên DEX Polygon", sendTitle:"Gửi token", recipient:"Địa chỉ người nhận", invalidAddress:"Địa chỉ ví không hợp lệ", amount:"Số lượng", sending:"Đang gửi...", sendFooter:"Giao dịch trên mạng Polygon · Phí ~$0.01", txCancelled:"Giao dịch đã bị hủy", rateFailed:"Không thể lấy tỷ giá", reloadApp:"Vui lòng tải lại ứng dụng"},
+
 };
 
 const hi: Translations = {
@@ -1011,6 +1099,7 @@ const hi: Translations = {
     team:         "मेरी मधुशाला",
     achievements: "उपलब्धियां",
     language:     "भाषा",
+    swap:         "स्वैप",
   },
   dashboard: {
     title:        "मेरा छत्ता 🐝",
@@ -1060,6 +1149,16 @@ const hi: Translations = {
     personal:     "व्यक्तिगत",
     worker:       "कामगार",
     type:         "प्रकार",
+    refresh:      "रीफ्रेश करें",
+    refreshing:   "रीफ्रेश हो रहा है...",
+    syncing:      "ब्लॉकचेन से सिंक हो रहा है…",
+    activeBees:   "सक्रिय मधुमक्खियाँ",
+    activeBeesSub:"(पहला छत्ता खरीदा)",
+    inactiveBees: "निष्क्रिय मधुमक्खियाँ",
+    inactiveBeesSub:"(रेफरल लिंक से पंजीकृत हुए)",
+    active:       "सक्रिय",
+    inactive:     "निष्क्रिय",
+    address:      "पता",
   },
   levels: {
     title:        "छत्ते के स्तर",
@@ -1197,6 +1296,11 @@ const hi: Translations = {
     btnTitle:       "यह कैसे काम करता है?",
     btnSub:         "S4 मैट्रिक्स, आय, रेफरल — पूर्ण स्पष्टीकरण",
   },
+  secretKey: {title:"गुप्त कुंजी", sub:"MetaMask में आयात करें", desc:"Private Key वॉलेट तक पूर्ण पहुँच देती है। इसे कभी किसी को न दिखाएं और सुरक्षित स्थान पर रखें।", copyBtn:"आयात के लिए गुप्त कुंजी कॉपी करें"},
+  getDai: {title:"DAI प्राप्त करें", sub:"POL, USDT, USDC → DAI"},
+  daiGuide: {title:"DAI कैसे खरीदें और निकालें", sub:"नए लोगों के लिए सरल गाइड", s1Title:"DAI क्या है", s1p1:"DAI एक स्थिर क्रिप्टोकरेंसी (स्टेबलकॉइन) है। इसकी दर हमेशा लगभग 1 DAI = 1 USD होती है।", s1p2:"इसे डिजिटल डॉलर समझें: इसका मूल्य Bitcoin की तरह ऊपर-नीचे नहीं होता।", s1p3:"हमारे ऐप में DAI का उपयोग छत्ते खरीदने और भुगतान प्राप्त करने के लिए होता है।", s2Title:"DAI पाने के तरीके", s2m1:"तरीका 1 — ऐप के अंदर एक्सचेंज करें", s2m1Desc:"यदि आपके पास अन्य टोकन हैं, तो उन्हें यहीं एक्सचेंज करें:", s2m1Step1:"नीचे के मेनू में 'एक्सचेंज' सेक्शन में जाएं", s2m1Step2:"इच्छित जोड़ी चुनें, जैसे POL → DAI", s2m1Step3:"राशि दर्ज करें और 'एक्सचेंज' दबाएं", s2m2:"तरीका 2 — एक्सचेंज से खरीदें", s2m2Desc:"किसी एक्सचेंज पर रजिस्टर करें और DAI खरीदें, फिर अपने वॉलेट पर निकालें:", s2m2Warning:"⚠️ एक्सचेंज से निकासी करते समय महत्वपूर्ण", s2m2WarningDesc:"हमेशा Polygon (MATIC) नेटवर्क चुनें — अन्यथा फंड खो सकते हैं!", s2m3:"तरीका 3 — बैंक कार्ड से", s2m3Desc:"Revolut, Moonpay जैसी सेवाओं या एक्सचेंजर्स के माध्यम से:", s2m3Step1:"कार्ड से USDT या POL खरीदें", s2m3Step2:"ऐप में अपने वॉलेट पते पर ट्रांसफर करें", s2m3Step3:"बिल्ट-इन एक्सचेंजर के जरिए DAI में बदलें", s3Title:"अपना वॉलेट पता कैसे खोजें", s3p1:"किसी से या किसी एक्सचेंज से DAI प्राप्त करने के लिए आपको अपना वॉलेट पता चाहिए।", s3Step1:"ऊपरी दाईं कोने में वॉलेट पते पर टैप करें (0x6CCE...)", s3Step2:"आपका पता 0x6CCE...AF71 जैसी स्ट्रिंग है। 'कॉपी' दबाएं।", s3Step3:"यह पता उस व्यक्ति को भेजें जो आपको DAI, USDT, USDC या POL ट्रांसफर करना चाहता है", s3Tip:"💡 वॉलेट पता कोई रहस्य नहीं है। फंड पाने के लिए इसे सुरक्षित रूप से शेयर कर सकते हैं।", s4Title:"DAI दूसरे वॉलेट में भेजें", s4p1:"आप ऐप के अंदर से ही DAI (या USDT, USDC) सीधे किसी भी वॉलेट में भेज सकते हैं।", s4Step1:"'एक्सचेंज' सेक्शन → 'भेजें' टैब पर जाएं", s4Step2:"टोकन चुनें: DAI, USDT या USDC", s4Step3:"प्राप्तकर्ता का पता पेस्ट करें (0x...)", s4Step4:"राशि दर्ज करें और 'भेजें' दबाएं", s4Tip:"✅ Polygon के भीतर ट्रांसफर ~5 सेकंड लेता है और लगभग $0.01 खर्च होता है", s5Title:"फंड कैसे निकालें", s5ToExchange:"एक्सचेंज पर", s5Step1:"अपने एक्सचेंज अकाउंट में लॉग इन करें (Binance, Bybit आदि)", s5Step2:"Polygon नेटवर्क पर DAI जमा करने का पता खोजें", s5Step3:"ऐप में 'भेजें' टैब के जरिए DAI भेजें", s5Step4:"एक्सचेंज पर DAI को फिएट में बेचें और कार्ड पर निकालें", s5ToWallet:"दूसरे वॉलेट में", s5WalletDesc:"बस 'भेजें' टैब का उपयोग करें — इच्छित वॉलेट का पता और राशि दर्ज करें।", warningTitle:"⚠️ महत्वपूर्ण: हमारे पास आपके वॉलेट तक पहुँच नहीं है", warningDesc1:"Bee Hive एक विकेन्द्रीकृत ऐप है। हम आपकी चाबियाँ, पासवर्ड या फंड संग्रहीत नहीं करते। टीम का कोई भी सदस्य आपके वॉलेट तक पहुँच बहाल नहीं कर सकता।", warningDesc2:"यदि आप सहेजी गई गुप्त कुंजी के बिना Telegram या वॉलेट तक पहुँच खो देते हैं — फंड वापस नहीं मिलेगा। यह ब्लॉकचेन की विशेषता है, ऐप की सीमा नहीं।", saveKeyBadge:"💾 अभी अपनी गुप्त कुंजी सेव करें — यह आपका बीमा है", saveKeyDesc:"इसे किसी सुरक्षित स्थान पर लिखें: पासवर्ड सुरक्षित फोन नोट्स, तिजोरी में कागज, पासवर्ड मैनेजर।", s6Title:"गुप्त कुंजी कैसे सेव करें — चरण दर चरण", s6Intro:"गुप्त कुंजी (Private Key) किसी भी अन्य ऐप में वॉलेट तक पहुँच बहाल करने का एकमात्र तरीका है। एक बार सेव करें और सुरक्षित स्थान पर रखें।", s6Step1Title:"चरण 1 — वॉलेट मेनू खोलें", s6Step1Desc:"स्क्रीन के ऊपरी दाईं कोने में वॉलेट पते पर टैप करें:", s6Step1Arrow:"↑ यहाँ टैप करें", s6Step2Title:"चरण 2 — 'गुप्त कुंजी' चुनें", s6Step2Desc:"एक मेनू खुलेगा — पहले आइटम पर टैप करें:", s6Step2Here:"← यहाँ", s6Step3Title:"चरण 3 — कुंजी की पुष्टि करें और कॉपी करें", s6Step3Desc:"चेतावनी और बटन वाली एक विंडो दिखेगी। बटन दबाएं — कुंजी दिखाई या कॉपी होगी:", s6Step4Title:"चरण 4 — कुंजी सुरक्षित स्थान पर सेव करें", s6SaveOpt1Title:"पासवर्ड सुरक्षित नोट्स", s6SaveOpt1Desc:"iPhone पर Face ID के साथ मानक 'नोट्स' या पासवर्ड मैनेजर (1Password, Bitwarden)", s6SaveOpt2Title:"कागज", s6SaveOpt2Desc:"हाथ से लिखें और तिजोरी या सुरक्षित स्थान पर रखें। कभी फोटो न खींचें।", s6SaveOpt3Title:"पासवर्ड मैनेजर", s6SaveOpt3Desc:"Keeper, LastPass, Bitwarden — 'गुप्त कुंजी' फ़ील्ड के साथ एक रिकॉर्ड बनाएं", s6Step5Title:"चरण 5 — दूसरे वॉलेट में आयात करें (यदि आवश्यक हो)", s6Step5Desc:"यदि आपने Telegram तक पहुँच खो दी है — MetaMask या Trust Wallet खोलें और कुंजी आयात करें:", s6MetaMaskSteps:"मेनू → खाता आयात करें → कुंजी पेस्ट करें", s6TrustSteps:"सेटिंग्स → वॉलेट → आयात → Private Key", s6DangerTitle:"❗ कुंजी को दूसरों के साथ कभी साझा न करें", s6DangerDesc:"जो आपकी कुंजी जानता है उसे फंड तक पूर्ण पहुँच मिलती है। ऐप सपोर्ट या टीम कभी गुप्त कुंजी नहीं मांगती।", s6SafeTitle:"✅ आपके फंड पूरी तरह आपके नियंत्रण में हैं", s6SafeDesc:"ऐप आपका पैसा संग्रहीत नहीं करता और उसे फ्रीज नहीं कर सकता। सब कुछ Polygon ब्लॉकचेन पर है — केवल आप ही अपनी संपत्ति प्रबंधित करते हैं।", ctaBtn:"💱 एक्सचेंज पर जाएं", walletAddress:"आपका वॉलेट पता", receives:"Polygon (MATIC) · DAI, USDT, USDC, POL प्राप्त करता है", swapTitle:"एक्सचेंज", swapGive:"आप देते हैं", swapGet:"आप पाते हैं"},
+  swap: {title:"💱 स्वैप और भेजें", tabSwap:"स्वैप करें", tabSend:"भेजें", youGive:"आप देते हैं", youGet:"आप पाते हैं", calculating:"दर की गणना हो रही है...", swapping:"स्वैप हो रहा है...", swapFooter:"Powered by 0x Protocol · DEX Polygon पर सबसे अच्छी दर", sendTitle:"टोकन भेजें", recipient:"प्राप्तकर्ता का पता", invalidAddress:"अमान्य वॉलेट पता", amount:"राशि", sending:"भेजा जा रहा है...", sendFooter:"Polygon नेटवर्क पर लेनदेन · शुल्क ~$0.01", txCancelled:"लेनदेन रद्द कर दिया गया", rateFailed:"दर प्राप्त करने में विफल", reloadApp:"कृपया ऐप पुनः लोड करें"},
+
 };
 
 const zh: Translations = {
@@ -1208,6 +1312,7 @@ const zh: Translations = {
     team:         "我的蜂场",
     achievements: "成就",
     language:     "语言",
+    swap:         "兑换",
   },
   dashboard: {
     title:        "我的蜂巢 🐝",
@@ -1257,6 +1362,16 @@ const zh: Translations = {
     personal:     "直推",
     worker:       "间推",
     type:         "类型",
+    refresh:      "刷新",
+    refreshing:   "刷新中...",
+    syncing:      "正在与区块链同步…",
+    activeBees:   "活跃蜜蜂",
+    activeBeesSub:"（已购买第一个蜂巢）",
+    inactiveBees: "非活跃蜜蜂",
+    inactiveBeesSub:"（通过推荐链接注册）",
+    active:       "活跃",
+    inactive:     "非活跃",
+    address:      "地址",
   },
   levels: {
     title:        "蜂巢等级",
@@ -1394,6 +1509,11 @@ const zh: Translations = {
     btnTitle:       "如何运作？",
     btnSub:         "S4 矩阵、收益、推荐 — 完整说明",
   },
+  secretKey: {title:"密钥", sub:"导入 MetaMask", desc:"Private Key 提供对钱包的完全访问权限。切勿向任何人展示，并保存在安全的地方。", copyBtn:"复制密钥以导入"},
+  getDai: {title:"获取 DAI", sub:"POL, USDT, USDC → DAI"},
+  daiGuide: {title:"如何购买和提取 DAI", sub:"新手简易指南", s1Title:"什么是 DAI", s1p1:"DAI 是一种稳定的加密货币（稳定币）。其汇率始终约为 1 DAI = 1 USD。", s1p2:"可以把它看作数字美元：其价值不会像 Bitcoin 那样大幅波动。", s1p3:"在我们的应用中，DAI 用于购买蜂巢和接收付款。", s2Title:"获取 DAI 的方式", s2m1:"方式 1 — 在应用内兑换", s2m1Desc:"如果您有其他代币，可以直接在这里兑换：", s2m1Step1:"前往底部菜单中的\"兑换\"部分", s2m1Step2:"选择所需交易对，例如 POL → DAI", s2m1Step3:"输入金额并点击\"兑换\"", s2m2:"方式 2 — 在交易所购买", s2m2Desc:"在某个交易所注册并购买 DAI，然后提取到您的钱包：", s2m2Warning:"⚠️ 从交易所提款时的重要提示", s2m2WarningDesc:"务必选择 Polygon (MATIC) 网络 — 否则资金可能会丢失！", s2m3:"方式 3 — 通过银行卡", s2m3Desc:"通过 Revolut、Moonpay 等服务或兑换商：", s2m3Step1:"用卡购买 USDT 或 POL", s2m3Step2:"转账到应用中您的钱包地址", s2m3Step3:"通过内置兑换器兑换为 DAI", s3Title:"如何找到您的钱包地址", s3p1:"要从他人或交易所接收 DAI，您需要您的钱包地址。", s3Step1:"点击右上角的钱包地址（0x6CCE...）", s3Step2:"您的地址是形如 0x6CCE...AF71 的字符串。点击\"复制\"。", s3Step3:"将此地址发送给想要向您转账 DAI、USDT、USDC 或 POL 的人", s3Tip:"💡 钱包地址不是秘密。您可以放心分享以接收资金。", s4Title:"将 DAI 发送到其他钱包", s4p1:"您可以在应用内直接将 DAI（或 USDT、USDC）发送到任何钱包。", s4Step1:"前往\"兑换\"部分 → \"发送\"选项卡", s4Step2:"选择代币：DAI、USDT 或 USDC", s4Step3:"粘贴接收方地址（0x...）", s4Step4:"输入金额并点击\"发送\"", s4Tip:"✅ Polygon 内部转账约需 ~5 秒，费用约为 $0.01", s5Title:"如何提取资金", s5ToExchange:"到交易所", s5Step1:"登录您的交易所账户（Binance、Bybit 等）", s5Step2:"在 Polygon 网络上找到 DAI 充值地址", s5Step3:"通过应用中的\"发送\"选项卡发送 DAI", s5Step4:"在交易所将 DAI 兑换为法币并提现到银行卡", s5ToWallet:"到其他钱包", s5WalletDesc:"只需使用\"发送\"选项卡 — 输入目标钱包地址和金额。", warningTitle:"⚠️ 重要：我们无法访问您的钱包", warningDesc1:"Bee Hive 是一个去中心化应用。我们不存储您的密钥、密码或资金。团队中没有人可以恢复您的钱包访问权限。", warningDesc2:"如果您在没有保存密钥的情况下失去对 Telegram 或钱包的访问权限 — 资金将无法恢复。这是区块链的特性，而非应用的限制。", saveKeyBadge:"💾 现在立即保存您的密钥 — 这是您的保险", saveKeyDesc:"将其记录在安全的地方：带密码的手机备忘录、保险箱中的纸张、密码管理器。", s6Title:"如何保存密钥 — 逐步指南", s6Intro:"密钥（Private Key）是在任何其他应用中恢复钱包访问权限的唯一方式。保存一次并妥善保管。", s6Step1Title:"第 1 步 — 打开钱包菜单", s6Step1Desc:"点击屏幕右上角的钱包地址：", s6Step1Arrow:"↑ 点击这里", s6Step2Title:"第 2 步 — 选择\"密钥\"", s6Step2Desc:"菜单将打开 — 点击第一项：", s6Step2Here:"← 这里", s6Step3Title:"第 3 步 — 确认并复制密钥", s6Step3Desc:"将出现带有警告和按钮的窗口。点击按钮 — 密钥将被显示或复制：", s6Step4Title:"第 4 步 — 将密钥保存在安全的地方", s6SaveOpt1Title:"带密码的备忘录", s6SaveOpt1Desc:"iPhone 上带 Face ID 的标准\"备忘录\"或密码管理器（1Password、Bitwarden）", s6SaveOpt2Title:"纸张", s6SaveOpt2Desc:"手写并放入保险箱或安全的地方。切勿拍照。", s6SaveOpt3Title:"密码管理器", s6SaveOpt3Desc:"Keeper、LastPass、Bitwarden — 创建带有\"密钥\"字段的记录", s6Step5Title:"第 5 步 — 导入到其他钱包（如有必要）", s6Step5Desc:"如果您失去了 Telegram 访问权限 — 打开 MetaMask 或 Trust Wallet 并导入密钥：", s6MetaMaskSteps:"菜单 → 导入账户 → 粘贴密钥", s6TrustSteps:"设置 → 钱包 → 导入 → Private Key", s6DangerTitle:"❗ 永远不要将密钥分享给他人", s6DangerDesc:"知道您密钥的人将对资金拥有完全访问权限。应用支持和团队永远不会索要密钥。", s6SafeTitle:"✅ 您的资金完全在您的掌控之下", s6SafeDesc:"应用不存储您的资金，也无法冻结资金。一切都在 Polygon 区块链上 — 只有您管理自己的资产。", ctaBtn:"💱 前往兑换", walletAddress:"您的钱包地址", receives:"Polygon (MATIC) · 接收 DAI、USDT、USDC、POL", swapTitle:"兑换", swapGive:"您给出", swapGet:"您获得"},
+  swap: {title:"💱 兑换与发送", tabSwap:"兑换", tabSend:"发送", youGive:"你支付", youGet:"你获得", calculating:"正在获取汇率...", swapping:"兑换中...", swapFooter:"Powered by 0x Protocol · DEX Polygon 最优汇率", sendTitle:"发送代币", recipient:"收款地址", invalidAddress:"钱包地址无效", amount:"金额", sending:"发送中...", sendFooter:"Polygon 网络上的交易 · 手续费 ~$0.01", txCancelled:"交易已取消", rateFailed:"获取汇率失败", reloadApp:"请重新加载应用程序"},
+
 };
 
 const ko: Translations = {
@@ -1405,6 +1525,7 @@ const ko: Translations = {
     team:         "내 양봉장",
     achievements: "업적",
     language:     "언어",
+    swap:         "스왑",
   },
   dashboard: {
     title:        "내 벌집 🐝",
@@ -1454,6 +1575,16 @@ const ko: Translations = {
     personal:     "직접",
     worker:       "간접",
     type:         "유형",
+    refresh:      "새로고침",
+    refreshing:   "새로고침 중...",
+    syncing:      "블록체인과 동기화 중…",
+    activeBees:   "활성 벌",
+    activeBeesSub:"(첫 번째 벌집 구매)",
+    inactiveBees: "비활성 벌",
+    inactiveBeesSub:"(추천 링크로 가입)",
+    active:       "활성",
+    inactive:     "비활성",
+    address:      "주소",
   },
   levels: {
     title:        "벌집 레벨",
@@ -1591,6 +1722,11 @@ const ko: Translations = {
     btnTitle:       "작동 방식?",
     btnSub:         "S4 매트릭스, 수익, 추천 — 전체 설명",
   },
+  secretKey: {title:"비밀 키", sub:"MetaMask로 가져오기", desc:"Private Key는 지갑에 대한 완전한 접근 권한을 제공합니다. 절대 누구에게도 보여주지 말고 안전한 곳에 보관하세요.", copyBtn:"가져오기용 비밀 키 복사"},
+  getDai: {title:"DAI 받기", sub:"POL, USDT, USDC → DAI"},
+  daiGuide: {title:"DAI 구매 및 출금 방법", sub:"초보자를 위한 간단한 가이드", s1Title:"DAI란 무엇인가요", s1p1:"DAI는 안정적인 암호화폐(스테이블코인)입니다. 환율은 항상 약 1 DAI = 1 USD입니다.", s1p2:"디지털 달러로 생각하세요: 가치가 Bitcoin처럼 오르내리지 않습니다.", s1p3:"저희 앱에서 DAI는 벌집 구매와 수익 수령에 사용됩니다.", s2Title:"DAI를 얻는 방법", s2m1:"방법 1 — 앱 내에서 교환", s2m1Desc:"다른 토큰이 있다면 바로 여기서 교환하세요:", s2m1Step1:"하단 메뉴의 '교환' 섹션으로 이동", s2m1Step2:"원하는 페어 선택, 예: POL → DAI", s2m1Step3:"금액을 입력하고 '교환'을 탭하세요", s2m2:"방법 2 — 거래소에서 구매", s2m2Desc:"거래소 중 하나에 가입하고 DAI를 구매한 후 지갑으로 출금하세요:", s2m2Warning:"⚠️ 거래소에서 출금 시 중요사항", s2m2WarningDesc:"반드시 Polygon (MATIC) 네트워크를 선택하세요 — 그렇지 않으면 자금이 소실될 수 있습니다!", s2m3:"방법 3 — 은행 카드로", s2m3Desc:"Revolut, Moonpay 같은 서비스나 환전소를 통해:", s2m3Step1:"카드로 USDT 또는 POL 구매", s2m3Step2:"앱의 지갑 주소로 전송", s2m3Step3:"내장 교환기를 통해 DAI로 교환", s3Title:"지갑 주소 찾는 방법", s3p1:"누군가로부터 또는 거래소에서 DAI를 받으려면 지갑 주소가 필요합니다.", s3Step1:"우측 상단의 지갑 주소를 탭하세요 (0x6CCE...)", s3Step2:"주소는 0x6CCE...AF71 형식의 문자열입니다. '복사'를 탭하세요.", s3Step3:"이 주소를 DAI, USDT, USDC 또는 POL을 전송하려는 사람에게 보내세요", s3Tip:"💡 지갑 주소는 비밀이 아닙니다. 자금을 받기 위해 안심하고 공유할 수 있습니다.", s4Title:"다른 지갑으로 DAI 보내기", s4p1:"앱 내에서 바로 DAI(또는 USDT, USDC)를 어떤 지갑으로든 직접 보낼 수 있습니다.", s4Step1:"'교환' 섹션 → '보내기' 탭으로 이동", s4Step2:"토큰 선택: DAI, USDT 또는 USDC", s4Step3:"수신자 주소 붙여넣기 (0x...)", s4Step4:"금액을 입력하고 '보내기'를 탭하세요", s4Tip:"✅ Polygon 내 전송은 ~5초 소요되며 약 $0.01 비용이 듭니다", s5Title:"자금 출금 방법", s5ToExchange:"거래소로", s5Step1:"거래소 계정에 로그인하세요 (Binance, Bybit 등)", s5Step2:"Polygon 네트워크에서 DAI 입금 주소를 찾으세요", s5Step3:"앱의 '보내기' 탭을 통해 DAI를 보내세요", s5Step4:"거래소에서 DAI를 법정화폐로 팔고 카드로 출금하세요", s5ToWallet:"다른 지갑으로", s5WalletDesc:"'보내기' 탭을 사용하기만 하면 됩니다 — 원하는 지갑 주소와 금액을 입력하세요.", warningTitle:"⚠️ 중요: 저희는 귀하의 지갑에 접근할 수 없습니다", warningDesc1:"Bee Hive는 탈중앙화 애플리케이션입니다. 저희는 귀하의 키, 비밀번호 또는 자금을 저장하지 않습니다. 팀의 누구도 귀하의 지갑 접근 권한을 복구할 수 없습니다.", warningDesc2:"저장된 비밀 키 없이 Telegram이나 지갑에 대한 접근을 잃으면 — 자금은 복구할 수 없습니다. 이것은 블록체인의 특성이지 앱의 제한이 아닙니다.", saveKeyBadge:"💾 지금 바로 비밀 키를 저장하세요 — 이것이 여러분의 보험입니다", saveKeyDesc:"안전한 곳에 기록하세요: 비밀번호로 보호된 폰 메모, 금고 속 종이, 비밀번호 관리자.", s6Title:"비밀 키 저장 방법 — 단계별", s6Intro:"비밀 키(Private Key)는 다른 모든 앱에서 지갑 접근을 복구하는 유일한 방법입니다. 한 번 저장하고 안전한 곳에 보관하세요.", s6Step1Title:"1단계 — 지갑 메뉴 열기", s6Step1Desc:"화면 우측 상단의 지갑 주소를 탭하세요:", s6Step1Arrow:"↑ 여기를 탭하세요", s6Step2Title:"2단계 — '비밀 키' 선택", s6Step2Desc:"메뉴가 열리면 첫 번째 항목을 탭하세요:", s6Step2Here:"← 여기", s6Step3Title:"3단계 — 키 확인 및 복사", s6Step3Desc:"경고와 버튼이 있는 창이 나타납니다. 버튼을 탭하면 키가 표시되거나 복사됩니다:", s6Step4Title:"4단계 — 안전한 곳에 키 저장", s6SaveOpt1Title:"비밀번호 보호 메모", s6SaveOpt1Desc:"Face ID가 있는 iPhone의 표준 '메모' 또는 비밀번호 관리자(1Password, Bitwarden)", s6SaveOpt2Title:"종이", s6SaveOpt2Desc:"손으로 적어 금고나 안전한 곳에 보관하세요. 절대 사진을 찍지 마세요.", s6SaveOpt3Title:"비밀번호 관리자", s6SaveOpt3Desc:"Keeper, LastPass, Bitwarden — '비밀 키' 필드가 있는 항목 생성", s6Step5Title:"5단계 — 다른 지갑으로 가져오기 (필요한 경우)", s6Step5Desc:"Telegram 접근을 잃은 경우 — MetaMask 또는 Trust Wallet을 열고 키를 가져오세요:", s6MetaMaskSteps:"메뉴 → 계정 가져오기 → 키 붙여넣기", s6TrustSteps:"설정 → 지갑 → 가져오기 → Private Key", s6DangerTitle:"❗ 절대로 다른 사람에게 키를 공유하지 마세요", s6DangerDesc:"귀하의 키를 아는 사람은 자금에 완전히 접근할 수 있습니다. 앱 지원이나 팀은 절대 비밀 키를 요청하지 않습니다.", s6SafeTitle:"✅ 귀하의 자금은 완전히 귀하의 통제 하에 있습니다", s6SafeDesc:"앱은 귀하의 돈을 저장하지 않으며 동결할 수 없습니다. 모든 것은 Polygon 블록체인에 있습니다 — 오직 귀하만이 자신의 자산을 관리합니다.", ctaBtn:"💱 교환으로 이동", walletAddress:"귀하의 지갑 주소", receives:"Polygon (MATIC) · DAI, USDT, USDC, POL 수신", swapTitle:"교환", swapGive:"보내는 것", swapGet:"받는 것"},
+  swap: {title:"💱 스왑 및 전송", tabSwap:"스왑", tabSend:"전송", youGive:"보내는 금액", youGet:"받는 금액", calculating:"환율 계산 중...", swapping:"스왑 중...", swapFooter:"Powered by 0x Protocol · DEX Polygon 최적 환율", sendTitle:"토큰 전송", recipient:"수신자 주소", invalidAddress:"유효하지 않은 지갑 주소", amount:"금액", sending:"전송 중...", sendFooter:"Polygon 네트워크 트랜잭션 · 수수료 ~$0.01", txCancelled:"트랜잭션이 취소되었습니다", rateFailed:"환율을 가져오지 못했습니다", reloadApp:"앱을 다시 로드해 주세요"},
+
 };
 
 const uz: Translations = {
@@ -1602,6 +1738,7 @@ const uz: Translations = {
     team:         "Mening asalarigonim",
     achievements: "Yutuqlar",
     language:     "Til",
+    swap:         "Almashtirish",
   },
   dashboard: {
     title:        "Mening uyim 🐝",
@@ -1651,6 +1788,16 @@ const uz: Translations = {
     personal:     "Shaxsiy",
     worker:       "Ishchi",
     type:         "Turi",
+    refresh:      "Yangilash",
+    refreshing:   "Yangilanmoqda...",
+    syncing:      "Blokcheyn bilan sinxronizatsiya…",
+    activeBees:   "Faol asalarilar",
+    activeBeesSub:"(birinchi uyni sotib oldi)",
+    inactiveBees: "Faol bo'lmagan asalarilar",
+    inactiveBeesSub:"(referal havola orqali ro'yxatdan o'tdi)",
+    active:       "Faol",
+    inactive:     "Faol emas",
+    address:      "Manzil",
   },
   levels: {
     title:        "Uy darajalari",
@@ -1788,6 +1935,11 @@ const uz: Translations = {
     btnTitle:       "Qanday ishlaydi?",
     btnSub:         "S4 matritsasi, daromad, referallar — to'liq tushuntirish",
   },
+  secretKey: {title:"Maxfiy kalit", sub:"MetaMask ga import qilish", desc:"Private Key hamyonga to'liq kirish imkonini beradi. Uni hech kimga ko'rsatma va xavfsiz joyda saqlang.", copyBtn:"Import uchun maxfiy kalitni nusxalash"},
+  getDai: {title:"DAI olish", sub:"POL, USDT, USDC → DAI"},
+  daiGuide: {title:"DAI qanday sotib olinadi va chiqariladi", sub:"Yangi boshlovchilar uchun oddiy qo'llanma", s1Title:"DAI nima", s1p1:"DAI — bu barqaror kriptovalyuta (stablecoin). Uning kursi doimo taxminan 1 DAI = 1 USD ga teng.", s1p2:"Uni raqamli dollar deb tasavvur qiling: qiymati Bitcoin kabi yuqori-pastga sakramaydi.", s1p3:"Bizning ilovamizda DAI uyalar sotib olish va to'lovlarni qabul qilish uchun ishlatiladi.", s2Title:"DAI olish usullari", s2m1:"1-usul — Ilova ichida almashtirish", s2m1Desc:"Boshqa tokenlaringiz bo'lsa, ularni shu yerda almashtiring:", s2m1Step1:"Pastki menyudagi 'Almashtirish' bo'limiga o'ting", s2m1Step2:"Kerakli juftlikni tanlang, masalan POL → DAI", s2m1Step3:"Summani kiriting va 'Almashtirish' tugmasini bosing", s2m2:"2-usul — Birjada sotib olish", s2m2Desc:"Birjalardan birida ro'yxatdan o'ting va DAI sotib oling, keyin hamyoningizga chiqaring:", s2m2Warning:"⚠️ Birjadan chiqarishda muhim", s2m2WarningDesc:"Albatta Polygon (MATIC) tarmog'ini tanlang — aks holda mablag'lar yo'qolishi mumkin!", s2m3:"3-usul — Bank kartasidan", s2m3Desc:"Revolut, Moonpay kabi xizmatlar yoki ayirboshlash punktlari orqali:", s2m3Step1:"Karta bilan USDT yoki POL sotib oling", s2m3Step2:"Ilovadagi hamyon manzilingizga o'tkazing", s2m3Step3:"O'rnatilgan ayirboshlash punkti orqali DAI ga almashtiring", s3Title:"Hamyon manzilingizni qanday topish mumkin", s3p1:"Birovdan yoki birjadan DAI olish uchun hamyon manzilingiz kerak.", s3Step1:"Yuqori o'ng burchakdagi hamyon manziliga bosing (0x6CCE...)", s3Step2:"Manzilingiz 0x6CCE...AF71 ko'rinishidagi satr. 'Nusxalash' tugmasini bosing.", s3Step3:"Bu manzilni sizga DAI, USDT, USDC yoki POL o'tkazmoqchi bo'lgan odamga yuboring", s3Tip:"💡 Hamyon manzili — sir emas. Mablag' olish uchun uni bemalol ko'rsatishingiz mumkin.", s4Title:"DAI ni boshqa hamyonga yuborish", s4p1:"Siz DAI (yoki USDT, USDC) ni ilova ichidan to'g'ridan-to'g'ri istalgan hamyonga yuborishingiz mumkin.", s4Step1:"'Almashtirish' bo'limiga o'ting → 'Yuborish' yorlig'i", s4Step2:"Token tanlang: DAI, USDT yoki USDC", s4Step3:"Qabul qiluvchining manzilini joylashtiring (0x...)", s4Step4:"Summani kiriting va 'Yuborish' tugmasini bosing", s4Tip:"✅ Polygon ichidagi o'tkazma ~5 soniya davom etadi va taxminan $0.01 turadi", s5Title:"Mablag'larni qanday chiqarish mumkin", s5ToExchange:"Birjaga", s5Step1:"Birja akkauntingizga kiring (Binance, Bybit va boshqalar)", s5Step2:"Polygon tarmog'ida DAI to'ldirish manzilini toping", s5Step3:"Ilovadagi 'Yuborish' yorlig'i orqali DAI yuboring", s5Step4:"Birjada DAI ni fiat valyutasiga soting va kartaga chiqaring", s5ToWallet:"Boshqa hamyonga", s5WalletDesc:"Shunchaki 'Yuborish' yorlig'idan foydalaning — kerakli hamyon manzilini va summani kiriting.", warningTitle:"⚠️ Muhim: biz hamyoningizga kirish imkoniga ega emasmiz", warningDesc1:"Bee Hive — bu markazlashmagan ilova. Biz sizning kalitlaringizni, parollaringizni va mablag'laringizni saqlamaymiz. Jamoadagi hech kim hamyoningizga kirishni tiklay olmaydi.", warningDesc2:"Agar saqlangan maxfiy kalit bo'lmagan holda Telegram yoki hamyonga kirishni yo'qotsangiz — mablag'larni tiklash imkonsiz bo'ladi. Bu blokcheynning xususiyati, ilovaning cheklovi emas.", saveKeyBadge:"💾 Maxfiy kalitni hoziroq saqlang — bu sizning sug'urtangiz", saveKeyDesc:"Uni ishonchli joyda yozing: parolli telefon eslatmalari, sefdagi qog'oz, parol menejeri.", s6Title:"Maxfiy kalitni qanday saqlash kerak — bosqichma-bosqich", s6Intro:"Maxfiy kalit (Private Key) — bu boshqa istalgan ilovada hamyonga kirishni tiklashning yagona usuli. Uni bir marta saqlang va xavfsiz joyda saqlang.", s6Step1Title:"1-qadam — Hamyon menyusini oching", s6Step1Desc:"Ekranning yuqori o'ng burchagidagi hamyon manziliga bosing:", s6Step1Arrow:"↑ Shu yerga bosing", s6Step2Title:"2-qadam — 'Maxfiy kalit'ni tanlang", s6Step2Desc:"Menyu ochiladi — birinchi bandga bosing:", s6Step2Here:"← bu yerda", s6Step3Title:"3-qadam — Kalitni tasdiqlang va nusxalang", s6Step3Desc:"Ogohlantirish va tugma bilan oyna paydo bo'ladi. Tugmani bosing — kalit ko'rsatiladi yoki nusxalanadi:", s6Step4Title:"4-qadam — Kalitni xavfsiz joyda saqlang", s6SaveOpt1Title:"Parolli eslatmalar", s6SaveOpt1Desc:"iPhone da Face ID bilan standart 'Eslatmalar' yoki parol menejeri (1Password, Bitwarden)", s6SaveOpt2Title:"Qog'oz", s6SaveOpt2Desc:"Qo'lda yozing va sefga yoki ishonchli joyga qo'ying. Hech qachon suratga olmang.", s6SaveOpt3Title:"Parol menejeri", s6SaveOpt3Desc:"Keeper, LastPass, Bitwarden — 'maxfiy kalit' maydoni bilan yozuv yarating", s6Step5Title:"5-qadam — Boshqa hamyonga import qilish (zarur bo'lsa)", s6Step5Desc:"Agar Telegram ga kirishni yo'qotsangiz — MetaMask yoki Trust Wallet ni oching va kalitni import qiling:", s6MetaMaskSteps:"Menyu → Akkauntni import qilish → Kalitni joylashtiring", s6TrustSteps:"Sozlamalar → Hamyonlar → Import → Private Key", s6DangerTitle:"❗ Kalitni boshqa odamlarga HECH QACHON bermang", s6DangerDesc:"Kalitingizni bilgan kishi mablag'larga to'liq kirish imkoniga ega bo'ladi. Ilova yordami ham, jamoa ham hech qachon maxfiy kalitni so'ramaydi.", s6SafeTitle:"✅ Mablag'laringiz to'liq sizning nazoratingizdadir", s6SafeDesc:"Ilova pulingizni saqlamaydi va uni muzlatib qo'ya olmaydi. Hamma narsa Polygon blokcheynida — faqat siz o'z aktivlaringizni boshqarasiz.", ctaBtn:"💱 Almashtirishga o'tish", walletAddress:"Hamyon manzilingiz", receives:"Polygon (MATIC) · DAI, USDT, USDC, POL qabul qiladi", swapTitle:"Almashtirish", swapGive:"Berasiz", swapGet:"Olasiz"},
+  swap: {title:"💱 Алмаштириш ва юбориш", tabSwap:"Алмаштириш", tabSend:"Юбориш", youGive:"Берасиз", youGet:"Оласиз", calculating:"Курс ҳисобланмоқда...", swapping:"Алмаштирилмоқда...", swapFooter:"Powered by 0x Protocol · DEX Polygon да энг яхши курс", sendTitle:"Токен юбориш", recipient:"Қабул қилувчи манзили", invalidAddress:"Нотўғри ҳамён манзили", amount:"Миқдор", sending:"Юборилмоқда...", sendFooter:"Polygon тармоғидаги транзакция · Комиссия ~$0.01", txCancelled:"Транзакция бекор қилинди", rateFailed:"Курсни олиб бўлмади", reloadApp:"Iltimos, ilovani qayta yuklang"},
+
 };
 
 const ky: Translations = {
@@ -1799,6 +1951,7 @@ const ky: Translations = {
     team:         "Менин аарычылыгым",
     achievements: "Жетишкендиктер",
     language:     "Тил",
+    swap:         "Алмашуу",
   },
   dashboard: {
     title:        "Менин уям 🐝",
@@ -1848,6 +2001,16 @@ const ky: Translations = {
     personal:     "Жеке",
     worker:       "Жумушчу",
     type:         "Түрү",
+    refresh:      "Жаңылоо",
+    refreshing:   "Жаңыланууда...",
+    syncing:      "Блокчейн менен синхрондолууда…",
+    activeBees:   "Активдүү аарылар",
+    activeBeesSub:"(биринчи уяны сатып алды)",
+    inactiveBees: "Активдүү эмес аарылар",
+    inactiveBeesSub:"(реф. шилтеме аркылуу катталды)",
+    active:       "Активдүү",
+    inactive:     "Активдүү эмес",
+    address:      "Дарек",
   },
   levels: {
     title:        "Уя деңгээлдери",
@@ -1985,6 +2148,12 @@ const ky: Translations = {
     btnTitle:       "Кантип иштейт?",
     btnSub:         "S4 матрицасы, табыш, рефералдар — толук түшүндүрмө",
   },
+  secretKey: {title:"Купуя Ачкыч", sub:"MetaMask'ка импорттоо", desc:"Купуя Ачкыч капчыкка толук мүмкүнчүлүк берет. Аны эч кимге көрсөтпө жана коопсуз жерде сакта.", copyBtn:"Импорт үчүн купуя ачкычты көчүрүү"},
+  getDai: {title:"DAI алуу", sub:"POL, USDT, USDC → DAI"},
+  daiGuide: {title:"DAI кантип сатып алуу жана чыгаруу керек", sub:"Баштагандар үчүн жөнөкөй колдонмо", s1Title:"DAI деген эмне", s1p1:"DAI — туруктуу криптовалюта (стейблкоин). Анын курсу дайыма болжол менен 1 DAI = 1 USD.", s1p2:"Аны санариптик доллар катары элестетиңиз: анын баасы Bitcoin сыяктуу өйдө-төмөн секирбейт.", s1p3:"Биздин колдонмодо DAI чакаларды сатып алуу жана төлөмдөрдү алуу үчүн колдонулат.", s2Title:"DAI алуунун жолдору", s2m1:"1-ыкма — Колдонмонун ичинде алмаштыруу", s2m1Desc:"Башка токендериңиз болсо, аларды ушул жерде алмаштырыңыз:", s2m1Step1:"Астыңкы менюдагы 'Алмаштыруу' бөлүмүнө өтүңүз", s2m1Step2:"Керектүү жупту тандаңыз, мис. POL → DAI", s2m1Step3:"Суммасын киргизип, 'Алмаштыруу' баскычын басыңыз", s2m2:"2-ыкма — Биржадан сатып алуу", s2m2Desc:"Биржалардын биринде катталып DAI сатып алыңыз, андан соң капчыкка чыгарыңыз:", s2m2Warning:"⚠️ Биржадан чыгарууда маанилүү", s2m2WarningDesc:"Дайыма Polygon (MATIC) тармагын тандаңыз — болбосо каражаттар жоголуп кетиши мүмкүн!", s2m3:"3-ыкма — Банк картасынан", s2m3Desc:"Revolut, Moonpay же алмаштыруу кызматтары аркылуу:", s2m3Step1:"Карта менен USDT же POL сатып алыңыз", s2m3Step2:"Колдонмодогу капчык дарегиңизге которуңуз", s2m3Step3:"Орнотулган алмаштыргыч аркылуу DAI'га алмаштырыңыз", s3Title:"Капчык дарегин кантип табуу керек", s3p1:"Кимдир-бирөөдөн же биржадан DAI алуу үчүн капчык дарегиңиз керек.", s3Step1:"Жогорку оң бурчтагы капчык дарегин басыңыз (0x6CCE...)", s3Step2:"Сиздин дарегиңиз 0x6CCE...AF71 сыяктуу сап. 'Көчүрүү' баскычын басыңыз.", s3Step3:"Бул дарегти DAI, USDT, USDC же POL которгусу келген адамга жөнөтүңүз", s3Tip:"💡 Капчык дареги сыр эмес. Каражат алуу үчүн аны коопсуз бөлүшүүгө болот.", s4Title:"DAI'ды башка капчыкка жөнөтүү", s4p1:"DAI (же USDT, USDC) каалаган капчыкка түздөн-түз колдонмонун ичинен жөнөтүүгө болот.", s4Step1:"'Алмаштыруу' бөлүмүнө өтүңүз → 'Жөнөтүү' өтмөгү", s4Step2:"Токенди тандаңыз: DAI, USDT же USDC", s4Step3:"Алуучунун дарегин чаптаңыз (0x...)", s4Step4:"Суммасын киргизип, 'Жөнөтүү' баскычын басыңыз", s4Tip:"✅ Polygon ичиндеги которуу ~5 секунд алат жана болжол менен $0.01 туруна турат", s5Title:"Каражаттарды кантип чыгаруу керек", s5ToExchange:"Биржага", s5Step1:"Биржа аккаунтуңузга кириңиз (Binance, Bybit ж.б.)", s5Step2:"Polygon тармагындагы DAI үчүн депозит дарегин табыңыз", s5Step3:"Колдонмодогу 'Жөнөтүү' өтмөгү аркылуу DAI жөнөтүңүз", s5Step4:"Биржада DAI'ды фиатка сатыңыз жана картага чыгарыңыз", s5ToWallet:"Башка капчыкка", s5WalletDesc:"'Жөнөтүү' өтмөгүн колдонуңуз — каалаган капчыктын дарегин жана суммасын киргизиңиз.", warningTitle:"⚠️ Маанилүү: биз сиздин капчыкка жетүү мүмкүнчүлүгүбүз жок", warningDesc1:"Bee Hive — борборсуздандырылган колдонмо. Биз сиздин ачкычтарды, сырсөздөрдү же каражаттарды сактабайбыз. Командадан эч ким капчыкка жетүүнү калыбына келтире албайт.", warningDesc2:"Эгер сиз сакталган купуя ачкычсыз Telegram'га же капчыкка жетүүнү жоготсоңуз — каражаттарды калыбына келтирүү мүмкүн эмес. Бул блокчейндин өзгөчөлүгү, колдонмонун чектөөсү эмес.", saveKeyBadge:"💾 Азыр эле купуя ачкычыңызды сактаңыз — бул сиздин камсыздандырууңуз", saveKeyDesc:"Аны коопсуз жерге жазыңыз: сырсөз менен корголгон телефон жазбалары, сейфтеги кагаз, сырсөз башкаргыч.", s6Title:"Купуя ачкычты кантип сактоо керек — кадам-кадам", s6Intro:"Купуя ачкыч (Private Key) — каалаган башка колдонмодо капчыкка жетүүнү калыбына келтирүүнүн жалгыз жолу. Аны бир жолу сактап, коопсуз жерде кармаңыз.", s6Step1Title:"1-кадам — Капчык менюсун ачуу", s6Step1Desc:"Экрандын жогорку оң бурчундагы капчык дарегин басыңыз:", s6Step1Arrow:"↑ Ушул жерди басыңыз", s6Step2Title:"2-кадам — 'Купуя Ачкыч' тандоо", s6Step2Desc:"Меню ачылат — биринчи пунктту басыңыз:", s6Step2Here:"← ушул жерде", s6Step3Title:"3-кадам — Ачкычты ырастоо жана көчүрүү", s6Step3Desc:"Эскертүү жана баскыч менен терезе пайда болот. Баскычты басыңыз — ачкыч көрсөтүлөт же көчүрүлөт:", s6Step4Title:"4-кадам — Ачкычты коопсуз жерге сактоо", s6SaveOpt1Title:"Сырсөз менен корголгон жазбалар", s6SaveOpt1Desc:"iPhone'догу стандарттык 'Жазбалар' Face ID менен же сырсөз башкаргыч (1Password, Bitwarden)", s6SaveOpt2Title:"Кагаз", s6SaveOpt2Desc:"Колу менен жазып, сейфке же коопсуз жерге коюңуз. Эч качан сүрөткө тартпаңыз.", s6SaveOpt3Title:"Сырсөз башкаргыч", s6SaveOpt3Desc:"Keeper, LastPass, Bitwarden — 'купуя ачкыч' талаасы менен жазуу түзүңүз", s6Step5Title:"5-кадам — Башка капчыкка импорттоо (керек болсо)", s6Step5Desc:"Эгер Telegram'га жетүүнү жоготсоңуз — MetaMask же Trust Wallet ачып, ачкычты импорттоңуз:", s6MetaMaskSteps:"Меню → Аккаунтту Импорттоо → Ачкычты Чаптоо", s6TrustSteps:"Орнотуулар → Капчыктар → Импорттоо → Private Key", s6DangerTitle:"❗ Ачкычыңызды эч КАЧАН башка адамдарга бербеңиз", s6DangerDesc:"Ачкычыңызды билген адам каражаттарга толук жетүү мүмкүнчүлүгүнө ээ болот. Колдонмонун колдоосу да, команда да эч качан купуя ачкычыңызды сурабайт.", s6SafeTitle:"✅ Сиздин каражаттар толугу менен сиздин көзөмөлүңүздө", s6SafeDesc:"Колдонмо сиздин акчаңызды сакталабайт жана тоңдура албайт. Баары Polygon блокчейнинде — активдериңизди бир гана сиз башкарасыз.", ctaBtn:"💱 Алмаштырууга өтүү", walletAddress:"Сиздин капчык дарегиңиз", receives:"Polygon (MATIC) · DAI, USDT, USDC, POL кабыл алат", swapTitle:"Алмаштыруу", swapGive:"Сиз бересиз", swapGet:"Сиз аласыз"},
+
+  swap: {title:"💱 Алмаштыруу жана жөнөтүү", tabSwap:"Алмаштыруу", tabSend:"Жөнөтүү", youGive:"Бересиң", youGet:"Аласың", calculating:"Курс эсептелүүдө...", swapping:"Алмаштырылууда...", swapFooter:"Powered by 0x Protocol · DEX Polygon боюнча эң жакшы курс", sendTitle:"Токен жөнөтүү", recipient:"Алуучунун дареги", invalidAddress:"Туура эмес капчык дареги", amount:"Сумма", sending:"Жөнөтүлүүдө...", sendFooter:"Polygon тармагындагы транзакция · Комиссия ~$0.01", txCancelled:"Транзакция жокко чыгарылды", rateFailed:"Курсту алуу мүмкүн болгон жок", reloadApp:"Тиркемени кайра жүктөңүз"},
+
 };
 
 const th: Translations = {
@@ -1996,6 +2165,7 @@ const th: Translations = {
     team:         "รังผึ้งของฉัน",
     achievements: "ความสำเร็จ",
     language:     "ภาษา",
+    swap:         "แลกเปลี่ยน",
   },
   dashboard: {
     title:        "รังผึ้งของฉัน 🐝",
@@ -2045,6 +2215,16 @@ const th: Translations = {
     personal:     "ส่วนตัว",
     worker:       "งาน",
     type:         "ประเภท",
+    refresh:      "รีเฟรช",
+    refreshing:   "กำลังรีเฟรช...",
+    syncing:      "กำลังซิงค์กับบล็อกเชน…",
+    activeBees:   "ผึ้งที่ใช้งานอยู่",
+    activeBeesSub:"(ซื้อรังผึ้งแรก)",
+    inactiveBees: "ผึ้งที่ไม่ได้ใช้งาน",
+    inactiveBeesSub:"(ลงทะเบียนผ่านลิงก์แนะนำ)",
+    active:       "ใช้งานอยู่",
+    inactive:     "ไม่ได้ใช้งาน",
+    address:      "ที่อยู่",
   },
   levels: {
     title:        "ระดับรัง",
@@ -2182,6 +2362,12 @@ const th: Translations = {
     btnTitle:       "วิธีการทำงาน?",
     btnSub:         "แมทริกซ์ S4 รายได้ การแนะนำ — คำอธิบายทั้งหมด",
   },
+  secretKey: {title:"คีย์ลับ", sub:"นำเข้าสู่ MetaMask", desc:"Private Key ให้สิทธิ์เข้าถึงกระเป๋าเงินอย่างสมบูรณ์ อย่าแสดงให้ใครเห็นและเก็บไว้ในที่ปลอดภัย", copyBtn:"คัดลอกคีย์ลับเพื่อนำเข้า"},
+  getDai: {title:"รับ DAI", sub:"POL, USDT, USDC → DAI"},
+  daiGuide: {title:"วิธีซื้อและถอน DAI", sub:"คู่มือง่ายๆ สำหรับผู้เริ่มต้น", s1Title:"DAI คืออะไร", s1p1:"DAI คือสกุลเงินดิจิทัลที่มีความเสถียร (stablecoin) อัตราของมันจะอยู่ที่ประมาณ 1 DAI = 1 USD เสมอ", s1p2:"ลองนึกถึงมันเป็นเหมือนดอลลาร์ดิจิทัล: มูลค่าของมันไม่ขึ้นลงแบบ Bitcoin", s1p3:"ในแอปของเรา DAI ใช้สำหรับซื้อรังผึ้งและรับเงินรางวัล", s2Title:"วิธีรับ DAI", s2m1:"วิธีที่ 1 — แลกเปลี่ยนภายในแอป", s2m1Desc:"หากคุณมีโทเค็นอื่น ให้แลกเปลี่ยนได้เลยที่นี่:", s2m1Step1:"ไปที่ส่วน 'แลกเปลี่ยน' ในเมนูด้านล่าง", s2m1Step2:"เลือกคู่ที่ต้องการ เช่น POL → DAI", s2m1Step3:"ใส่จำนวนและกด 'แลกเปลี่ยน'", s2m2:"วิธีที่ 2 — ซื้อจากตลาดแลกเปลี่ยน", s2m2Desc:"สมัครสมาชิกในตลาดแลกเปลี่ยนแห่งใดแห่งหนึ่งและซื้อ DAI จากนั้นถอนไปยังกระเป๋าเงินของคุณ:", s2m2Warning:"⚠️ สิ่งสำคัญเมื่อถอนจากตลาดแลกเปลี่ยน", s2m2WarningDesc:"เลือกเครือข่าย Polygon (MATIC) เสมอ — มิฉะนั้นเงินอาจสูญหายได้!", s2m3:"วิธีที่ 3 — จากบัตรธนาคาร", s2m3Desc:"ผ่านบริการอย่าง Revolut, Moonpay หรือบริการแลกเปลี่ยน:", s2m3Step1:"ซื้อ USDT หรือ POL ด้วยบัตร", s2m3Step2:"โอนไปยังที่อยู่กระเป๋าเงินของคุณในแอป", s2m3Step3:"แลกเปลี่ยนเป็น DAI ผ่านตัวแลกเปลี่ยนในตัว", s3Title:"วิธีค้นหาที่อยู่กระเป๋าเงินของคุณ", s3p1:"ในการรับ DAI จากใครหรือจากตลาดแลกเปลี่ยน คุณต้องมีที่อยู่กระเป๋าเงินของคุณ", s3Step1:"แตะที่อยู่กระเป๋าเงินที่มุมขวาบน (0x6CCE...)", s3Step2:"ที่อยู่ของคุณคือสตริงเช่น 0x6CCE...AF71 กด 'คัดลอก'", s3Step3:"ส่งที่อยู่นี้ให้กับผู้ที่ต้องการโอน DAI, USDT, USDC หรือ POL ให้คุณ", s3Tip:"💡 ที่อยู่กระเป๋าเงินไม่ใช่ความลับ คุณสามารถแชร์ได้อย่างปลอดภัยเพื่อรับเงิน", s4Title:"ส่ง DAI ไปยังกระเป๋าเงินอื่น", s4p1:"คุณสามารถส่ง DAI (หรือ USDT, USDC) โดยตรงไปยังกระเป๋าเงินใดก็ได้ภายในแอป", s4Step1:"ไปที่ส่วน 'แลกเปลี่ยน' → แท็บ 'ส่ง'", s4Step2:"เลือกโทเค็น: DAI, USDT หรือ USDC", s4Step3:"วางที่อยู่ผู้รับ (0x...)", s4Step4:"ใส่จำนวนและกด 'ส่ง'", s4Tip:"✅ การโอนภายใน Polygon ใช้เวลา ~5 วินาที และมีค่าใช้จ่ายประมาณ $0.01", s5Title:"วิธีถอนเงิน", s5ToExchange:"ไปยังตลาดแลกเปลี่ยน", s5Step1:"เข้าสู่บัญชีตลาดแลกเปลี่ยนของคุณ (Binance, Bybit ฯลฯ)", s5Step2:"ค้นหาที่อยู่ฝากเงินสำหรับ DAI บนเครือข่าย Polygon", s5Step3:"ส่ง DAI ผ่านแท็บ 'ส่ง' ในแอป", s5Step4:"ในตลาดแลกเปลี่ยน ขาย DAI เป็นเงินสดและถอนไปยังบัตร", s5ToWallet:"ไปยังกระเป๋าเงินอื่น", s5WalletDesc:"เพียงใช้แท็บ 'ส่ง' — ใส่ที่อยู่ของกระเป๋าเงินที่ต้องการและจำนวนเงิน", warningTitle:"⚠️ สำคัญ: เราไม่มีสิทธิ์เข้าถึงกระเป๋าเงินของคุณ", warningDesc1:"Bee Hive คือแอปพลิเคชันแบบกระจายศูนย์ เราไม่เก็บคีย์ รหัสผ่าน หรือเงินของคุณ ไม่มีใครในทีมสามารถกู้คืนการเข้าถึงกระเป๋าเงินของคุณได้", warningDesc2:"หากคุณสูญเสียการเข้าถึง Telegram หรือกระเป๋าเงินโดยไม่มีคีย์ลับที่บันทึกไว้ — เงินไม่สามารถกู้คืนได้ นี่คือคุณสมบัติของบล็อกเชน ไม่ใช่ข้อจำกัดของแอป", saveKeyBadge:"💾 บันทึกคีย์ลับของคุณตอนนี้เลย — มันคือประกันของคุณ", saveKeyDesc:"เขียนไว้ในที่ปลอดภัย: บันทึกในโทรศัพท์ที่มีรหัสผ่าน กระดาษในตู้นิรภัย หรือตัวจัดการรหัสผ่าน", s6Title:"วิธีบันทึกคีย์ลับของคุณ — ทีละขั้นตอน", s6Intro:"คีย์ลับ (Private Key) คือวิธีเดียวในการกู้คืนการเข้าถึงกระเป๋าเงินในแอปอื่นๆ บันทึกครั้งเดียวและเก็บไว้ในที่ปลอดภัย", s6Step1Title:"ขั้นตอนที่ 1 — เปิดเมนูกระเป๋าเงิน", s6Step1Desc:"แตะที่อยู่กระเป๋าเงินที่มุมขวาบนของหน้าจอ:", s6Step1Arrow:"↑ แตะที่นี่", s6Step2Title:"ขั้นตอนที่ 2 — เลือก 'คีย์ลับ'", s6Step2Desc:"เมนูจะเปิดขึ้น — แตะรายการแรก:", s6Step2Here:"← ที่นี่", s6Step3Title:"ขั้นตอนที่ 3 — ยืนยันและคัดลอกคีย์", s6Step3Desc:"หน้าต่างพร้อมคำเตือนและปุ่มจะปรากฏขึ้น กดปุ่ม — คีย์จะแสดงหรือถูกคัดลอก:", s6Step4Title:"ขั้นตอนที่ 4 — บันทึกคีย์ในที่ปลอดภัย", s6SaveOpt1Title:"บันทึกที่มีรหัสผ่านป้องกัน", s6SaveOpt1Desc:"'บันทึก' มาตรฐานบน iPhone ด้วย Face ID หรือตัวจัดการรหัสผ่าน (1Password, Bitwarden)", s6SaveOpt2Title:"กระดาษ", s6SaveOpt2Desc:"เขียนด้วยมือและวางในตู้นิรภัยหรือที่ปลอดภัย อย่าถ่ายภาพเด็ดขาด", s6SaveOpt3Title:"ตัวจัดการรหัสผ่าน", s6SaveOpt3Desc:"Keeper, LastPass, Bitwarden — สร้างรายการที่มีฟิลด์ 'คีย์ลับ'", s6Step5Title:"ขั้นตอนที่ 5 — นำเข้าสู่กระเป๋าเงินอื่น (หากจำเป็น)", s6Step5Desc:"หากคุณสูญเสียการเข้าถึง Telegram — เปิด MetaMask หรือ Trust Wallet และนำเข้าคีย์:", s6MetaMaskSteps:"เมนู → นำเข้าบัญชี → วางคีย์", s6TrustSteps:"การตั้งค่า → กระเป๋าเงิน → นำเข้า → Private Key", s6DangerTitle:"❗ อย่าแชร์คีย์ของคุณกับผู้อื่นเด็ดขาด", s6DangerDesc:"ผู้ที่รู้คีย์ของคุณมีสิทธิ์เข้าถึงเงินทั้งหมด ทั้งฝ่ายสนับสนุนแอปและทีมงานจะไม่มีวันขอคีย์ลับของคุณ", s6SafeTitle:"✅ เงินของคุณอยู่ภายใต้การควบคุมของคุณอย่างสมบูรณ์", s6SafeDesc:"แอปไม่เก็บเงินของคุณและไม่สามารถอายัดได้ ทุกอย่างอยู่บนบล็อกเชน Polygon — มีเพียงคุณเท่านั้นที่ควบคุมสินทรัพย์ของคุณ", ctaBtn:"💱 ไปที่การแลกเปลี่ยน", walletAddress:"ที่อยู่กระเป๋าเงินของคุณ", receives:"Polygon (MATIC) · รับ DAI, USDT, USDC, POL", swapTitle:"แลกเปลี่ยน", swapGive:"คุณให้", swapGet:"คุณได้รับ"},
+
+  swap: {title:"💱 แลกเปลี่ยนและส่ง", tabSwap:"แลกเปลี่ยน", tabSend:"ส่ง", youGive:"คุณจ่าย", youGet:"คุณได้รับ", calculating:"กำลังดึงอัตราแลกเปลี่ยน...", swapping:"กำลังแลกเปลี่ยน...", swapFooter:"Powered by 0x Protocol · อัตราที่ดีที่สุดบน DEX Polygon", sendTitle:"ส่งโทเค็น", recipient:"ที่อยู่ผู้รับ", invalidAddress:"ที่อยู่กระเป๋าเงินไม่ถูกต้อง", amount:"จำนวน", sending:"กำลังส่ง...", sendFooter:"ธุรกรรมบนเครือข่าย Polygon · ค่าธรรมเนียม ~$0.01", txCancelled:"ธุรกรรมถูกยกเลิก", rateFailed:"ไม่สามารถดึงอัตราแลกเปลี่ยนได้", reloadApp:"กรุณาโหลดแอปใหม่"},
+
 };
 
 const ja: Translations = {
@@ -2193,6 +2379,7 @@ const ja: Translations = {
     team:         "私の養蜂場",
     achievements: "実績",
     language:     "言語",
+    swap:         "交換",
   },
   dashboard: {
     title:        "私のハイブ 🐝",
@@ -2242,6 +2429,16 @@ const ja: Translations = {
     personal:     "直接",
     worker:       "間接",
     type:         "タイプ",
+    refresh:      "更新",
+    refreshing:   "更新中...",
+    syncing:      "ブロックチェーンと同期中…",
+    activeBees:   "アクティブなミツバチ",
+    activeBeesSub:"(最初のハイブを購入)",
+    inactiveBees: "非アクティブなミツバチ",
+    inactiveBeesSub:"(紹介リンクで登録)",
+    active:       "アクティブ",
+    inactive:     "非アクティブ",
+    address:      "アドレス",
   },
   levels: {
     title:        "ハイブレベル",
@@ -2379,8 +2576,63 @@ const ja: Translations = {
     btnTitle:       "仕組みは？",
     btnSub:         "S4マトリックス、収益、紹介 — 詳細説明",
   },
+  secretKey: {title:"Купуя ачкыч", sub:"MetaMask га импорттоо", desc:"Private Key капчыкка толук кирүүнү берет. Аны эч кимге көрсөтпө жана коопсуз жерде сакта.", copyBtn:"Импорт үчүн купуя ачкычты көчүрүү"},
+  getDai: {title:"DAI алуу", sub:"POL, USDT, USDC → DAI"},
+  daiGuide: {title:"DAI кантип сатып алынат жана чыгарылат", sub:"Жаңы баштагандар үчүн жөнөкөй нускама", s1Title:"DAI деген эмне", s1p1:"DAI — туруктуу криптовалюта (стейблкоин). Анын курсу дайыма болжол менен 1 DAI = 1 USD.", s1p2:"Аны санариптик доллар катары элестетиңиз: баасы Bitcoin сыяктуу өйдө-төмөн секирбейт.", s1p3:"Биздин тиркемеде DAI уяларды сатып алуу жана төлөмдөрдү алуу үчүн колдонулат.", s2Title:"DAI алуунун жолдору", s2m1:"1-жол — Тиркеме ичинде алмаштыруу", s2m1Desc:"Башка токендер болсо, аларды ушул жерде алмаштырыңыз:", s2m1Step1:"Төмөнкү менюдагы 'Алмаштыруу' бөлүмүнө өтүңүз", s2m1Step2:"Керектүү жупту тандаңыз, мисалы POL → DAI", s2m1Step3:"Суммасын киргизип, 'Алмаштыруу' баскычын басыңыз", s2m2:"2-жол — Биржада сатып алуу", s2m2Desc:"Биржалардын биринде катталып DAI сатып алыңыз, андан соң капчыгыңызга чыгарыңыз:", s2m2Warning:"⚠️ Биржадан чыгарууда маанилүү", s2m2WarningDesc:"Сөзсүз Polygon (MATIC) тармагын тандаңыз — болбосо каражаттар жоголушу мүмкүн!", s2m3:"3-жол — Банк картасынан", s2m3Desc:"Revolut, Moonpay сыяктуу кызматтар же алмаштыргычтар аркылуу:", s2m3Step1:"Карта менен USDT же POL сатып алыңыз", s2m3Step2:"Тиркемедеги капчык дарегиңизге которуңуз", s2m3Step3:"Орнотулган алмаштыргыч аркылуу DAI га алмаштырыңыз", s3Title:"Капчыгыңыздын дарегин кантип табуу керек", s3p1:"Кимдендир же биржадан DAI алуу үчүн капчыгыңыздын дареги керек.", s3Step1:"Жогорку оң бурчтагы капчык дарегине таптап басыңыз (0x6CCE...)", s3Step2:"Дарегиңиз 0x6CCE...AF71 түрүндөгү сап. 'Көчүрүү' баскычын басыңыз.", s3Step3:"Бул дарекди DAI, USDT, USDC же POL которгусу келген адамга жибериңиз", s3Tip:"💡 Капчык дареги — сыр эмес. Аны каражат алуу үчүн коопсуз көрсөтсө болот.", s4Title:"DAI башка капчыкка жөнөтүү", s4p1:"DAI (же USDT, USDC) ды тиркеме ичинен түз каалаган капчыкка жөнөтсө болот.", s4Step1:"'Алмаштыруу' бөлүмүнө өтүңүз → 'Жөнөтүү' кошумча барагы", s4Step2:"Токенди тандаңыз: DAI, USDT же USDC", s4Step3:"Алуучунун дарегин чаптаңыз (0x...)", s4Step4:"Суммасын киргизип, 'Жөнөтүү' баскычын басыңыз", s4Tip:"✅ Polygon ичиндеги которуу ~5 секунд созулат жана болжол менен $0.01 турат", s5Title:"Каражаттарды кантип чыгаруу керек", s5ToExchange:"Биржага", s5Step1:"Биржадагы аккаунтуңузга кириңиз (Binance, Bybit ж.б.)", s5Step2:"Polygon тармагында DAI толтуруу дарегин табыңыз", s5Step3:"Тиркемедеги 'Жөнөтүү' кошумча барагы аркылуу DAI жөнөтүңүз", s5Step4:"Биржада DAI ды фиатка сатып, картага чыгарыңыз", s5ToWallet:"Башка капчыкка", s5WalletDesc:"'Жөнөтүү' кошумча барагын колдонуңуз — керектүү капчыктын дарегин жана суммасын киргизиңиз.", warningTitle:"⚠️ Маанилүү: биз сиздин капчыгыңызга кире алабыз", warningDesc1:"Bee Hive — борборлоштурулбаган тиркеме. Биз сиздин ачкычтарыңызды, сырсөздөрүңүздү жана каражаттарыңызды сакташпайбыз. Топтун эч бири капчыгыңызга кирүүнү калыбына келтире алышпайт.", warningDesc2:"Эгер сакталган купуя ачкычсыз Telegram же капчыкка кирүүнү жоготсоңуз — каражаттарды калыбына келтирүү мүмкүн болбойт. Бул блокчейндин өзгөчөлүгү, тиркеменин чектөөсү эмес.", saveKeyBadge:"💾 Купуя ачкычты азыр эле сактаңыз — бул сиздин камсыздандырууңуз", saveKeyDesc:"Аны ишенимдүү жерге жазыңыз: сырсөздүү телефон эскертмелери, сейфтеги кагаз, сырсөз менеджери.", s6Title:"Купуя ачкычты кантип сактоо керек — кадам-кадам", s6Intro:"Купуя ачкыч (Private Key) — башка каалаган тиркемеде капчыкка кирүүнү калыбына келтирүүнүн жалгыз жолу. Аны бир жолу сактап, коопсуз жерде кармаңыз.", s6Step1Title:"1-кадам — Капчык менюсун ачыңыз", s6Step1Desc:"Экрандын жогорку оң бурчундагы капчык дарегине таптап басыңыз:", s6Step1Arrow:"↑ Бул жерге басыңыз", s6Step2Title:"2-кадам — 'Купуя ачкыч' тандаңыз", s6Step2Desc:"Меню ачылат — биринчи пунктка басыңыз:", s6Step2Here:"← бул жерде", s6Step3Title:"3-кадам — Ачкычты ырастаңыз жана көчүрүңүз", s6Step3Desc:"Эскертүү жана баскыч бар терезе пайда болот. Баскычты басыңыз — ачкыч көрсөтүлөт же көчүрүлөт:", s6Step4Title:"4-кадам — Ачкычты коопсуз жерде сактаңыз", s6SaveOpt1Title:"Сырсөздүү эскертмелер", s6SaveOpt1Desc:"iPhone да Face ID менен стандарттык 'Эскертмелер' же сырсөз менеджери (1Password, Bitwarden)", s6SaveOpt2Title:"Кагаз", s6SaveOpt2Desc:"Колдон жазып, сейфке же ишенимдүү жерге коюңуз. Эч качан сүрөткө тартпаңыз.", s6SaveOpt3Title:"Сырсөз менеджери", s6SaveOpt3Desc:"Keeper, LastPass, Bitwarden — 'купуя ачкыч' талаасы бар жазуу түзүңүз", s6Step5Title:"5-кадам — Башка капчыкка импорттоо (зарыл болсо)", s6Step5Desc:"Эгер Telegram га кирүүнү жоготсоңуз — MetaMask же Trust Wallet ачып, ачкычты импорттоңуз:", s6MetaMaskSteps:"Меню → Аккаунтту импорттоо → Ачкычты чаптаңыз", s6TrustSteps:"Жөндөөлөр → Капчыктар → Импорт → Private Key", s6DangerTitle:"❗ Ачкычты башка адамдарга ЭЧКАЧАН бербеңиз", s6DangerDesc:"Ачкычыңызды билген адам каражаттарга толук кирүүгө ээ болот. Тиркеменин колдоосу да, команда да эч качан купуя ачкыч сурабайт.", s6SafeTitle:"✅ Сиздин каражаттарыңыз толугу менен сиздин көзөмөлүңүздө", s6SafeDesc:"Тиркеме сиздин акчаңызды сакташпайт жана аны тоңдура алышпайт. Баары Polygon блокчейнинде — бары болгондо сиз өз активдериңизди башкарасыз.", ctaBtn:"💱 Алмаштырууга өтүү", walletAddress:"Сиздин капчыгыңыздын дареги", receives:"Polygon (MATIC) · DAI, USDT, USDC, POL кабыл алат", swapTitle:"Алмаштыруу", swapGive:"Бересиз", swapGet:"Alesiz"},
+  swap: {title:"💱 スワップと送金", tabSwap:"スワップ", tabSend:"送金", youGive:"支払う", youGet:"受け取る", calculating:"レートを取得中...", swapping:"スワップ中...", swapFooter:"Powered by 0x Protocol · DEX Polygon の最良レート", sendTitle:"トークンを送る", recipient:"受取人のアドレス", invalidAddress:"無効なウォレットアドレス", amount:"金額", sending:"送金中...", sendFooter:"Polygon ネットワーク上のトランザクション · 手数料 ~$0.01", txCancelled:"トランザクションがキャンセルされました", rateFailed:"レートの取得に失敗しました", reloadApp:"アプリをリロードしてください"},
+
+};
+
+const pl: Translations = {
+  nav: { overview:"Przegląd", levels:"Poziomy uli", matrix:"Rój pszczół", payments:"Płatności", team:"Moja pasieka", achievements:"Osiągnięcia", language:"Język", swap:"Wymiana" },
+  dashboard: { title:"Mój ul 🐝", myHives:"Moje ule", notInSwarm:"Nie jesteś jeszcze w roju", joinDesc:"Kliknij przycisk poniżej, aby dołączyć do roju", join:"🐝 Dołącz do roju", joinSub:"rejestracja", registering:"Rejestracja..." },
+  stats: { earned:"Zarobiono na miodzie", spent:"Wydano", activeLevels:"Aktywne poziomy", pending:"Zgromadzone", netIncome:"Zysk netto z pasieki" },
+  hive: { level:"Poziom", price:"Cena", activate:"Aktywuj", unavailable:"Niedostępny", cycle:"cykl", cycles2:"cykle", cycles5:"cykli" },
+  payments: { title:"Historia płatności", subtitle:"Wszystkie transakcje", received:"Otrzymano", spent:"Wydano", all:"Wszystkie", income:"Przychody", expense:"Wydatki", empty:"Brak transakcji", from:"od", buyHive:"zakup ula" },
+  team: { title:"Moja pasieka", subtitle:"Twoje pszczoły referalne", allBees:"Wszystkie pszczoły", directBees:"Pszczoły osobiste", workerBees:"Pszczoły robotnice", empty:"Brak pszczół", shareHint:"Udostępnij link referalny!", personal:"Osobiste", worker:"Robotnica", type:"Typ", refresh:"Odśwież", refreshing:"Odświeżam...", syncing:"Synchronizacja z blockchainem…", activeBees:"Aktywne pszczoły", activeBeesSub:"(kupiły pierwszy ul)", inactiveBees:"Nieaktywne pszczoły", inactiveBeesSub:"(zarejestrowały się przez link ref.)", active:"Aktywna", inactive:"Nieaktywna", address:"Adres" },
+  levels: { title:"Poziomy uli", activeOf:"Aktywne", of:"z", hive:"Ul", price:"Cena", cycleIncome:"Dochód za cykl", cycles:"Cykle", status:"Status", bought:"✓ Kupiono", inactive:"Nieaktywny", details:"Szczegóły" },
+  achievements: { title:"Osiągnięcia", openedOf:"Odblokowano", progress:"Postęp", activeLevels:"Aktywne poziomy", inTeam:"W drużynie", cyclesCount:"Cykle" },
+  modal: { buyTitle:"Kup ul", priceLbl:"Cena:", step1:"Krok 1: Zatwierdź wydatki DAI", step2:"Krok 2: Kup ul", idle:"Gotowy do zakupu", approving:"Potwierdź w portfelu...", approvePend:"Czekam na potwierdzenie...", buying:"Potwierdź zakup...", buyPend:"Czekam na potwierdzenie zakupu...", success:"Zakupiono!", error:"Błąd", buyBtn:"Kup za", retry:"Spróbuj ponownie", done:"Gotowe!" },
+  referral: { title:"Twój link referalny", copy:"Kopiuj", copied:"Skopiowano!", hint:"Każdy, kto dołączy przez Twój link, stanie się Twoją pszczołą referalną 🐝" },
+  language: { title:"Język", subtitle:"Wybierz język interfejsu" },
+  pending: { title:"Oczekujące wypłaty", withdraw:"Wypłać", withdrawing:"Wypłacanie..." },
+  autobuy: { title:"Auto-zakup", desc:"Automatycznie kupuj kolejny poziom po zamknięciu cyklu" },
+  ref: { joinTitle:"Dołącz do roju", invitedBy:"Zaproszony przez", joinBtn:"🐝 Dołącz do roju", switching:"⚠️ Przełącz na Polygon", step1:"Połącz portfel", step2:"Kliknij «Dołącz do roju»", step3:"Kup pierwszy Ul 1" },
+  matrix: { subtitle:"Status slotów dla każdego poziomu", matrixS4:"Macierz S4", slot:"slot", reactivation:"reaktywacja", slotsHint:"Sloty 1–3 → zbiór miodu", slot4Hint:"Slot 4 → reaktywacja ula" },
+  titles: { worker:"Pszczoła robotnica", builder:"Budowniczy ula", swarm:"Rój pszczół", harvest:"Zbieracz miodu", master:"Mistrz ula", queen:"Królowa pszczół", legend:"Legenda roju" },
+  howItWorks: { back:"Wróć", title:"Jak to działa", subtitle:"Proste wyjaśnienie META BEE HIVE", block1Title:"Pomysł w 1 minutę", daiBadge:"1 DAI = 1$", block1Text:"META BEE HIVE to zdecentralizowana macierz S4 na blockchainie Polygon. Kupujesz ul (poziom), otrzymujesz 4 sloty. Gdy inni uczestnicy dołączą do Twojego ula — automatycznie otrzymujesz DAI bezpośrednio do portfela.", securityNote:"Aplikacja nie ma dostępu do Twojego portfela i nie może wypłacać Twoich środków.", block2Title:"Macierz S4 — 4 sloty", slots123:"Sloty 1, 2, 3 → Ty", slots123desc:"90% ceny poziomu trafia do Twojego portfela", slot4:"Slot 4 → wyższy + restart", slot4desc:"4. płatność trafia do Twojego referera, macierz resetuje się", fee:"10% — opłata systemowa", feeDesc:"10% jest automatycznie potrącane ze wszystkich wypłat", exampleTitle:"Przykład: Ul 1 = 5 DAI", toYou:"→ Ty", toUp:"→ wyżej", cycleTotal:"Łącznie za cykl (3 sloty)", block3Title:"Jak zacząć zarabiać", step1Title:"Zarejestruj się", step1Desc:"Jedna darmowa transakcja. Potrzebujesz tylko POL na gaz (~$0.01)", step2Title:"Kup Ul 1 za 5 DAI", step2Desc:"Twoja pierwsza macierz jest aktywowana.", step3Title:"Zaproś ludzi przez link referalny", step3Desc:"Każdy, kto zarejestruje się przez Ciebie, dołączy do Twojej macierzy", step4Title:"Otrzymuj wypłaty automatycznie", step4Desc:"Gdy slot się zapełni — DAI trafia natychmiast do portfela.", step5Title:"Kup kolejne poziomy", step5Desc:"Więcej poziomów = więcej równoległych macierzy = więcej wypłat", block4Title:"Potencjał zarobków według poziomu", block4Sub:"Dochód za 1 cykl (3 wypełnione sloty × 90%)", allLevels:"Przy wszystkich 10 aktywnych poziomach", entryPrice:"Wejście:", perSlot:"Za slot", perCycle:"Za cykl × 3", block5Title:"Referale i przepełnienia", cycleClosedNote:"Gdy cykle referali się zamykają — DAI trafia bezpośrednio do Ciebie", overflowTitle:"Przepełnienia trafiają do Ciebie", overflowDesc:"Jeśli Twój referal nie ma wymaganego poziomu — jego płatność trafia do Ciebie", infiniteTitle:"Macierz jest nieskończona", infiniteDesc:"Po 4. slocie poziom restartuje się — wracasz do kolejki", block6Title:"Co to jest Auto-zakup", block6Text:"Gdy auto-zakup jest WŁĄCZONY — zamiast wysyłać DAI do portfela, system je gromadzi i automatycznie kupuje kolejny poziom.", autoOn:"✓ Włączony", autoOnDesc:"Wypłaty się gromadzą → następny Ul jest automatycznie kupowany", autoOff:"✗ Wyłączony", autoOffDesc:"Wszystkie wypłaty trafiają bezpośrednio do portfela", ctaTitle:"Gotowy do startu?", ctaDesc:"Przejdź do zakładki Poziomy uli i aktywuj Ul 1 za 5 DAI", ctaBtn:"Kup Ul 1 — 5 DAI", btnTitle:"Jak to działa?", btnSub:"Macierz S4, zarobki, referale — pełne wyjaśnienie" },
+  secretKey: {title:"Tajny klucz", sub:"Importuj do MetaMask", desc:"Private Key zapewnia pełny dostęp do portfela. Nikomu go nie pokazuj i przechowuj w bezpiecznym miejscu.", copyBtn:"Skopiuj tajny klucz do importu"},
+  getDai: {title:"Zdobądź DAI", sub:"POL, USDT, USDC → DAI"},
+  daiGuide: {title:"Jak kupić i wypłacić DAI", sub:"Prosta instrukcja dla początkujących", s1Title:"Czym jest DAI", s1p1:"DAI to stabilna kryptowaluta (stablecoin). Jej kurs zawsze wynosi około 1 DAI = 1 USD.", s1p2:"Myśl o niej jak o cyfrowym dolarze: jej wartość nie skacze w górę i w dół jak Bitcoin.", s1p3:"W naszej aplikacji DAI służy do zakupu uli i otrzymywania wypłat.", s2Title:"Sposoby zdobycia DAI", s2m1:"Sposób 1 — Wymień w aplikacji", s2m1Desc:"Jeśli masz inne tokeny, wymień je tutaj:", s2m1Step1:"Przejdź do sekcji 'Wymiana' w dolnym menu", s2m1Step2:"Wybierz żądaną parę, np. POL → DAI", s2m1Step3:"Wprowadź kwotę i naciśnij 'Wymień'", s2m2:"Sposób 2 — Kup na giełdzie", s2m2Desc:"Zarejestruj się na jednej z giełd i kup DAI, a następnie wypłać do swojego portfela:", s2m2Warning:"⚠️ Ważne przy wypłacie z giełdy", s2m2WarningDesc:"Koniecznie wybierz sieć Polygon (MATIC) — inaczej środki mogą zaginąć!", s2m3:"Sposób 3 — Z karty bankowej", s2m3Desc:"Przez serwisy takie jak Revolut, Moonpay lub kantory:", s2m3Step1:"Kup USDT lub POL kartą", s2m3Step2:"Przelej na adres swojego portfela w aplikacji", s2m3Step3:"Wymień na DAI przez wbudowany kantor", s3Title:"Jak znaleźć adres swojego portfela", s3p1:"Aby otrzymać DAI od kogoś lub z giełdy, potrzebujesz adresu swojego portfela.", s3Step1:"Naciśnij na adres portfela w prawym górnym rogu (0x6CCE...)", s3Step2:"Twój adres to ciąg w formacie 0x6CCE...AF71. Naciśnij 'Kopiuj'.", s3Step3:"Wyślij ten adres osobie, która chce przelać Ci DAI, USDT, USDC lub POL", s3Tip:"💡 Adres portfela to nie sekret. Możesz go śmiało udostępniać, aby otrzymywać środki.", s4Title:"Wyślij DAI do innego portfela", s4p1:"Możesz wysłać DAI (lub USDT, USDC) bezpośrednio do dowolnego portfela prosto z aplikacji.", s4Step1:"Przejdź do sekcji 'Wymiana' → zakładka 'Wyślij'", s4Step2:"Wybierz token: DAI, USDT lub USDC", s4Step3:"Wklej adres odbiorcy (0x...)", s4Step4:"Wprowadź kwotę i naciśnij 'Wyślij'", s4Tip:"✅ Przelew w sieci Polygon trwa ~5 sekund i kosztuje około $0.01", s5Title:"Jak wypłacić środki", s5ToExchange:"Na giełdę", s5Step1:"Zaloguj się na swoje konto giełdowe (Binance, Bybit itp.)", s5Step2:"Znajdź adres do wpłaty DAI w sieci Polygon", s5Step3:"Wyślij DAI przez zakładkę 'Wyślij' w aplikacji", s5Step4:"Na giełdzie sprzedaj DAI za walutę fiat i wypłać na kartę", s5ToWallet:"Do innego portfela", s5WalletDesc:"Wystarczy użyć zakładki 'Wyślij' — wpisz adres żądanego portfela i kwotę.", warningTitle:"⚠️ Ważne: nie mamy dostępu do Twojego portfela", warningDesc1:"Bee Hive to zdecentralizowana aplikacja. Nie przechowujemy Twoich kluczy, haseł ani środków. Nikt z zespołu nie może przywrócić dostępu do Twojego portfela.", warningDesc2:"Jeśli utracisz dostęp do Telegram lub portfela bez zapisanego tajnego klucza — środków nie będzie można odzyskać. To właściwość blockchain, nie ograniczenie aplikacji.", saveKeyBadge:"💾 Zapisz tajny klucz teraz — to Twoje ubezpieczenie", saveKeyDesc:"Zapisz go w bezpiecznym miejscu: notatki na telefonie z hasłem, kartka w sejfie, menedżer haseł.", s6Title:"Jak zapisać tajny klucz — krok po kroku", s6Intro:"Tajny klucz (Private Key) to jedyny sposób na przywrócenie dostępu do portfela w dowolnej innej aplikacji. Zapisz go raz i przechowuj w bezpiecznym miejscu.", s6Step1Title:"Krok 1 — Otwórz menu portfela", s6Step1Desc:"Naciśnij na adres portfela w prawym górnym rogu ekranu:", s6Step1Arrow:"↑ Naciśnij tutaj", s6Step2Title:"Krok 2 — Wybierz 'Tajny klucz'", s6Step2Desc:"Otworzy się menu — naciśnij pierwszą pozycję:", s6Step2Here:"← tutaj", s6Step3Title:"Krok 3 — Potwierdź i skopiuj klucz", s6Step3Desc:"Pojawi się okno z ostrzeżeniem i przyciskiem. Naciśnij przycisk — klucz zostanie pokazany lub skopiowany:", s6Step4Title:"Krok 4 — Zapisz klucz w bezpiecznym miejscu", s6SaveOpt1Title:"Notatki z hasłem", s6SaveOpt1Desc:"Standardowe 'Notatki' na iPhone z Face ID lub menedżer haseł (1Password, Bitwarden)", s6SaveOpt2Title:"Papier", s6SaveOpt2Desc:"Napisz odręcznie i włóż do sejfu lub bezpiecznego miejsca. Nigdy nie fotografuj.", s6SaveOpt3Title:"Menedżer haseł", s6SaveOpt3Desc:"Keeper, LastPass, Bitwarden — utwórz wpis z polem 'tajny klucz'", s6Step5Title:"Krok 5 — Import do innego portfela (w razie potrzeby)", s6Step5Desc:"Jeśli utraciłeś dostęp do Telegram — otwórz MetaMask lub Trust Wallet i zaimportuj klucz:", s6MetaMaskSteps:"Menu → Importuj konto → Wklej klucz", s6TrustSteps:"Ustawienia → Portfele → Import → Private Key", s6DangerTitle:"❗ NIGDY nie przekazuj klucza innym osobom", s6DangerDesc:"Ten, kto zna Twój klucz, ma pełny dostęp do środków. Ani wsparcie aplikacji, ani zespół nigdy nie prosi o tajny klucz.", s6SafeTitle:"✅ Twoje środki są w pełni pod Twoją kontrolą", s6SafeDesc:"Aplikacja nie przechowuje Twoich pieniędzy i nie może ich zamrozić. Wszystko znajduje się na blockchainie Polygon — tylko Ty zarządzasz swoimi aktywami.", ctaBtn:"💱 Przejdź do wymiany", walletAddress:"Adres Twojego portfela", receives:"Polygon (MATIC) · odbiera DAI, USDT, USDC, POL", swapTitle:"Wymiana", swapGive:"Dajesz", swapGet:"Otrzymujesz"},
+  swap: {title:"💱 Zamień i wyślij", tabSwap:"Zamień", tabSend:"Wyślij", youGive:"Dajesz", youGet:"Otrzymujesz", calculating:"Pobieranie kursu...", swapping:"Trwa zamiana...", swapFooter:"Powered by 0x Protocol · Najlepszy kurs na DEX Polygon", sendTitle:"Wyślij token", recipient:"Adres odbiorcy", invalidAddress:"Nieprawidłowy adres portfela", amount:"Kwota", sending:"Wysyłanie...", sendFooter:"Transakcja w sieci Polygon · Opłata ~$0.01", txCancelled:"Transakcja anulowana", rateFailed:"Nie udało się pobrać kursu", reloadApp:"Przeładuj aplikację"},
+
+};
+
+const ro: Translations = {
+  nav: { overview:"Prezentare", levels:"Niveluri stup", matrix:"Roiul albinelor", payments:"Plăți", team:"Stupina mea", achievements:"Realizări", language:"Limbă", swap:"Schimb" },
+  dashboard: { title:"Stupul meu 🐝", myHives:"Stupii mei", notInSwarm:"Nu ești încă în roi", joinDesc:"Apasă butonul de mai jos pentru a te alătura roiului", join:"🐝 Alătură-te roiului", joinSub:"înregistrare", registering:"Înregistrare..." },
+  stats: { earned:"Câștigat din miere", spent:"Cheltuit", activeLevels:"Niveluri active", pending:"Acumulat", netIncome:"Venit net din stupină" },
+  hive: { level:"Nivel", price:"Preț", activate:"Activează", unavailable:"Indisponibil", cycle:"ciclu", cycles2:"cicluri", cycles5:"cicluri" },
+  payments: { title:"Istoricul plăților", subtitle:"Toate tranzacțiile", received:"Primit", spent:"Cheltuit", all:"Toate", income:"Venituri", expense:"Cheltuieli", empty:"Nu există tranzacții", from:"de la", buyHive:"cumpărare stup" },
+  team: { title:"Stupina mea", subtitle:"Albinele tale referrale", allBees:"Toate albinele", directBees:"Albine personale", workerBees:"Albine lucrătoare", empty:"Nu există albine", shareHint:"Distribuie linkul tău de referință!", personal:"Personal", worker:"Lucrătoare", type:"Tip", refresh:"Reîmprospătare", refreshing:"Se reîmprospătează...", syncing:"Sincronizare cu blockchain-ul…", activeBees:"Albine active", activeBeesSub:"(au cumpărat primul stup)", inactiveBees:"Albine inactive", inactiveBeesSub:"(s-au înregistrat prin link de referință)", active:"Activă", inactive:"Inactivă", address:"Adresă" },
+  levels: { title:"Niveluri stup", activeOf:"Active", of:"din", hive:"Stup", price:"Preț", cycleIncome:"Venit per ciclu", cycles:"Cicluri", status:"Status", bought:"✓ Cumpărat", inactive:"Inactiv", details:"Detalii" },
+  achievements: { title:"Realizări", openedOf:"Deblocat", progress:"Progres general", activeLevels:"Niveluri active", inTeam:"În echipă", cyclesCount:"Cicluri" },
+  modal: { buyTitle:"Cumpără stup", priceLbl:"Preț:", step1:"Pasul 1: Aprobă cheltuielile DAI", step2:"Pasul 2: Cumpără stup", idle:"Gata de cumpărare", approving:"Confirmă în portofel...", approvePend:"Aștept confirmarea...", buying:"Confirmă achiziția...", buyPend:"Aștept confirmarea achiziției...", success:"Cumpărat!", error:"Eroare", buyBtn:"Cumpără pentru", retry:"Încearcă din nou", done:"Gata!" },
+  referral: { title:"Linkul tău de referință", copy:"Copiază", copied:"Copiat!", hint:"Toți cei care se alătură prin linkul tău devin albinele tale referrale 🐝" },
+  language: { title:"Limbă", subtitle:"Alege limba interfeței" },
+  pending: { title:"Retragere în așteptare", withdraw:"Retrage", withdrawing:"Se retrage..." },
+  autobuy: { title:"Auto-cumpărare", desc:"Cumpără automat nivelul următor la finalizarea ciclului" },
+  ref: { joinTitle:"Alătură-te roiului", invitedBy:"Invitat de", joinBtn:"🐝 Alătură-te roiului", switching:"⚠️ Comută la Polygon", step1:"Conectează portofelul", step2:"Apasă «Alătură-te roiului»", step3:"Cumpără primul Stup 1" },
+  matrix: { subtitle:"Statusul sloturilor pentru fiecare nivel", matrixS4:"Matrix S4", slot:"slot", reactivation:"reactivare", slotsHint:"Sloturile 1–3 → recoltă de miere", slot4Hint:"Slotul 4 → reactivarea stupului" },
+  titles: { worker:"Albină lucrătoare", builder:"Constructor de stup", swarm:"Roi de albine", harvest:"Culegător de miere", master:"Maestru stup", queen:"Regina albinelor", legend:"Legenda roiului" },
+  howItWorks: { back:"Înapoi", title:"Cum funcționează", subtitle:"Explicație simplă META BEE HIVE", block1Title:"Ideea în 1 minut", daiBadge:"1 DAI = 1$", block1Text:"META BEE HIVE este o matrice S4 descentralizată pe blockchain-ul Polygon. Cumperi un stup (nivel), primești 4 sloturi. Când alți participanți se alătură stupului tău — primești automat DAI direct în portofel.", securityNote:"Aplicația nu are acces la portofelul tău și nu poate retrage fondurile tale.", block2Title:"Matrix S4 — 4 sloturi", slots123:"Sloturile 1, 2, 3 → tu", slots123desc:"90% din prețul nivelului ajunge în portofelul tău", slot4:"Slotul 4 → upline + restart", slot4desc:"A 4-a plată merge la referentul tău, matricea se resetează", fee:"10% — comision sistem", feeDesc:"10% este dedus automat din toate plățile", exampleTitle:"Exemplu: Stup 1 = 5 DAI", toYou:"→ tu", toUp:"→ sus", cycleTotal:"Total per ciclu (3 sloturi)", block3Title:"Cum să începi să câștigi", step1Title:"Înregistrează-te", step1Desc:"O tranzacție gratuită. Ai nevoie doar de POL pentru gaz (~$0.01)", step2Title:"Cumpără Stup 1 pentru 5 DAI", step2Desc:"Prima ta matrice este activată.", step3Title:"Invită oameni prin link referral", step3Desc:"Toți cei care se înregistrează prin tine se vor alătura matricei tale", step4Title:"Primește plăți automat", step4Desc:"De îndată ce un slot se umple — DAI ajunge instant în portofel.", step5Title:"Cumpără nivelurile următoare", step5Desc:"Mai multe niveluri = mai multe matrici paralele = mai multe plăți", block4Title:"Potențial de câștig pe nivel", block4Sub:"Venit per 1 ciclu (3 sloturi × 90%)", allLevels:"Dacă toate 10 niveluri sunt active", entryPrice:"Intrare:", perSlot:"Per slot", perCycle:"Per ciclu × 3", block5Title:"Referrals și overflow-uri", cycleClosedNote:"Când ciclurile referralilor se închid — DAI merge direct la tine", overflowTitle:"Overflow-urile vin la tine", overflowDesc:"Dacă referralul tău nu are nivelul necesar — plata lui merge la tine", infiniteTitle:"Matricea este infinită", infiniteDesc:"După slotul 4 nivelul repornește — ești din nou în coadă", block6Title:"Ce este Auto-cumpărarea", block6Text:"Când auto-cumpărarea este ACTIVATĂ — în loc să trimită DAI în portofel, sistemul îi acumulează și cumpără automat nivelul următor.", autoOn:"✓ Activat", autoOnDesc:"Plățile se acumulează → următorul Stup este cumpărat automat", autoOff:"✗ Dezactivat", autoOffDesc:"Toate plățile merg direct în portofel", ctaTitle:"Gata să începi?", ctaDesc:"Mergi la fila Niveluri stup și activează Stup 1 pentru 5 DAI", ctaBtn:"Cumpără Stup 1 — 5 DAI", btnTitle:"Cum funcționează?", btnSub:"Matrix S4, câștiguri, referrals — explicație completă" },
+  secretKey: {title:"Cheia secretă", sub:"Importă în MetaMask", desc:"Private Key oferă acces complet la portofel. Nu o arăta nimănui și păstreaz-o într-un loc sigur.", copyBtn:"Copiază cheia secretă pentru import"},
+  getDai: {title:"Obține DAI", sub:"POL, USDT, USDC → DAI"},
+  daiGuide: {title:"Cum să cumperi și să retragi DAI", sub:"Ghid simplu pentru începători", s1Title:"Ce este DAI", s1p1:"DAI este o criptomonedă stabilă (stablecoin). Cursul său este întotdeauna aproximativ 1 DAI = 1 USD.", s1p2:"Gândește-te la ea ca la un dolar digital: valoarea sa nu sare în sus și în jos ca Bitcoin.", s1p3:"În aplicația noastră, DAI este folosit pentru cumpărarea stupilor și primirea plăților.", s2Title:"Modalități de a obține DAI", s2m1:"Metoda 1 — Schimbă în aplicație", s2m1Desc:"Dacă ai alți tokeni, schimbă-i chiar aici:", s2m1Step1:"Accesează secțiunea 'Schimb' din meniul de jos", s2m1Step2:"Selectează perechea dorită, de ex. POL → DAI", s2m1Step3:"Introdu suma și apasă 'Schimbă'", s2m2:"Metoda 2 — Cumpără de pe un exchange", s2m2Desc:"Înregistrează-te pe unul dintre exchange-uri și cumpără DAI, apoi retrage în portofelul tău:", s2m2Warning:"⚠️ Important la retragerea de pe exchange", s2m2WarningDesc:"Asigură-te că selectezi rețeaua Polygon (MATIC) — altfel fondurile se pot pierde!", s2m3:"Metoda 3 — De pe cardul bancar", s2m3Desc:"Prin servicii precum Revolut, Moonpay sau case de schimb:", s2m3Step1:"Cumpără USDT sau POL cu cardul", s2m3Step2:"Transferă la adresa portofelului tău din aplicație", s2m3Step3:"Schimbă în DAI prin schimbătorul integrat", s3Title:"Cum să găsești adresa portofelului tău", s3p1:"Pentru a primi DAI de la cineva sau de pe un exchange, ai nevoie de adresa portofelului tău.", s3Step1:"Apasă pe adresa portofelului din colțul din dreapta sus (0x6CCE...)", s3Step2:"Adresa ta este un șir de forma 0x6CCE...AF71. Apasă 'Copiază'.", s3Step3:"Trimite această adresă celui care vrea să îți transfere DAI, USDT, USDC sau POL", s3Tip:"💡 Adresa portofelului nu este un secret. O poți share fără probleme pentru a primi fonduri.", s4Title:"Trimite DAI la alt portofel", s4p1:"Poți trimite DAI (sau USDT, USDC) direct la orice portofel chiar din aplicație.", s4Step1:"Accesează secțiunea 'Schimb' → fila 'Trimite'", s4Step2:"Selectează tokenul: DAI, USDT sau USDC", s4Step3:"Inserează adresa destinatarului (0x...)", s4Step4:"Introdu suma și apasă 'Trimite'", s4Tip:"✅ Transferul în rețeaua Polygon durează ~5 secunde și costă aproximativ $0.01", s5Title:"Cum să retragi fonduri", s5ToExchange:"Pe exchange", s5Step1:"Conectează-te la contul tău de exchange (Binance, Bybit etc.)", s5Step2:"Găsește adresa de depozitare DAI în rețeaua Polygon", s5Step3:"Trimite DAI prin fila 'Trimite' din aplicație", s5Step4:"Pe exchange, vinde DAI pentru fiat și retrage pe card", s5ToWallet:"În alt portofel", s5WalletDesc:"Folosește pur și simplu fila 'Trimite' — introdu adresa portofelului dorit și suma.", warningTitle:"⚠️ Important: nu avem acces la portofelul tău", warningDesc1:"Bee Hive este o aplicație descentralizată. Nu stocăm cheile, parolele sau fondurile tale. Nimeni din echipă nu poate restaura accesul la portofelul tău.", warningDesc2:"Dacă pierzi accesul la Telegram sau la portofel fără cheia secretă salvată — fondurile nu vor putea fi recuperate. Aceasta este o proprietate a blockchain-ului, nu o limitare a aplicației.", saveKeyBadge:"💾 Salvează cheia secretă chiar acum — aceasta este asigurarea ta", saveKeyDesc:"Scrie-o într-un loc sigur: notițe pe telefon cu parolă, hârtie în seif, manager de parole.", s6Title:"Cum să salvezi cheia secretă — pas cu pas", s6Intro:"Cheia secretă (Private Key) este singura modalitate de a restaura accesul la portofel în orice altă aplicație. Salvează-o o dată și păstreaz-o într-un loc sigur.", s6Step1Title:"Pasul 1 — Deschide meniul portofelului", s6Step1Desc:"Apasă pe adresa portofelului din colțul din dreapta sus al ecranului:", s6Step1Arrow:"↑ Apasă aici", s6Step2Title:"Pasul 2 — Selectează 'Cheia secretă'", s6Step2Desc:"Se va deschide un meniu — apasă primul element:", s6Step2Here:"← aici", s6Step3Title:"Pasul 3 — Confirmă și copiază cheia", s6Step3Desc:"Va apărea o fereastră cu avertisment și un buton. Apasă butonul — cheia va fi afișată sau copiată:", s6Step4Title:"Pasul 4 — Salvează cheia într-un loc sigur", s6SaveOpt1Title:"Notițe cu parolă", s6SaveOpt1Desc:"'Notițele' standard pe iPhone cu Face ID sau manager de parole (1Password, Bitwarden)", s6SaveOpt2Title:"Hârtie", s6SaveOpt2Desc:"Scrie de mână și pune în seif sau într-un loc sigur. Nu fotografia niciodată.", s6SaveOpt3Title:"Manager de parole", s6SaveOpt3Desc:"Keeper, LastPass, Bitwarden — creează o înregistrare cu câmpul 'cheie secretă'", s6Step5Title:"Pasul 5 — Importă în alt portofel (dacă este necesar)", s6Step5Desc:"Dacă ai pierdut accesul la Telegram — deschide MetaMask sau Trust Wallet și importă cheia:", s6MetaMaskSteps:"Meniu → Importă cont → Inserează cheia", s6TrustSteps:"Setări → Portofele → Import → Private Key", s6DangerTitle:"❗ NU transmite NICIODATĂ cheia altor persoane", s6DangerDesc:"Cel care cunoaște cheia ta are acces complet la fonduri. Nici suportul aplicației, nici echipa nu solicită vreodată cheia secretă.", s6SafeTitle:"✅ Fondurile tale sunt complet sub controlul tău", s6SafeDesc:"Aplicația nu stochează banii tăi și nu îi poate îngheța. Totul se află pe blockchain-ul Polygon — numai tu îți administrezi activele.", ctaBtn:"💱 Mergi la schimb", walletAddress:"Adresa portofelului tău", receives:"Polygon (MATIC) · primește DAI, USDT, USDC, POL", swapTitle:"Schimb", swapGive:"Dai", swapGet:"Primești"},
+  swap: {title:"💱 Schimbă și trimite", tabSwap:"Schimbă", tabSend:"Trimite", youGive:"Dai", youGet:"Primești", calculating:"Se calculează cursul...", swapping:"Se schimbă...", swapFooter:"Powered by 0x Protocol · Cel mai bun curs pe DEX Polygon", sendTitle:"Trimite token", recipient:"Adresa destinatarului", invalidAddress:"Adresă de portofel invalidă", amount:"Sumă", sending:"Se trimite...", sendFooter:"Tranzacție în rețeaua Polygon · Comision ~$0.01", txCancelled:"Tranzacție anulată", rateFailed:"Nu s-a putut obține cursul", reloadApp:"Reîncărcați aplicația"},
+
 };
 
 export const translations: Record<LangCode, Translations> = {
-  ru, uk, en, tr, vi, hi, zh, ko, uz, ky, th, ja,
+  ru, uk, en, tr, vi, hi, zh, ko, uz, ky, pl, ro,
 };

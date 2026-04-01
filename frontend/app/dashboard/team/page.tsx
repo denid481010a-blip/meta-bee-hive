@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import { useAccount, usePublicClient } from "wagmi";
 import { useT } from "@/lib/i18n/LanguageContext";
 import { Loader2, RefreshCw, Users, Hexagon } from "lucide-react";
@@ -7,14 +7,14 @@ import { AddressDisplay } from "@/components/ui/AddressDisplay";
 import { getTeam, clearTeamCache, type TeamMember } from "@/lib/teamCache";
 import { clearLogsCache } from "@/lib/getLogs";
 import { BHS_ABI } from "@/lib/contract";
-import { CONTRACT_ADDRESS, LEVEL_COLORS } from "@/lib/constants";
+import { CONTRACT_ADDRESS, LEVEL_COLORS, CHAIN_ID } from "@/lib/constants";
 import { MatrixView } from "@/components/matrix/MatrixView";
 import { useStats } from "@/hooks/useStats";
 import { clsx } from "clsx";
 
 export default function TeamPage() {
   const { address }  = useAccount();
-  const publicClient = usePublicClient();
+  const publicClient = usePublicClient({ chainId: CHAIN_ID });
   const [tab, setTab] = useState<"team" | "matrix">("team");
   const [members, setMembers]         = useState<TeamMember[]>([]);
   const [activeAddrs, setActiveAddrs] = useState<Set<string>>(new Set());
@@ -42,7 +42,7 @@ export default function TeamPage() {
       .then((cached) => {
         setMembers(cached);
         setIsLoading(false);
-        if (cached.length === 0) setIsSyncing(true);
+        setIsSyncing(false);
       })
       .catch(() => { setIsLoading(false); setIsSyncing(false); });
   }, [address, publicClient]);
@@ -60,27 +60,33 @@ export default function TeamPage() {
     const depth1 = members.filter((m) => m.depth === 1);
     if (depth1.length === 0) return;
 
-    Promise.all(
-      depth1.map((m) =>
-        publicClient.readContract({
-          address: CONTRACT_ADDRESS,
-          abi: BHS_ABI,
-          functionName: "getStats",
-          args: [m.address as `0x${string}`],
-        }).then((res: any) => {
-          const registered = res[1] as boolean;
-          return registered ? m.address : null;
-        }).catch(() => null)
-      )
-    ).then((results) => {
-      setActiveAddrs(new Set(results.filter(Boolean) as string[]));
-    });
+    // Single multicall instead of N separate readContract calls
+    publicClient.multicall({
+      contracts: depth1.map((m) => ({
+        address: CONTRACT_ADDRESS,
+        abi: BHS_ABI,
+        functionName: "getStats" as const,
+        args: [m.address as `0x${string}`],
+      })),
+      allowFailure: true,
+    }).then((results) => {
+      const activeSet = new Set<string>();
+      results.forEach((result, i) => {
+        if (result.status === "success") {
+          const levels = (result.result as any)[2] as readonly boolean[];
+          const hasBoughtHive = Array.from(levels).some(Boolean);
+          if (hasBoughtHive) activeSet.add(depth1[i].address);
+        }
+      });
+      setActiveAddrs(activeSet);
+    }).catch(() => {});
   }, [members, publicClient]);
 
-  const direct   = members.filter((m) => m.depth === 1);
-  const indirect = members.filter((m) => m.depth === 2);
-  const active   = direct.filter((m) => activeAddrs.has(m.address));
-  const inactive = direct.filter((m) => !activeAddrs.has(m.address));
+  // Memoized — avoids re-filtering on every render
+  const direct   = useMemo(() => members.filter((m) => m.depth === 1), [members]);
+  const indirect = useMemo(() => members.filter((m) => m.depth === 2), [members]);
+  const active   = useMemo(() => direct.filter((m) => activeAddrs.has(m.address)), [direct, activeAddrs]);
+  const inactive = useMemo(() => direct.filter((m) => !activeAddrs.has(m.address)), [direct, activeAddrs]);
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
